@@ -3,7 +3,7 @@
 Date: 2026-10-07  
 Target: Victoria 3 1.14.x, baseline verification on 1.14.5  
 Repository: `pengin0503/Vic3-TODO`  
-Status: Design review
+Status: Approved
 
 ## 1. Purpose
 
