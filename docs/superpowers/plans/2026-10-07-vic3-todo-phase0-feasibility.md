@@ -61,7 +61,8 @@
 
 Add tests named:
 - `test_detects_required_gui_and_journal_evidence`
-- `test_marks_missing_capability_unsupported`
+- `test_marks_missing_capability_unsupported_when_source_scope_is_complete`
+- `test_marks_missing_archive_evidence_candidate_when_archive_scope_is_partial`
 - `test_hashes_every_evidence_source`
 - `test_writes_utf8_json_without_ascii_escaping_japanese`
 
@@ -81,7 +82,7 @@ Implement:
 - `write_evidence(report: dict, output: pathlib.Path) -> None`
 - `main(argv: list[str] | None = None) -> int`
 
-The auditor must search only documented candidate locations/patterns, include matched snippets/paths and SHA-256 hashes, and use UTF-8 JSON with `ensure_ascii=False`. Archive extraction/inspection must be read-only with respect to the source and must reject unsafe ZIP traversal paths. The archive's directory layout may contain an extra wrapper directory; locate `game/` or the expected `gui/`/`common/` roots without assuming a fixed top-level folder. Missing evidence is `unsupported`; ambiguous evidence is `candidate`, not `supported`.
+The auditor must search only documented candidate locations/patterns, include matched snippets/paths and SHA-256 hashes, and use UTF-8 JSON with `ensure_ascii=False`. Archive extraction/inspection must be read-only with respect to the source and must reject unsafe ZIP traversal paths. The archive's directory layout may contain an extra wrapper directory; locate `game/` or the expected `gui/`/`common/` roots without assuming a fixed top-level folder. Missing evidence from a known-complete installed-game scope is `unsupported`; ambiguous evidence is `candidate`, not `supported`. Missing evidence from the curated `Vic3_todo_source.zip` alone must be `candidate`/insufficient-coverage unless the archive manifest proves the relevant authoritative directory/file set is complete.
 
 - [ ] **Step 4: Run tests**
 
