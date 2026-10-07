@@ -53,4 +53,10 @@ class AuditTests(unittest.TestCase):
                 z.writestr('a/game/gui/a.gui','');z.writestr('b/game/gui/b.gui','')
             with self.assertRaises(ValueError):a.audit_archive(p)
 
+    def test_population_arithmetic_is_value_evidence(self):
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t);(p/'common/script_values').mkdir(parents=True)
+            (p/'common/script_values/pop.txt').write_text('country_total = { value = 1 multiply = total_population }')
+            self.assertEqual(a.audit_game(p)['capabilities']['total_population'],'supported')
+
 if __name__=='__main__':unittest.main()

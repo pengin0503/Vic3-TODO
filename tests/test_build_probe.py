@@ -75,4 +75,14 @@ class BuildTests(unittest.TestCase):
         self.assertTrue((out/'common/scripted_guis/vic3_todo_probe_actions.txt').is_file())
         s=(out/'gui/journal_entry_widgets/vic3_todo_probe_widget.gui').read_text();self.assertIn('vic3_todo_slot_0_select_furniture',s)
 
+    def test_report_cannot_upgrade_unsupported_source_api(self):
+        r=json.loads(self.evidence.read_text());r['capabilities']['scripted_gui_definition']='supported';a.write_evidence(r,self.evidence)
+        with self.assertRaises(ValueError):self.build()
+    def test_validator_rejects_duplicate_keys_and_unbalanced_script(self):
+        out=self.build();p=out/'common/scripted_effects/vic3_todo_probe_effects.txt'
+        p.write_text(p.read_text()+'\nvic3_todo_slot_0_capture = {}')
+        with self.assertRaises(ValueError):b.validate_output(out)
+        p.write_text('vic3_todo_broken = {')
+        with self.assertRaises(ValueError):b.validate_output(out)
+
 if __name__=='__main__':unittest.main()

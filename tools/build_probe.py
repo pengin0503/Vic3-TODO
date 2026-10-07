@@ -105,17 +105,64 @@ def add_slot_probes(stage,r):
     gui.write_text(g,encoding='utf-8')
     write_evidence({'slot_count':2,'tracker_count_per_slot':1,'selector_ui':'static-evidence-ready' if actions_ready else 'candidate-insufficient-coverage','technology_probe':technology,'relations_probe':relations,'runtime_verified':False},stage/'vic3_todo_slot_capabilities.json')
 
+def add_presentation(stage,r):
+    caps=r['capabilities'];je=stage/'common/journal_entries/vic3_todo_probe.txt'
+    text=je.read_text('utf-8');bars=stage/'common/scripted_progress_bars/vic3_todo_probe_progress_bars.txt'
+    bar_ready=caps.get('journal_scripted_progress_bar')=='supported' and caps.get('bar_update')=='supported'
+    if not bar_ready and bars.exists():bars.unlink()
+    for i in (0,1):
+        key=f'vic3_todo_slot_{i}_probe';block=parse_definitions(text)[key];extra=''
+        if caps.get('journal_status_desc')=='supported':
+            extra+=f"""
+    status_desc = {{ first_valid = {{
+        triggered_desc = {{ desc = vic3_todo_status_completed trigger = {{ var:vic3_todo_slot_{i}_completed = 1 }} }}
+        triggered_desc = {{ desc = vic3_todo_status_satisfied trigger = {{ vic3_todo_slot_{i}_satisfied = yes }} }}
+        triggered_desc = {{ desc = vic3_todo_status_in_progress trigger = {{ always = yes }} }}
+    }} }}
+"""
+        if bar_ready:
+            extra+=f"""
+    scripted_progress_bar = vic3_todo_slot_{i}_bar
+    on_weekly_pulse = {{ effect = {{ scope:journal_entry = {{
+        set_bar_progress = {{ value = ROOT.vic3_todo_slot_{i}_ratio name = vic3_todo_slot_{i}_bar }}
+    }} }} }}
+"""
+        text=text.replace(key+' = {'+block+'}',key+' = {'+block+extra+'}')
+    je.write_text(text,encoding='utf-8')
+    gui=stage/'gui/journal_entry_widgets/vic3_todo_probe_widget.gui';g=gui.read_text('utf-8')
+    if caps.get('journal_pin')=='supported':
+        pin='        button = { using = default_button_action size = { 460 30 } text = "vic3_todo_pin_toggle" onclick = "[JournalEntry.TogglePinInOutliner]" }'
+    else:pin='        text_single = { text = "vic3_todo_pin_limit" }'
+    if caps.get('technology_trigger')=='supported' and caps.get('technology_target')=='supported' and caps.get('script_value_binding')=='supported':
+        pin+='\n        text_single = { text = "vic3_todo_technology_status" }'
+    g=g.replace('        text_single = { text = "vic3_todo_unicode" }','        text_single = { text = "vic3_todo_unicode" }\n'+pin)
+    gui.write_text(g,encoding='utf-8')
+    write_evidence({'scripted_progress_bar':bar_ready,'bar_update_cadence':'weekly','pin':'vanilla-journal-toggle' if caps.get('journal_pin')=='supported' else 'candidate-or-unsupported','status':caps.get('journal_status_desc'),'runtime_verified':False},stage/'vic3_todo_presentation_capabilities.json')
+
 def validate_output(output_dir):
     output_dir=Path(output_dir)
+    definitions=set()
+    loc_keys={}
     for p in output_dir.rglob('*'):
         if p.is_symlink():raise ValueError('Symlink in probe')
         if not p.is_file():continue
         n=p.relative_to(output_dir).as_posix()
         if n.startswith('gui/') and n not in ALLOWED_GUI:raise ValueError('Unapproved vanilla GUI override: '+n)
+        if p.suffix=='.txt':
+            blocks=parse_definitions(p.read_text('utf-8-sig'))
+            for key in blocks:
+                if not key.startswith('vic3_todo_') or key in definitions:raise ValueError('Unnamespaced or duplicate PDX definition: '+key)
+                definitions.add(key)
+        if p.suffix=='.gui':parse_definitions(p.read_text('utf-8-sig'))
+        if p.suffix=='.yml':
+            keys=re.findall(r'^\s+(\w+):',p.read_text('utf-8-sig'),re.MULTILINE)
+            if len(keys)!=len(set(keys)) or any(not k.startswith('vic3_todo_') for k in keys):raise ValueError('Duplicate or unnamespaced localization')
+            loc_keys[p.parent.name]=set(keys)
         if p.suffix in ('.gui','.txt','.yml'):
             s=p.read_text('utf-8-sig')
             if re.search(r'\b(set_name|rename_state|rename_company|set_country_name|SetTextPersistent|SaveTodoText)\b',s):raise ValueError('Unverified callback or visible-name storage')
             if re.search(r'\b(TBD|FIXME|PLACEHOLDER)\b',s):raise ValueError('Unfinished release marker')
+    if loc_keys.get('english')!=loc_keys.get('japanese'):raise ValueError('Localization key coverage differs')
     md=json.loads((output_dir/'.metadata/metadata.json').read_text('utf-8'))
     if md.get('supported_game_version')!='1.14.*':raise ValueError('Wrong game version')
     for lang in ('english','japanese'):
@@ -136,6 +183,9 @@ def build_probe(game_dir,evidence_path,output_dir):
     r=json.loads(evidence.read_text('utf-8'));actual=audit(source)
     if actual['source_hashes']!=r.get('source_hashes') or actual['source_identity']['source_set_sha256']!=r.get('source_identity',{}).get('source_set_sha256'):
         raise ValueError('Evidence does not match read-only source')
+    for key,status in r.get('capabilities',{}).items():
+        if status=='supported' and actual['capabilities'].get(key)!='supported':
+            raise ValueError('Evidence upgrades an unproven source API: '+key)
     for c in MANDATORY:
         if r.get('capabilities',{}).get(c)!='supported':raise ValueError('Missing mandatory static evidence: '+c)
     output.parent.mkdir(parents=True,exist_ok=True)
@@ -143,6 +193,7 @@ def build_probe(game_dir,evidence_path,output_dir):
     try:
         shutil.copytree(PROBE_SOURCE,stage,dirs_exist_ok=True)
         add_slot_probes(stage,r)
+        add_presentation(stage,r)
         for p in sorted(stage.rglob('*.yml')):
             s=p.read_text('utf-8-sig');p.write_bytes(b'\xef\xbb\xbf'+s.encode('utf-8'))
         write_evidence({'free_text_persistence':r['capability_details']['free_text_persistence'],

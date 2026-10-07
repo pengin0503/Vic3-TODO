@@ -1,0 +1,16 @@
+vic3_todo_slot_0_bar = {
+    name = "vic3_todo_slot_0_bar"
+    desc = "vic3_todo_slot_0_bar_desc"
+    default_green = yes
+    start_value = 0
+    min_value = 0
+    max_value = 100
+}
+vic3_todo_slot_1_bar = {
+    name = "vic3_todo_slot_1_bar"
+    desc = "vic3_todo_slot_1_bar_desc"
+    default_green = yes
+    start_value = 0
+    min_value = 0
+    max_value = 100
+}

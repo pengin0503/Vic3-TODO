@@ -27,7 +27,7 @@
     "scripted_gui_execution": "supported",
     "technology_target": "supported",
     "technology_trigger": "supported",
-    "total_population": "candidate"
+    "total_population": "supported"
   },
   "capability_details": {
     "army_size": {
@@ -304,9 +304,12 @@
     },
     "total_population": {
       "coverage_complete": false,
-      "evidence_paths": [],
-      "reason": "No match; insufficient coverage of authoritative source set",
-      "status": "candidate"
+      "evidence_paths": [
+        "common/script_values/building_values.txt",
+        "common/script_values/ip4_je_values.txt"
+      ],
+      "reason": "Static syntax evidence; runtime behavior unverified",
+      "status": "supported"
     }
   },
   "directory_counts": {
@@ -753,6 +756,20 @@
       "path": "common/journal_entries/00_tutorial.txt",
       "sha256": "f4e44394601d6bb52b85e4184012f9181391831f64af1c4251f8bbeb3978da13",
       "snippet": "value = gdp"
+    },
+    {
+      "capability": "total_population",
+      "line": 32,
+      "path": "common/script_values/building_values.txt",
+      "sha256": "43d63633c893313e574afb93c399d95d2c1bd0b88cebc765f6ef4b165787296f",
+      "snippet": "divide = total_population"
+    },
+    {
+      "capability": "total_population",
+      "line": 518,
+      "path": "common/script_values/ip4_je_values.txt",
+      "sha256": "b2ecefcdbb0c9fa8ebee117d04d593223abaa7cd433f83971aab79dbea5486fd",
+      "snippet": "multiply = total_population"
     },
     {
       "capability": "literacy_rate",
