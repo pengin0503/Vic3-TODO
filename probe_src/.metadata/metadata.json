@@ -1,0 +1,11 @@
+{
+  "name": "Vic3 TODO Phase 0 Probe",
+  "id": "vic3_todo_probe",
+  "version": "0.0.1",
+  "game_id": "victoria3",
+  "game_version": "1.14.5",
+  "supported_game_version": "1.14.*",
+  "short_description": "Independent feasibility probes; runtime verification pending",
+  "tags": ["Utilities"],
+  "relationships": []
+}
