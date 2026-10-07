@@ -46,8 +46,9 @@ The mod must not alter simulation outcomes merely because a TODO exists.
 
 A TODO contains:
 
-- free-text title/body;
+- one free-text text field;
 - manual completed / incomplete state;
+- edit and delete operations;
 - optional progress tracking;
 - optional automatic completion;
 - optional deadline display;
@@ -55,7 +56,7 @@ A TODO contains:
 - optional pinning;
 - zero to four trackers.
 
-The v1 active TODO limit is 32.
+The v1 storage limit is 32 TODO slots total, counting both active and completed TODOs.
 
 Free-text input limit is 200 Unicode characters per TODO.
 
@@ -152,7 +153,21 @@ If auto-complete is enabled, the TODO transitions to completed when the aggregat
 
 If auto-complete is disabled, reaching 100% only marks the tracked condition as satisfied; the player completes the TODO manually.
 
-Manual completion remains available for TODOs, including tracked TODOs.
+Manual completion remains available for TODOs, including tracked TODOs. A completed TODO can be returned to the incomplete state.
+
+### 4.5 Editing, deletion, and completed items
+
+The player can edit the text and supported feature configuration of an existing TODO.
+
+If an edit changes tracker identity, target, or measurement mode in a way that changes baseline semantics, the tracker baseline is recaptured at the time that edit is confirmed. Purely cosmetic text edits do not recapture baselines.
+
+Completed TODOs are shown separately from active TODOs. The player can:
+
+- reopen a completed TODO;
+- delete an individual TODO;
+- delete all completed TODOs with an explicit confirmation.
+
+Deleting a TODO permanently frees its fixed storage slot.
 
 ## 5. Tracker architecture
 
@@ -413,6 +428,11 @@ At minimum prove:
 
 Create a building tracker while the country has a known current value, save the baseline once, change the game state, and prove that the baseline is not recomputed on Journal reopen or save/load.
 
+Also verify edit semantics:
+
+- editing TODO text alone preserves the baseline;
+- changing tracker identity, target, or measurement mode recaptures the baseline exactly once when the edit is confirmed.
+
 ### 11.5 Probe E: Journal integration
 
 Verify the safest available 1.14.5 integration point for:
@@ -424,7 +444,17 @@ Verify the safest available 1.14.5 integration point for:
 
 Prefer custom Journal entry/widget integration over broad vanilla GUI replacement.
 
-### 11.6 Phase 0 success criteria
+### 11.6 Tracker capability matrix
+
+Phase 0 must record every proposed v1 tracker family as one of:
+
+- supported by verified 1.14.5 script/GUI APIs;
+- supported with a documented limitation;
+- unsupported for the pure-mod v1 path.
+
+The initial catalog is a design target, not permission to fake or approximate unavailable game values.
+
+### 11.7 Phase 0 success criteria
 
 The pure-mod path is viable only if A–D succeed. E may degrade only for non-core presentation details such as exact pin behavior.
 
@@ -540,7 +570,7 @@ A dedicated runtime checklist must cover:
 - deadline/overdue display;
 - save/load;
 - full restart/load;
-- 32 TODO capacity boundary;
+- 32 total stored TODO capacity boundary;
 - 4 tracker capacity boundary;
 - target invalidation;
 - compatibility with an otherwise unmodified 1.14.5 UI.
@@ -566,7 +596,8 @@ No subsystem may bypass the persistence gate by introducing a different storage 
 
 v1 is complete only when all of the following are true:
 
-- a player can create a free-text TODO in the Journal;
+- a player can create, edit, complete, reopen, and delete a free-text TODO in the Journal;
+- completed TODOs are separated from active TODOs and can be cleared in bulk with confirmation;
 - Japanese text persists across full restart/load;
 - a TODO can contain multiple trackers;
 - building delta tracking follows creation-time baseline semantics;
