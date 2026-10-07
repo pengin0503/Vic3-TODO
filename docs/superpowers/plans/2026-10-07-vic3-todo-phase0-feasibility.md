@@ -4,7 +4,7 @@
 
 **Goal:** Build a reproducible Victoria 3 1.14.x feasibility probe that can determine whether Vic3-TODO can persist arbitrary Unicode TODO text, maintain independent TODO/tracker state, capture creation-time baselines, and integrate safely with the Journal before any production TODO implementation begins.
 
-**Architecture:** Keep Phase 0 isolated from production code. A Python offline auditor reads the user's installed Victoria 3 1.14.x files and emits a machine-readable API/evidence manifest; a generated probe mod then exercises the smallest possible GUI/script paths for text capture, fixed slots, tracker selection, baseline persistence, and Journal presentation. Probes are intentionally independent so Tasks 1–6 can be completed in one uninterrupted offline run even when one capability is unsupported or still needs runtime proof. Runtime evidence is recorded separately and is the hard gate for the later production implementation plan.
+**Architecture:** Keep Phase 0 isolated from production code. A Python offline auditor reads either the user's supplied `Vic3_todo_source.zip` reference archive or an installed Victoria 3 1.14.x tree and emits a machine-readable API/evidence manifest; a generated probe mod then exercises the smallest possible GUI/script paths for text capture, fixed slots, tracker selection, baseline persistence, and Journal presentation. Probes are intentionally independent so Tasks 1–6 can be completed in one uninterrupted offline run even when one capability is unsupported or still needs runtime proof. Runtime evidence is recorded separately and is the hard gate for the later production implementation plan.
 
 **Tech Stack:** Victoria 3 1.14.x PDXScript/Jomini GUI/localization, Python 3.10+ standard library, `unittest`, PowerShell installer/launcher helper.
 
@@ -22,7 +22,8 @@
 - Prefer Journal custom-widget/injection mechanisms over broad vanilla GUI overrides.
 - Namespace all mod-owned keys, variables, widgets, and localization with `vic3_todo_`.
 - The probe may use only the minimum simulation hooks needed to test persistence; it must not change AI, economy, construction behavior, diplomacy, or balance.
-- Use the latest `main` as source of truth at execution time; do not treat the plan-time commit SHA as permanent.
+- Use the latest `main` as source of truth for project code at execution time; do not treat the plan-time commit SHA as permanent.
+- For vanilla Victoria 3 API/GUI evidence, prefer the user-supplied `Vic3_todo_source.zip` when available. Treat it as read-only source material, not project code. If a full installed 1.14.x tree is also available, compare overlapping files and record any mismatch rather than silently choosing one.
 - Run TDD for Python tooling/static validation, systematic-debugging for unexpected failures, and verification-before-completion before claiming the probe ready.
 
 ## Review Focus
@@ -49,8 +50,10 @@
 - Generated at runtime, never hand-edited: `research/generated/phase0-api-evidence.json`
 
 **Interfaces:**
-- Produces CLI: `python tools/audit_vanilla.py --game-dir <Victoria3Root> --output research/generated/phase0-api-evidence.json`
-- Produces JSON keys: `game_root`, `evidence[]`, `capabilities{}`, `source_hashes{}`.
+- Produces CLI accepting exactly one source input:
+  - `python tools/audit_vanilla.py --source-archive <Vic3_todo_source.zip> --output research/generated/phase0-api-evidence.json`
+  - `python tools/audit_vanilla.py --game-dir <Victoria3Root> --output research/generated/phase0-api-evidence.json`
+- Produces JSON keys: `source_kind`, `source_identity`, `evidence[]`, `capabilities{}`, `source_hashes{}`.
 - Each `capabilities.<id>` is exactly one of `supported`, `candidate`, `unsupported`.
 - Capability IDs: `editbox`, `ontextedited`, `oneditingfinished`, `journal_custom_widget`, `journal_progress_bar`, `journal_scripted_progress_bar`, `journal_status_desc`, `journal_pin`, `script_variable`, `building_level_sum`, `gdp`, `total_population`, `literacy_rate`, `army_size`, `navy_size`, `technology_trigger`, `law_trigger`, `relations`, `country_rank`.
 
@@ -74,10 +77,11 @@ Expected: FAIL because `tools.audit_vanilla` does not exist.
 
 Implement:
 - `audit_game(game_dir: pathlib.Path) -> dict`
+- `audit_archive(source_archive: pathlib.Path) -> dict`
 - `write_evidence(report: dict, output: pathlib.Path) -> None`
 - `main(argv: list[str] | None = None) -> int`
 
-The auditor must search only documented candidate locations/patterns, include matched snippets/paths and SHA-256 hashes, and use UTF-8 JSON with `ensure_ascii=False`. Missing evidence is `unsupported`; ambiguous evidence is `candidate`, not `supported`.
+The auditor must search only documented candidate locations/patterns, include matched snippets/paths and SHA-256 hashes, and use UTF-8 JSON with `ensure_ascii=False`. Archive extraction/inspection must be read-only with respect to the source and must reject unsafe ZIP traversal paths. The archive's directory layout may contain an extra wrapper directory; locate `game/` or the expected `gui/`/`common/` roots without assuming a fixed top-level folder. Missing evidence is `unsupported`; ambiguous evidence is `candidate`, not `supported`.
 
 - [ ] **Step 4: Run tests**
 
@@ -104,8 +108,8 @@ git commit -m "test: add Victoria 3 API evidence auditor"
 - Generated output: `dist/Vic3TODOProbe/`
 
 **Interfaces:**
-- Consumes: Task 1 evidence JSON.
-- Produces CLI: `python tools/build_probe.py --game-dir <Victoria3Root> --evidence research/generated/phase0-api-evidence.json --output dist/Vic3TODOProbe`
+- Consumes: Task 1 evidence JSON and the same vanilla source used by Task 1.
+- Produces CLI with either `--game-dir <Victoria3Root>` or `--source-archive <Vic3_todo_source.zip>` together with `--evidence ... --output dist/Vic3TODOProbe`.
 - Produces a complete probe mod only when mandatory static prerequisites are present.
 - Function signatures:
   - `build_probe(game_dir: pathlib.Path, evidence_path: pathlib.Path, output_dir: pathlib.Path) -> list[pathlib.Path]`
@@ -129,7 +133,7 @@ Expected: FAIL because `tools.build_probe` does not exist.
 
 - [ ] **Step 3: Implement builder and minimal static probe source**
 
-The builder must stage to a temporary directory, validate it, then atomically replace the requested output. It must never write inside the game installation.
+The builder must stage to a temporary directory, validate it, then atomically replace the requested output. It must never write inside the game installation or mutate the source archive.
 
 Do not create production TODO files. At this task, the probe source contains metadata/localization only; later tasks add probe-specific GUI/script files. `.gitignore` must exclude `dist/`, Python cache files, and locally generated installed-game evidence unless a later task explicitly commits a text report.
 
@@ -374,9 +378,9 @@ Also search executable/release-facing files for unfinished placeholder markers, 
 
 - [ ] **Step 4: Build against the best available 1.14.5 source**
 
-If an installed-game tree is available, run the auditor and builder against it and commit only text evidence/reports, not copyrighted vanilla game files.
+If `Vic3_todo_source.zip` is available, run the auditor and builder against it first. If an installed-game tree is also available, audit both and compare overlapping source hashes/capabilities; record mismatches explicitly. Commit only derived text evidence/reports, never copyrighted vanilla source files or extracted archive contents.
 
-If no full installed-game tree is available in the execution environment, do not fabricate the result. Confirm fixture tests pass and leave the exact Windows command in the handoff.
+If neither the source archive nor a full installed-game tree is available in the execution environment, do not fabricate the result. Confirm fixture tests pass and leave the exact Windows command in the handoff.
 
 - [ ] **Step 5: Commit**
 
