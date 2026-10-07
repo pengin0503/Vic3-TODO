@@ -25,6 +25,10 @@ installerはZIP由来の派生evidenceとinstalled treeを比較し、実際のi
 powershell -ExecutionPolicy Bypass -File .\tools\collect_phase0_results.ps1
 ```
 
+## 文字列保存APIの追加調査
+
+軽量化プロジェクトの保存資料を流用し、GUIの型一覧出力、変数編集API、組み込みテストとprofilerを確認しました。[根拠と不足している接続](docs/feasibility/2026-10-07-optimization-api-reuse.md)、[現行ゲームから型・関数一覧を取得する手順](docs/runtime-api-evidence.md)。実際のruntime型一覧は未取得で、free-text保存は引き続きcandidateです。今回の調査だけでは入力callbackを追加せず、Task 7の判定も行いません。
+
 ## Offline tooling
 
 ```bash

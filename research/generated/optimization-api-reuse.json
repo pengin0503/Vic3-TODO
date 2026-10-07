@@ -1,0 +1,234 @@
+{
+  "archives": [
+    {
+      "bytes": 311873,
+      "crc_verified": true,
+      "name": "installed-clausewitz.zip",
+      "provenance_path": "input-data/pc-evidence-2026-10-05/installed-clausewitz.zip",
+      "sha256": "21b8169f2ccd1c587b13fb0b7ee71b344c0db9f4dcb3f57c775b2c3c750f22ae"
+    },
+    {
+      "bytes": 901540,
+      "crc_verified": true,
+      "name": "installed-game-gui.zip",
+      "provenance_path": "input-data/pc-evidence-2026-10-05/installed-game-gui.zip",
+      "sha256": "fd35171eb1c04ad2ee8da73882915849128f590bbcd9140c25b454f8e3723551"
+    },
+    {
+      "bytes": 552607,
+      "crc_verified": true,
+      "name": "installed-game-tools.zip",
+      "provenance_path": "input-data/pc-evidence-2026-10-05/installed-game-tools.zip",
+      "sha256": "90144ccb7bc570c631c5473bd49e98936289590fa2e8c12c14c4f2ff65968d9d"
+    },
+    {
+      "bytes": 454834,
+      "crc_verified": true,
+      "name": "installed-jomini.zip",
+      "provenance_path": "input-data/pc-evidence-2026-10-05/installed-jomini.zip",
+      "sha256": "de207cb3490f6ce67a889a6de61ea23461778a92c197f9f25d9dd9f4f19503b4"
+    },
+    {
+      "bytes": 16433,
+      "crc_verified": true,
+      "name": "installed-root-controls.zip",
+      "provenance_path": "input-data/pc-evidence-2026-10-05/installed-root-controls.zip",
+      "sha256": "91776995e1967d21abde4457d72055a4152bc3ec4b40f8c06e91cc28f5ae062b"
+    }
+  ],
+  "conclusions": {
+    "arbitrary_unicode_value_type_verified": false,
+    "country_to_persistent_variable_store_promote_verified": false,
+    "free_text_persistence_status": "candidate",
+    "normal_mode_editor_api_availability_verified": false,
+    "phase0_decision_executed": false,
+    "product_code_changed": false,
+    "runtime_datatypes_dump_available": false,
+    "runtime_verified": false,
+    "save_load_serialization_verified": false
+  },
+  "kind": "supplementary_static_research_not_builder_capability_input",
+  "limits": [
+    "GUI usage examples are not runtime signatures or serialization contracts.",
+    "No complete engine API inventory is available in the inspected inputs.",
+    "installed-game-common.zip contents were not readable through the available GitHub text retrieval path; no absence claim is made for its contents.",
+    "Historical logs are not current TODO runtime evidence."
+  ],
+  "members": [
+    {
+      "archive": "installed-clausewitz.zip",
+      "line_count": 166,
+      "path": "clausewitz/gui/applicationutils/datatypes_explorer.gui",
+      "sha256": "49ce5f2e66890f55fe5b0dcdfe88baa30020a9f0596fa5e494a07cd8db13c66d",
+      "witnesses": [
+        {
+          "identifier": "DatatypesExplorer.DumpDataTypes",
+          "lines": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "archive": "installed-jomini.zip",
+      "line_count": 351,
+      "path": "jomini/gui/object_explorer/common_inspector.gui",
+      "sha256": "5f21d61eb5106eebe620b34178f5b414f2b0ccd94d17e501746a203cf8ad11e9",
+      "witnesses": [
+        {
+          "identifier": "ScopeObjectEditor.SetFromString",
+          "lines": [
+            15
+          ]
+        },
+        {
+          "identifier": "ScopeObjectEditor.IsFlag",
+          "lines": [
+            16
+          ]
+        },
+        {
+          "identifier": "ScopeObjectEditor.GetVariableTypes",
+          "lines": [
+            84
+          ]
+        },
+        {
+          "identifier": "VariableEntry.AccessScopeEditor",
+          "lines": [
+            256
+          ]
+        },
+        {
+          "identifier": "VariableStore.AccessVariables",
+          "lines": [
+            290
+          ]
+        },
+        {
+          "identifier": "VariableStore.AccessNewEntryEditor",
+          "lines": [
+            331
+          ]
+        },
+        {
+          "identifier": "VariableStore.AddNewEntry",
+          "lines": [
+            345
+          ]
+        }
+      ]
+    },
+    {
+      "archive": "installed-jomini.zip",
+      "line_count": 114,
+      "path": "jomini/gui/object_explorer/variable_inspector.gui",
+      "sha256": "a43cc2a4644be868b3e9c2f2f0c48238647cdc8a3c45578ea0b47ccd0fd2a9a2",
+      "witnesses": [
+        {
+          "identifier": "VariableInspectorPlugin.AccessVariables",
+          "lines": [
+            63
+          ]
+        },
+        {
+          "identifier": "VariableInspectorPlugin.AccessSetupVariable",
+          "lines": [
+            97
+          ]
+        },
+        {
+          "identifier": "VariableInspectorPlugin.AddVariable",
+          "lines": [
+            109
+          ]
+        }
+      ]
+    },
+    {
+      "archive": "installed-jomini.zip",
+      "line_count": 265,
+      "path": "jomini/gui/object_explorer/script_runner_inspector.gui",
+      "sha256": "e0720e38f32e6f6025d9c853143d52771178eb6e6df9e6722a92bc5d46df4e6e",
+      "witnesses": [
+        {
+          "identifier": "ScriptRunnerInspector.AccessEventTargets.AccessVariables",
+          "lines": [
+            96
+          ]
+        }
+      ]
+    },
+    {
+      "archive": "installed-jomini.zip",
+      "line_count": 381,
+      "path": "jomini/gui/gui_data_profiler/gui_data_profiler.gui",
+      "sha256": "5c2ea2c0cb17b65862cbcf2013e1871f47ecff8c0f0b5eb9c4eecef10fa9e094",
+      "witnesses": [
+        {
+          "identifier": "GuiDataProfiler.BeginRecording",
+          "lines": [
+            67
+          ]
+        }
+      ]
+    },
+    {
+      "archive": "installed-jomini.zip",
+      "line_count": 756,
+      "path": "jomini/gui/script_profiler/script_profiler.gui",
+      "sha256": "8d1ada139bb3321746710a9de768741cbd2123179c1c24d0c95a272e03dbbdd8",
+      "witnesses": [
+        {
+          "identifier": "ScriptProfilerGui.StartCapture",
+          "lines": [
+            34
+          ]
+        },
+        {
+          "identifier": "ScriptProfilerGui.StopCapture",
+          "lines": [
+            46
+          ]
+        }
+      ]
+    },
+    {
+      "archive": "installed-game-tools.zip",
+      "line_count": 48,
+      "path": "game/tools/scripted_tests/scripted_tests.md",
+      "sha256": "b6f73a1af508cddb292497ace982bd3f09c14c247ffb884661be49834f6f5157",
+      "witnesses": []
+    },
+    {
+      "archive": "installed-game-tools.zip",
+      "line_count": 108,
+      "path": "game/tools/scripted_tests/ip3.txt",
+      "sha256": "4fd683ca9d717b3d6e98bd7319cdcd87f53b6c24f489f50fe556505da0a11bd0",
+      "witnesses": [
+        {
+          "identifier": "has_journal_entry = je_austrian_neo_absolutism",
+          "lines": [
+            17
+          ]
+        }
+      ]
+    }
+  ],
+  "optimization_reference_commit": "c13bb2730a38a130186e1edb389f9ed8e1f54eef",
+  "preservation_index_path": "research/generated/pc-evidence-2026-10-05/preservation-index.json",
+  "primary_archive": {
+    "api_source_file_count": 875,
+    "name": "Vic3_todo_source.zip",
+    "sha256": "645b43686ad86db50434bbc1fd1dedf97ed3606f48cad5f32de22b11f4e39d7e"
+  },
+  "recorded_date_jst": "2026-10-07",
+  "schema_version": 1,
+  "shared_gui_comparison": {
+    "method": "direct comparison of uncompressed bytes",
+    "mismatch_count": 0,
+    "overlap_count": 205
+  },
+  "todo_reference_commit": "210667802d5d6fc0142cd94355a0a048ffacb3f6"
+}
+
