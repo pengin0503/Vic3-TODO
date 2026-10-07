@@ -44,7 +44,7 @@ def add_slot_probes(stage,r):
     effects=stage/'common/scripted_effects/vic3_todo_probe_effects.txt'
     v=values.read_text('utf-8');e=effects.read_text('utf-8')
     technology=caps.get('technology_trigger')=='supported' and caps.get('technology_target')=='supported'
-    relations=caps.get('relations')=='supported'
+    relations=caps.get('relations_numeric')=='supported'
     # Technology is boolean: 0/1 only, baseline still recorded for isolation, never used as a fractional research metric.
     if technology:
         v+='\nvic3_todo_technology_current = { value = 0 if = { limit = { has_technology_researched = telephone } value = 1 } }\n'
@@ -78,6 +78,19 @@ def add_slot_probes(stage,r):
         for i in (0,1):
             key=f'vic3_todo_slot_{i}_select_technology';old=parse_definitions(e)[key]
             e=e.replace(key+' = {'+old+'}','')
+    triggers=stage/'common/scripted_triggers/vic3_todo_probe_triggers.txt';ts=triggers.read_text('utf-8')
+    for i in (0,1):
+        p=f'vic3_todo_slot_{i}_'
+        choices=f'var:{p}target = 1 var:{p}target = 2'
+        if technology:choices+=f' var:{p}target = 3'
+        if relations:
+            choices+=f' AND = {{ var:{p}target = 4 exists = c:GBR NOT = {{ c:GBR = root }} }} AND = {{ var:{p}target = 5 exists = c:FRA NOT = {{ c:FRA = root }} }}'
+        ts+=f'\n{p}target_valid = {{ OR = {{ {choices} }} }}\n'
+        old=parse_definitions(ts)[p+'satisfied']
+        ts=ts.replace(p+'satisfied = {'+old+'}',p+'satisfied = { '+p+'target_valid = yes '+old+'}')
+        old=parse_definitions(v)[p+'progress']
+        v=v.replace(p+'progress = {'+old+'}',p+'progress = {'+old+f' if = {{ limit = {{ NOT = {{ {p}target_valid = yes }} }} value = 0 }} '+'}')
+    triggers.write_text(ts,encoding='utf-8')
     values.write_text(v,encoding='utf-8');effects.write_text(e,encoding='utf-8')
     gui=stage/'gui/journal_entry_widgets/vic3_todo_probe_widget.gui'
     g=gui.read_text('utf-8');parts=[]
@@ -85,7 +98,12 @@ def add_slot_probes(stage,r):
         for i in (0,1):
             for metric in ('current','baseline_display','goal_display','target_display','mode_display','capture_count_display','completed_display','label_display','progress'):
                 key=f'vic3_todo_slot_{i}_{metric}'
-                parts.append(f'        text_single = {{ text = "Slot {i} {metric}: [JournalEntry.GetCountry.MakeScope.ScriptValue(\'{key}\')|v0]" }}')
+                label=key+'_label'
+                for lang in ('english','japanese'):
+                    loc=stage/f'localization/{lang}/vic3_todo_probe_l_{lang}.yml'
+                    with loc.open('a',encoding='utf-8') as f:
+                        f.write(f' {label}: "Slot {i} {metric}: [JournalEntry.GetCountry.MakeScope.ScriptValue(\'{key}\')|v0]"\n')
+                parts.append(f'        text_single = {{ text = "{label}" }}')
     actions_ready=caps.get('scripted_gui_definition')=='supported' and caps.get('scripted_gui_execution')=='supported'
     if actions_ready:
         definitions=[]
@@ -116,6 +134,7 @@ def add_presentation(stage,r):
             extra+=f"""
     status_desc = {{ first_valid = {{
         triggered_desc = {{ desc = vic3_todo_status_completed trigger = {{ var:vic3_todo_slot_{i}_completed = 1 }} }}
+        triggered_desc = {{ desc = vic3_todo_status_invalid trigger = {{ NOT = {{ vic3_todo_slot_{i}_target_valid = yes }} }} }}
         triggered_desc = {{ desc = vic3_todo_status_satisfied trigger = {{ vic3_todo_slot_{i}_satisfied = yes }} }}
         triggered_desc = {{ desc = vic3_todo_status_in_progress trigger = {{ always = yes }} }}
     }} }}

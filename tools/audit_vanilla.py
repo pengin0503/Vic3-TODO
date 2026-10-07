@@ -27,6 +27,7 @@ RULES = {
  'technology_trigger': ('common/', r'\bhas_technology_researched\s*='),
  'law_trigger': ('common/', r'\bhas_law\s*='),
  'relations': ('common/', r'\b(?:[\w:]+\.)?relations:(?:ROOT|root|scope:[\w_]+)'),
+ 'relations_numeric': ('common/script_values/', r'\b(?:value|add)\s*=\s*c:[A-Z]+\.relations:root'),
  'country_rank': ('common/', r'\bcountry_rank\s*(?:=|[<>]=?)'),
  # Extra evidence used to gate independently buildable probes.
  'scripted_gui_execution': ('gui/', r'GetScriptedGui\([^\n]+\.Execute\(GuiScope\.SetRoot\(JournalEntry\.GetCountry\.MakeScope\)\.End\)'),
@@ -79,26 +80,27 @@ def read_source(path):
             identity={'name':path.name,'sha256':sha(path.read_bytes()),'root':root,'version':'1.14.5 (user supplied, not independently proven)','entry_count':len(infos),'archive_members':sorted(i.filename for i in infos)}
         return 'archive',identity,data,coverage
     if not path.is_dir():raise ValueError('Source does not exist')
-    # Scan relevant candidates without following symlinks.
-    names=[]
-    for p in path.rglob('*'):
-        if p.is_file() and not p.is_symlink() and not any(x.is_symlink() for x in p.parents if x!=path):
-            names.append(p.relative_to(path).as_posix())
-    root_names=names+[p.relative_to(path).as_posix()+'/__root_marker__' for p in path.rglob('*') if p.is_dir() and p.name in ('gui','common') and not p.is_symlink()]
-    root=detect_root(root_names);base=path/root;data={}
-    for n in sorted(names):
-        p=Path(n)
-        try:relative=p.relative_to(root).as_posix() if root else n
-        except ValueError:continue
-        if relative.startswith(('gui/','common/','localization/')):
-            data[relative]=(path/n).read_bytes()
-    if len(data)>MAX_FILES or sum(map(len,data.values()))>MAX_BYTES:raise ValueError('Source limit exceeded')
+    # Prefer conventional installed/game roots, then detect wrappers. Never scan gfx binaries as API evidence.
+    if (path/'game/gui').is_dir() and (path/'game/common').is_dir():root='game'
+    elif (path/'gui').is_dir() and (path/'common').is_dir():root=''
+    else:
+        names=[p.relative_to(path).as_posix()+'/__root_marker__' for p in path.rglob('*') if p.is_dir() and p.name in ('gui','common') and not p.is_symlink()]
+        root=detect_root(names)
+    base=path/root;data={};total=0
+    for directory in ('gui','common','localization'):
+        candidate=base/directory
+        if candidate.is_symlink():raise ValueError('Symlink source root')
+        if not candidate.is_dir():continue
+        for p in sorted(candidate.rglob('*')):
+            if not p.is_file() or p.is_symlink() or any(x.is_symlink() for x in p.parents if x!=path):continue
+            total+=p.stat().st_size
+            if len(data)>=MAX_FILES or total>MAX_BYTES:raise ValueError('Source limit exceeded')
+            data[p.relative_to(base).as_posix()]=p.read_bytes()
     cp=base/'phase0-source-coverage.json'
     if not cp.exists():cp=path/'phase0-source-coverage.json'
     coverage=json.loads(cp.read_text('utf-8')) if cp.exists() else {}
-    # An installation marker proves GUI/common completeness only when the caller supplies a full install.
     installed=(path/'binaries/victoria3.exe').is_file() and (base/'common').is_dir() and (base/'gui').is_dir()
-    if installed:coverage={'complete_directories':['gui','common'],'basis':'installation executable and game roots; user must verify unmodified installation'}
+    if installed and not coverage:coverage={'complete_directories':[],'basis':'Installation marker present; file-set completeness has not been proven. Missing APIs remain candidate.'}
     return 'tree',{'name':path.name,'root':root,'version':'verify installed version manually','installed_marker':installed},data,coverage
 
 def audit(path):

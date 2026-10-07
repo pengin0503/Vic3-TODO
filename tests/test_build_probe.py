@@ -85,4 +85,31 @@ class BuildTests(unittest.TestCase):
         p.write_text('vic3_todo_broken = {')
         with self.assertRaises(ValueError):b.validate_output(out)
 
+    def test_output_protects_game_source_probe_and_ancestors(self):
+        for out in (FIXTURE/'game/mod', b.PROBE_SOURCE, b.PROBE_SOURCE.parent):
+            with self.assertRaises(ValueError):b.build_probe(FIXTURE,self.evidence,out)
+    def test_failed_validation_preserves_previous_publish(self):
+        from unittest.mock import patch
+        out=self.build();sentinel=out/'sentinel';sentinel.write_text('previous')
+        with patch.object(b,'validate_output',side_effect=ValueError('validation rejected')):
+            with self.assertRaises(ValueError):b.build_probe(FIXTURE,self.evidence,out)
+        self.assertEqual(sentinel.read_text(),'previous')
+    def test_changed_source_invalidates_evidence_without_partial_output(self):
+        import shutil
+        source=self.root/'changed';shutil.copytree(FIXTURE,source)
+        (source/'game/gui/changed.gui').write_text('editbox = {}')
+        with self.assertRaises(ValueError):b.build_probe(source,self.evidence,self.root/'mod')
+        self.assertFalse((self.root/'mod').exists())
+
+    def test_relations_targets_are_guarded_against_missing_and_self(self):
+        import shutil
+        source=self.root/'relations';shutil.copytree(FIXTURE,source)
+        (source/'game/common/script_values/relations.txt').write_text('numeric_relations = { add = c:USA.relations:root }')
+        a.write_evidence(a.audit_game(source),self.evidence);out=self.root/'relationsmod';b.build_probe(source,self.evidence,out)
+        triggers=(out/'common/scripted_triggers/vic3_todo_probe_triggers.txt').read_text()
+        blocks=b.parse_definitions(triggers)
+        self.assertIn('exists = c:GBR',blocks['vic3_todo_slot_0_target_valid'])
+        self.assertIn('NOT = { c:GBR = root }',blocks['vic3_todo_slot_0_target_valid'])
+        self.assertIn('vic3_todo_slot_0_target_valid = yes',blocks['vic3_todo_slot_0_satisfied'])
+
 if __name__=='__main__':unittest.main()

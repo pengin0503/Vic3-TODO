@@ -21,6 +21,7 @@
     "ontextedited": "supported",
     "player_trigger": "supported",
     "relations": "supported",
+    "relations_numeric": "supported",
     "script_value_binding": "supported",
     "script_variable": "supported",
     "scripted_gui_definition": "candidate",
@@ -246,6 +247,14 @@
         "common/journal_entries/00_request_recognition.txt",
         "common/journal_entries/00_romania.txt",
         "common/journal_entries/00_texas.txt"
+      ],
+      "reason": "Static syntax evidence; runtime behavior unverified",
+      "status": "supported"
+    },
+    "relations_numeric": {
+      "coverage_complete": false,
+      "evidence_paths": [
+        "common/script_values/ip4_cuba_values.txt"
       ],
       "reason": "Static syntax evidence; runtime behavior unverified",
       "status": "supported"
@@ -980,6 +989,20 @@
       "path": "common/journal_entries/00_texas.txt",
       "sha256": "8f88e7e6dd64784b3593099b4d7bf9d83b39cac79082256203a74ac50bfff0fb",
       "snippet": "relations:root >= relations_threshold:cordial"
+    },
+    {
+      "capability": "relations_numeric",
+      "line": 422,
+      "path": "common/script_values/ip4_cuba_values.txt",
+      "sha256": "b562c8d98cb139c22a026f3e378e711057792fe11e9ffec89588f89067380e86",
+      "snippet": "add = c:CSA.relations:root"
+    },
+    {
+      "capability": "relations_numeric",
+      "line": 430,
+      "path": "common/script_values/ip4_cuba_values.txt",
+      "sha256": "b562c8d98cb139c22a026f3e378e711057792fe11e9ffec89588f89067380e86",
+      "snippet": "add = c:USA.relations:root"
     },
     {
       "capability": "country_rank",

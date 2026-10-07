@@ -5,3 +5,4 @@ dist/
 research/runtime/
 research/generated/installed-*.json
 research/generated/source-comparison.json
+research/generated/installed-*

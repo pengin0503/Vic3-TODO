@@ -59,4 +59,15 @@ class AuditTests(unittest.TestCase):
             (p/'common/script_values/pop.txt').write_text('country_total = { value = 1 multiply = total_population }')
             self.assertEqual(a.audit_game(p)['capabilities']['total_population'],'supported')
 
+    def test_installed_layout_ignores_unrelated_common_folders(self):
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t);(p/'game/gui').mkdir(parents=True);(p/'game/common').mkdir();(p/'game/gui/a.gui').write_text('editbox = {}')
+            (p/'game/gfx/models/common').mkdir(parents=True);(p/'game/gfx/models/common/a.asset').write_text('not script')
+            self.assertEqual(a.audit_game(p)['capabilities']['editbox'],'supported')
+    def test_installed_executable_does_not_prove_complete_api_inventory(self):
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t);(p/'binaries').mkdir();(p/'binaries/victoria3.exe').write_text('synthetic install marker')
+            (p/'game/gui').mkdir(parents=True);(p/'game/common').mkdir();(p/'game/gui/a.gui').write_text('editbox = {}')
+            self.assertEqual(a.audit_game(p)['capabilities']['relations'],'candidate')
+
 if __name__=='__main__':unittest.main()
