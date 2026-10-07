@@ -4,3 +4,8 @@ l_japanese:
  vic3_todo_unicode: "日本で家具工場を10レベル建てる"
  vic3_todo_text_instruction: "下の日本語サンプルと任意の文字列を入力してください。入力のみの検証です。"
  vic3_todo_text_storage_limit: "文字列保存経路は未確認です。この入力欄には保存callbackがありません。"
+ vic3_todo_slot_0_probe: "Slot 0: Furniture / textile / technology"
+ vic3_todo_slot_0_probe_desc: "Independent saved config. Read current, baseline, goal, target, mode, capture count and completion in the main probe."
+ vic3_todo_slot_1_probe: "Slot 1: Furniture / textile / technology"
+ vic3_todo_slot_1_probe_desc: "Independent saved config. Read current, baseline, goal, target, mode, capture count and completion in the main probe."
+ vic3_todo_selector_limit: "Selector UI: candidate. Source lacks country scripted-GUI definitions. Use Script Explorer to execute the namespaced actions; do not infer PASS."

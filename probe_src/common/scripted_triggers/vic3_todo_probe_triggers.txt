@@ -1,0 +1,2 @@
+vic3_todo_slot_0_satisfied = { vic3_todo_slot_0_progress >= var:vic3_todo_slot_0_goal }
+vic3_todo_slot_1_satisfied = { vic3_todo_slot_1_progress >= var:vic3_todo_slot_1_goal }

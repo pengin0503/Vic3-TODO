@@ -1,0 +1,52 @@
+vic3_todo_furniture_current = {
+    value = {
+        every_scope_building = {
+            limit = { is_building_type = building_furniture_manufacturies }
+            add = this.level
+        }
+    }
+}
+vic3_todo_textile_current = {
+    value = {
+        every_scope_building = {
+            limit = { is_building_type = building_textile_mills }
+            add = this.level
+        }
+    }
+}
+vic3_todo_slot_0_current = {
+    value = vic3_todo_furniture_current
+    if = { limit = { var:vic3_todo_slot_0_target = 2 } value = vic3_todo_textile_current }
+}
+vic3_todo_slot_0_baseline_display = { value = var:vic3_todo_slot_0_baseline }
+vic3_todo_slot_0_goal_display = { value = var:vic3_todo_slot_0_goal }
+vic3_todo_slot_0_target_display = { value = var:vic3_todo_slot_0_target }
+vic3_todo_slot_0_mode_display = { value = var:vic3_todo_slot_0_mode }
+vic3_todo_slot_0_capture_count_display = { value = var:vic3_todo_slot_0_capture_count }
+vic3_todo_slot_0_completed_display = { value = var:vic3_todo_slot_0_completed }
+vic3_todo_slot_0_label_display = { value = var:vic3_todo_slot_0_label }
+vic3_todo_slot_0_progress = {
+    value = vic3_todo_slot_0_current
+    if = { limit = { var:vic3_todo_slot_0_mode = 0 } subtract = var:vic3_todo_slot_0_baseline }
+    min = 0
+    max = var:vic3_todo_slot_0_goal
+}
+vic3_todo_slot_0_ratio = { value = vic3_todo_slot_0_progress divide = var:vic3_todo_slot_0_goal multiply = 100 min = 0 max = 100 }
+vic3_todo_slot_1_current = {
+    value = vic3_todo_furniture_current
+    if = { limit = { var:vic3_todo_slot_1_target = 2 } value = vic3_todo_textile_current }
+}
+vic3_todo_slot_1_baseline_display = { value = var:vic3_todo_slot_1_baseline }
+vic3_todo_slot_1_goal_display = { value = var:vic3_todo_slot_1_goal }
+vic3_todo_slot_1_target_display = { value = var:vic3_todo_slot_1_target }
+vic3_todo_slot_1_mode_display = { value = var:vic3_todo_slot_1_mode }
+vic3_todo_slot_1_capture_count_display = { value = var:vic3_todo_slot_1_capture_count }
+vic3_todo_slot_1_completed_display = { value = var:vic3_todo_slot_1_completed }
+vic3_todo_slot_1_label_display = { value = var:vic3_todo_slot_1_label }
+vic3_todo_slot_1_progress = {
+    value = vic3_todo_slot_1_current
+    if = { limit = { var:vic3_todo_slot_1_mode = 0 } subtract = var:vic3_todo_slot_1_baseline }
+    min = 0
+    max = var:vic3_todo_slot_1_goal
+}
+vic3_todo_slot_1_ratio = { value = vic3_todo_slot_1_progress divide = var:vic3_todo_slot_1_goal multiply = 100 min = 0 max = 100 }

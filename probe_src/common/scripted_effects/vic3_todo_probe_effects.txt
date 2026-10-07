@@ -1,0 +1,138 @@
+vic3_todo_slot_0_capture = {
+    set_variable = { name = vic3_todo_slot_0_baseline value = vic3_todo_slot_0_current }
+    change_variable = { name = vic3_todo_slot_0_capture_count add = 1 }
+}
+vic3_todo_slot_0_create = {
+    if = {
+        limit = { NOT = { has_variable = vic3_todo_slot_0_occupied } }
+        set_variable = vic3_todo_slot_0_occupied
+        set_variable = { name = vic3_todo_slot_0_target value = 1 }
+        set_variable = { name = vic3_todo_slot_0_mode value = 0 }
+        set_variable = { name = vic3_todo_slot_0_goal value = 10 }
+        set_variable = { name = vic3_todo_slot_0_completed value = 0 }
+        set_variable = { name = vic3_todo_slot_0_label value = 0 }
+        set_variable = { name = vic3_todo_slot_0_capture_count value = 0 }
+        vic3_todo_slot_0_capture = yes
+    }
+}
+vic3_todo_slot_0_cosmetic_edit = { set_variable = { name = vic3_todo_slot_0_label value = 2 } }
+vic3_todo_slot_0_complete = { set_variable = { name = vic3_todo_slot_0_completed value = 1 } }
+vic3_todo_slot_0_reopen = { set_variable = { name = vic3_todo_slot_0_completed value = 0 } }
+vic3_todo_slot_0_select_furniture = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_0_target = 1 } }
+        set_variable = { name = vic3_todo_slot_0_target value = 1 }
+        vic3_todo_slot_0_capture = yes
+    }
+}
+vic3_todo_slot_0_select_textile = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_0_target = 2 } }
+        set_variable = { name = vic3_todo_slot_0_target value = 2 }
+        vic3_todo_slot_0_capture = yes
+    }
+}
+vic3_todo_slot_0_select_technology = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_0_target = 3 } }
+        set_variable = { name = vic3_todo_slot_0_target value = 3 }
+        vic3_todo_slot_0_capture = yes
+    }
+}
+vic3_todo_slot_0_select_absolute = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_0_mode = 1 } }
+        set_variable = { name = vic3_todo_slot_0_mode value = 1 }
+        vic3_todo_slot_0_capture = yes
+    }
+}
+vic3_todo_slot_0_select_delta = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_0_mode = 0 } }
+        set_variable = { name = vic3_todo_slot_0_mode value = 0 }
+        vic3_todo_slot_0_capture = yes
+    }
+}
+vic3_todo_slot_0_goal_5 = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_0_goal = 5 } }
+        set_variable = { name = vic3_todo_slot_0_goal value = 5 }
+        vic3_todo_slot_0_capture = yes
+    }
+}
+vic3_todo_slot_0_goal_10 = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_0_goal = 10 } }
+        set_variable = { name = vic3_todo_slot_0_goal value = 10 }
+        vic3_todo_slot_0_capture = yes
+    }
+}
+vic3_todo_slot_1_capture = {
+    set_variable = { name = vic3_todo_slot_1_baseline value = vic3_todo_slot_1_current }
+    change_variable = { name = vic3_todo_slot_1_capture_count add = 1 }
+}
+vic3_todo_slot_1_create = {
+    if = {
+        limit = { NOT = { has_variable = vic3_todo_slot_1_occupied } }
+        set_variable = vic3_todo_slot_1_occupied
+        set_variable = { name = vic3_todo_slot_1_target value = 1 }
+        set_variable = { name = vic3_todo_slot_1_mode value = 0 }
+        set_variable = { name = vic3_todo_slot_1_goal value = 10 }
+        set_variable = { name = vic3_todo_slot_1_completed value = 0 }
+        set_variable = { name = vic3_todo_slot_1_label value = 1 }
+        set_variable = { name = vic3_todo_slot_1_capture_count value = 0 }
+        vic3_todo_slot_1_capture = yes
+    }
+}
+vic3_todo_slot_1_cosmetic_edit = { set_variable = { name = vic3_todo_slot_1_label value = 3 } }
+vic3_todo_slot_1_complete = { set_variable = { name = vic3_todo_slot_1_completed value = 1 } }
+vic3_todo_slot_1_reopen = { set_variable = { name = vic3_todo_slot_1_completed value = 0 } }
+vic3_todo_slot_1_select_furniture = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_1_target = 1 } }
+        set_variable = { name = vic3_todo_slot_1_target value = 1 }
+        vic3_todo_slot_1_capture = yes
+    }
+}
+vic3_todo_slot_1_select_textile = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_1_target = 2 } }
+        set_variable = { name = vic3_todo_slot_1_target value = 2 }
+        vic3_todo_slot_1_capture = yes
+    }
+}
+vic3_todo_slot_1_select_technology = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_1_target = 3 } }
+        set_variable = { name = vic3_todo_slot_1_target value = 3 }
+        vic3_todo_slot_1_capture = yes
+    }
+}
+vic3_todo_slot_1_select_absolute = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_1_mode = 1 } }
+        set_variable = { name = vic3_todo_slot_1_mode value = 1 }
+        vic3_todo_slot_1_capture = yes
+    }
+}
+vic3_todo_slot_1_select_delta = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_1_mode = 0 } }
+        set_variable = { name = vic3_todo_slot_1_mode value = 0 }
+        vic3_todo_slot_1_capture = yes
+    }
+}
+vic3_todo_slot_1_goal_5 = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_1_goal = 5 } }
+        set_variable = { name = vic3_todo_slot_1_goal value = 5 }
+        vic3_todo_slot_1_capture = yes
+    }
+}
+vic3_todo_slot_1_goal_10 = {
+    if = {
+        limit = { NOT = { var:vic3_todo_slot_1_goal = 10 } }
+        set_variable = { name = vic3_todo_slot_1_goal value = 10 }
+        vic3_todo_slot_1_capture = yes
+    }
+}

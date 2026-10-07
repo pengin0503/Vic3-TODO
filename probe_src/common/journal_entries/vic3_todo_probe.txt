@@ -9,3 +9,17 @@ vic3_todo_probe = {
     }
     weight = 1
 }
+vic3_todo_slot_0_probe = {
+    icon = "gfx/interface/icons/event_icons/event_industry.dds"
+    is_shown_when_inactive = { is_player = yes }
+    possible = { is_player = yes }
+    immediate = { vic3_todo_slot_0_create = yes }
+    weight = 1
+}
+vic3_todo_slot_1_probe = {
+    icon = "gfx/interface/icons/event_icons/event_industry.dds"
+    is_shown_when_inactive = { is_player = yes }
+    possible = { is_player = yes }
+    immediate = { vic3_todo_slot_1_create = yes }
+    weight = 1
+}

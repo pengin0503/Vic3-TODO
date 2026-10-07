@@ -16,6 +16,95 @@ PROBE_SOURCE=Path(__file__).resolve().parents[1]/'probe_src'
 MANDATORY=('journal_custom_widget','script_variable')
 ALLOWED_GUI={'gui/journal_entry_widgets/vic3_todo_probe_widget.gui'}
 
+def parse_definitions(text):
+    """Read top-level PDX definitions, respecting comments, strings and braces."""
+    clean=re.sub(r'#[^\n]*','',text)
+    tokens=list(re.finditer(r'"(?:[^"\\]|\\.)*"|[{}=]|[^\s{}=]+',clean))
+    result={};i=0
+    while i<len(tokens):
+        if i+2>=len(tokens) or tokens[i+1].group()!='=' or tokens[i+2].group()!='{':
+            raise ValueError('Invalid top-level PDX definition')
+        name=tokens[i].group();start=tokens[i+2].end();depth=1;j=i+3
+        while j<len(tokens) and depth:
+            token=tokens[j].group()
+            if token=='{':depth+=1
+            elif token=='}':depth-=1
+            j+=1
+        if depth:raise ValueError('Unbalanced PDX braces')
+        if name in result:raise ValueError('Duplicate definition: '+name)
+        result[name]=clean[start:tokens[j-1].start()];i=j
+    return result
+
+def add_slot_probes(stage,r):
+    caps=r['capabilities']
+    values=stage/'common/script_values/vic3_todo_probe_values.txt'
+    if not values.exists():return
+    if caps.get('building_level_sum')!='supported':
+        raise ValueError('Building level-sum evidence required for numeric slots')
+    effects=stage/'common/scripted_effects/vic3_todo_probe_effects.txt'
+    v=values.read_text('utf-8');e=effects.read_text('utf-8')
+    technology=caps.get('technology_trigger')=='supported' and caps.get('technology_target')=='supported'
+    relations=caps.get('relations')=='supported'
+    # Technology is boolean: 0/1 only, baseline still recorded for isolation, never used as a fractional research metric.
+    if technology:
+        v+='\nvic3_todo_technology_current = { value = 0 if = { limit = { has_technology_researched = telephone } value = 1 } }\n'
+        for i in (0,1):
+            name=f'vic3_todo_slot_{i}_current'
+            old=parse_definitions(v)[name]
+            v=v.replace(name+' = {'+old+'}',name+' = {'+old+f'    if = {{ limit = {{ var:vic3_todo_slot_{i}_target = 3 }} value = vic3_todo_technology_current }}\n'+'}')
+            name=f'vic3_todo_slot_{i}_progress';old=parse_definitions(v)[name]
+            v=v.replace(name+' = {'+old+'}',name+' = {'+old+f'    if = {{ limit = {{ var:vic3_todo_slot_{i}_target = 3 }} value = vic3_todo_technology_current }}\n'+'}')
+            name=f'vic3_todo_slot_{i}_ratio';old=parse_definitions(v)[name]
+            v=v.replace(name+' = {'+old+'}',name+' = {'+old+f'    if = {{ limit = {{ var:vic3_todo_slot_{i}_target = 3 }} value = vic3_todo_technology_current multiply = 100 }}\n'+'}')
+            # Separate boolean completion contract; numeric goal must not block technology satisfaction.
+            triggers=stage/'common/scripted_triggers/vic3_todo_probe_triggers.txt'
+            ts=triggers.read_text('utf-8')
+            key=f'vic3_todo_slot_{i}_satisfied'
+            block=parse_definitions(ts)[key]
+            ts=ts.replace(key+' = {'+block+'}',key+' = { OR = { AND = { var:vic3_todo_slot_'+str(i)+'_target = 3 has_technology_researched = telephone } AND = { NOT = { var:vic3_todo_slot_'+str(i)+'_target = 3 } vic3_todo_slot_'+str(i)+'_progress >= var:vic3_todo_slot_'+str(i)+'_goal } } }')
+            triggers.write_text(ts,encoding='utf-8')
+    if relations:
+        # Primary numeric scope evidence: c:USA.relations:root / c:CSA.relations:root in ip4_cuba_values.txt.
+        v+='\nvic3_todo_relations_gbr = { value = 0 if = { limit = { exists = c:GBR } add = c:GBR.relations:root } }\n'
+        v+='vic3_todo_relations_fra = { value = 0 if = { limit = { exists = c:FRA } add = c:FRA.relations:root } }\n'
+        for i in (0,1):
+            name=f'vic3_todo_slot_{i}_current';old=parse_definitions(v)[name]
+            extra=f' if = {{ limit = {{ var:vic3_todo_slot_{i}_target = 4 }} value = vic3_todo_relations_gbr }} if = {{ limit = {{ var:vic3_todo_slot_{i}_target = 5 }} value = vic3_todo_relations_fra }}\n'
+            v=v.replace(name+' = {'+old+'}',name+' = {'+old+extra+'}')
+            for action,n in (('select_gbr',4),('select_fra',5)):
+                p=f'vic3_todo_slot_{i}_'
+                e+=f'{p}{action} = {{ if = {{ limit = {{ NOT = {{ var:{p}target = {n} }} }} set_variable = {{ name = {p}target value = {n} }} {p}capture = yes }} }}\n'
+    if not technology:
+        for i in (0,1):
+            key=f'vic3_todo_slot_{i}_select_technology';old=parse_definitions(e)[key]
+            e=e.replace(key+' = {'+old+'}','')
+    values.write_text(v,encoding='utf-8');effects.write_text(e,encoding='utf-8')
+    gui=stage/'gui/journal_entry_widgets/vic3_todo_probe_widget.gui'
+    g=gui.read_text('utf-8');parts=[]
+    if caps.get('script_value_binding')=='supported':
+        for i in (0,1):
+            for metric in ('current','baseline_display','goal_display','target_display','mode_display','capture_count_display','completed_display','label_display','progress'):
+                key=f'vic3_todo_slot_{i}_{metric}'
+                parts.append(f'        text_single = {{ text = "Slot {i} {metric}: [JournalEntry.GetCountry.MakeScope.ScriptValue(\'{key}\')|v0]" }}')
+    actions_ready=caps.get('scripted_gui_definition')=='supported' and caps.get('scripted_gui_execution')=='supported'
+    if actions_ready:
+        definitions=[]
+        for key in parse_definitions(e):
+            if key.endswith(('_capture','_create')):continue
+            # Emit only after an actual country scope + effect declaration is present in same source file.
+            definitions.append(f'{key}_gui = {{ scope = country effect = {{ {key} = yes }} }}')
+            # The full Execute+GuiScope+JournalEntry.GetCountry.MakeScope chain is evidenced by ep2_japan_widgets.gui.
+            for lang in ('english','japanese'):
+                loc=stage/f'localization/{lang}/vic3_todo_probe_l_{lang}.yml'
+                with loc.open('a',encoding='utf-8') as f:
+                    f.write(f' {key}: "'+key.replace('vic3_todo_slot_','Slot ').replace('_',' ')+'"\n')
+            parts.append(f'        button = {{ using = default_button_action size = {{ 460 30 }} text = "{key}" onclick = "[GetScriptedGui(\'{key}_gui\').Execute(GuiScope.SetRoot(JournalEntry.GetCountry.MakeScope).End)]" }}')
+        p=stage/'common/scripted_guis/vic3_todo_probe_actions.txt';p.parent.mkdir(parents=True,exist_ok=True);p.write_text('\n'.join(definitions)+'\n',encoding='utf-8')
+    else:parts.append('        text_single = { text = "vic3_todo_selector_limit" }')
+    g=g.replace('        text_single = { text = "vic3_todo_text_storage_limit" }','        text_single = { text = "vic3_todo_text_storage_limit" }\n'+'\n'.join(parts))
+    gui.write_text(g,encoding='utf-8')
+    write_evidence({'slot_count':2,'tracker_count_per_slot':1,'selector_ui':'static-evidence-ready' if actions_ready else 'candidate-insufficient-coverage','technology_probe':technology,'relations_probe':relations,'runtime_verified':False},stage/'vic3_todo_slot_capabilities.json')
+
 def validate_output(output_dir):
     output_dir=Path(output_dir)
     for p in output_dir.rglob('*'):
@@ -53,6 +142,7 @@ def build_probe(game_dir,evidence_path,output_dir):
     stage=Path(tempfile.mkdtemp(prefix='.vic3_todo_build_',dir=output.parent));backup=None
     try:
         shutil.copytree(PROBE_SOURCE,stage,dirs_exist_ok=True)
+        add_slot_probes(stage,r)
         for p in sorted(stage.rglob('*.yml')):
             s=p.read_text('utf-8-sig');p.write_bytes(b'\xef\xbb\xbf'+s.encode('utf-8'))
         write_evidence({'free_text_persistence':r['capability_details']['free_text_persistence'],
