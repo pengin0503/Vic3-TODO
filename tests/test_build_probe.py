@@ -30,4 +30,17 @@ class BuildTests(unittest.TestCase):
             text=(out/f'localization/{lang}/vic3_todo_probe_l_{lang}.yml').read_text('utf-8-sig')
             self.assertIn('vic3_todo_probe:',text)
         self.assertIn('日本で家具工場を10レベル建てる',(out/'localization/japanese/vic3_todo_probe_l_japanese.yml').read_text('utf-8-sig'))
+    def test_text_probe_has_one_namespaced_editbox_without_unverified_callbacks(self):
+        out=self.build();s=(out/'gui/journal_entry_widgets/vic3_todo_probe_widget.gui').read_text()
+        self.assertEqual(s.count('editbox = {'),1)
+        self.assertIn('name = "vic3_todo_text_input"',s)
+        self.assertNotIn('ontextedited',s);self.assertNotIn('oneditingfinished',s)
+        self.assertNotIn('SetName',s)
+    def test_text_probe_japanese_round_trip_and_explicit_storage_limit(self):
+        out=self.build();r=json.loads((out/'vic3_todo_probe_capabilities.json').read_text())
+        self.assertEqual(r['free_text_persistence']['status'],'candidate')
+        self.assertEqual(r['unicode_input'],'日本で家具工場を10レベル建てる')
+        s=(out/'common/journal_entries/vic3_todo_probe.txt').read_text()
+        self.assertIn('gui = "gui/journal_entry_widgets/vic3_todo_probe_widget.gui"',s)
+
 if __name__=='__main__':unittest.main()

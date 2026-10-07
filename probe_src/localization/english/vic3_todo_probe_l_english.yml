@@ -2,3 +2,5 @@ l_english:
  vic3_todo_probe: "Vic3 TODO Phase 0 Probe"
  vic3_todo_probe_desc: "Feasibility probe; runtime verification pending."
  vic3_todo_unicode: "日本で家具工場を10レベル建てる"
+ vic3_todo_text_instruction: "Type the Japanese sample below, then your own text. Input-only probe."
+ vic3_todo_text_storage_limit: "Persistent text bridge: candidate / insufficient evidence. This field has no save callback."

@@ -55,6 +55,9 @@ def build_probe(game_dir,evidence_path,output_dir):
         shutil.copytree(PROBE_SOURCE,stage,dirs_exist_ok=True)
         for p in sorted(stage.rglob('*.yml')):
             s=p.read_text('utf-8-sig');p.write_bytes(b'\xef\xbb\xbf'+s.encode('utf-8'))
+        write_evidence({'free_text_persistence':r['capability_details']['free_text_persistence'],
+                        'unicode_input':'日本で家具工場を10レベル建てる',
+                        'input_only':True,'runtime_verified':False}, stage/'vic3_todo_probe_capabilities.json')
         validate_output(stage)
         manifest={'schema_version':1,'source_identity':r['source_identity'],'capabilities':r['capabilities'],'runtime_verified':False,'files':{p.relative_to(stage).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(stage.rglob('*')) if p.is_file()}}
         write_evidence(manifest,stage/'vic3_todo_build_manifest.json')

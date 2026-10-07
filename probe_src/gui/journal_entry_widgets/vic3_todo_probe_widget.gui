@@ -1,0 +1,17 @@
+flowcontainer = {
+    name = "vic3_todo_probe_widget"
+    layoutpolicy_horizontal = expanding
+    vbox = {
+        spacing = 8
+        text_single = { text = "vic3_todo_text_instruction" }
+        editbox = {
+            name = "vic3_todo_text_input"
+            size = { 500 40 }
+            alwaystransparent = no
+            focuspolicy = all
+            align = left|nobaseline
+        }
+        text_single = { text = "vic3_todo_unicode" }
+        text_single = { text = "vic3_todo_text_storage_limit" }
+    }
+}
