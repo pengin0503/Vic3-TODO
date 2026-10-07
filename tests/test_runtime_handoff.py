@@ -38,4 +38,32 @@ class HandoffTests(unittest.TestCase):
     def test_archive_installed_comparison_records_hash_and_capability_differences(self):
         r=a.audit_game(FIXTURE);other=json.loads(json.dumps(r));other['source_hashes']['gui/journal_entry.gui']='different';other['capabilities']['relations']='unsupported'
         cmp=a.compare_reports(r,other);self.assertIn('gui/journal_entry.gui',cmp['hash_mismatches']);self.assertIn('relations',cmp['capability_differences'])
+    def test_installer_protects_source_archive_before_any_output_write(self):
+        import zipfile
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t);game=p/'game';shutil.copytree(FIXTURE,game);(game/'binaries').mkdir();(game/'binaries/victoria3.exe').write_text('synthetic')
+            repo=p/'repo';repo.mkdir();ud=p/'userdata';target=ud/'mod/Vic3TODOProbe';(target/'.metadata').mkdir(parents=True)
+            (target/'.metadata/metadata.json').write_text(json.dumps({'id':'vic3_todo_probe'}))
+            archive=target/'source.zip'
+            with zipfile.ZipFile(archive,'w') as z:
+                for f in FIXTURE.rglob('*'):
+                    if f.is_file():z.write(f,f.relative_to(FIXTURE))
+            before=archive.read_bytes()
+            with patch.object(i,'ROOT',repo):
+                with self.assertRaises(ValueError):i.install(game,ud,archive)
+            self.assertEqual(archive.read_bytes(),before);self.assertFalse((repo/'research').exists())
+    def test_installer_rejects_repo_in_game_before_evidence_writes(self):
+        import zipfile
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t);game=p/'game';shutil.copytree(FIXTURE,game);(game/'binaries').mkdir();(game/'binaries/victoria3.exe').write_text('synthetic')
+            repo=game/'project';repo.mkdir();archive=p/'source.zip'
+            with zipfile.ZipFile(archive,'w') as z:
+                for f in FIXTURE.rglob('*'):
+                    if f.is_file():z.write(f,f.relative_to(FIXTURE))
+            with patch.object(i,'ROOT',repo):
+                with self.assertRaises(ValueError):i.install(game,p/'userdata',archive)
+            self.assertFalse((repo/'research').exists())
+
 if __name__=='__main__':unittest.main()

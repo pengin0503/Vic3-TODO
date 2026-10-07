@@ -190,11 +190,19 @@ def validate_output(output_dir):
         if not raw.decode('utf-8-sig').startswith('l_'+lang+':'):raise ValueError('Wrong localization header')
 
 def guard_output(source,evidence,output):
+    # Check the lexical path before resolve(), which hides final-component symlinks.
+    if output.is_symlink():raise ValueError('Output must not be a symlink')
     output=output.resolve()
     for protected in (source.resolve(),PROBE_SOURCE.resolve(),evidence.resolve()):
         if output==protected or output in protected.parents or (protected.is_dir() and output.is_relative_to(protected)):
             raise ValueError('Output overlaps protected source/evidence/probe tree')
-    if output.exists() and (not output.is_dir() or output.is_symlink()):raise ValueError('Output must be a real directory')
+    if output.is_relative_to(PROBE_SOURCE.parent.resolve()) and not output.is_relative_to((PROBE_SOURCE.parent/'dist').resolve()):
+        raise ValueError('Output overlaps repository source files')
+    if output.exists():
+        if not output.is_dir():raise ValueError('Output must be a real directory')
+        metadata=output/'.metadata/metadata.json';manifest=output/'vic3_todo_build_manifest.json'
+        if not metadata.is_file() or not manifest.is_file() or json.loads(metadata.read_text('utf-8')).get('id')!='vic3_todo_probe':
+            raise ValueError('Refusing to replace unrelated existing output directory')
 
 def build_probe(game_dir,evidence_path,output_dir):
     source=Path(game_dir);evidence=Path(evidence_path);output=Path(output_dir)

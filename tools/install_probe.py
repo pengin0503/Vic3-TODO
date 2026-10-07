@@ -49,9 +49,24 @@ def publish_install(dist,mod_root):
         if descriptor_stage.exists():descriptor_stage.unlink()
     return target
 
+def preflight_destinations(game_dir,user_data_dir,source_archive):
+    """Validate every writing/replacing path before auditing or making directories."""
+    generated=ROOT/'research/generated'
+    destinations=[generated/'installed-api-evidence.json',generated/'source-comparison.json',generated/'installed-capability-matrix.md',ROOT/'dist/Vic3TODOProbe',user_data_dir/'mod/Vic3TODOProbe',user_data_dir/'mod/Vic3TODOProbe.mod']
+    if source_archive:destinations.append(generated/'installed-archive-evidence.json')
+    protected=[game_dir]
+    if source_archive:protected.append(Path(source_archive).resolve())
+    for destination in destinations:
+        if destination.is_symlink():raise ValueError('Install output must not be a symlink')
+        dest=destination.resolve()
+        for original in protected:
+            if dest==original or dest in original.parents or (original.is_dir() and dest.is_relative_to(original)):
+                raise ValueError('Install output overlaps read-only game or source archive: '+str(destination))
+
 def install(game_dir,user_data_dir,source_archive=None):
     game_dir=Path(game_dir).resolve();user_data_dir=Path(user_data_dir).resolve()
     if not (game_dir/'binaries/victoria3.exe').is_file():raise ValueError('GameDir must be full Victoria 3 installation root')
+    preflight_destinations(game_dir,user_data_dir,source_archive)
     if user_data_dir==game_dir or user_data_dir.is_relative_to(game_dir) or game_dir.is_relative_to(user_data_dir):raise ValueError('User mod destination overlaps installed game')
     generated=ROOT/'research/generated';archive_path=generated/'phase0-api-evidence.json'
     if source_archive:

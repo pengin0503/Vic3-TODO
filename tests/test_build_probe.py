@@ -112,4 +112,13 @@ class BuildTests(unittest.TestCase):
         self.assertIn('NOT = { c:GBR = root }',blocks['vic3_todo_slot_0_target_valid'])
         self.assertIn('vic3_todo_slot_0_target_valid = yes',blocks['vic3_todo_slot_0_satisfied'])
 
+    def test_builder_rejects_output_symlink_without_publish_side_effect(self):
+        target=self.root/'unrelated';target.mkdir();(target/'keep').write_text('original');link=self.root/'link';link.symlink_to(target,target_is_directory=True)
+        with self.assertRaises(ValueError):b.build_probe(FIXTURE,self.evidence,link)
+        self.assertTrue(link.is_symlink());self.assertEqual((target/'keep').read_text(),'original')
+    def test_builder_refuses_to_replace_unrelated_existing_directory(self):
+        out=self.root/'unrelated';out.mkdir();(out/'keep').write_text('original')
+        with self.assertRaises(ValueError):b.build_probe(FIXTURE,self.evidence,out)
+        self.assertEqual((out/'keep').read_text(),'original')
+
 if __name__=='__main__':unittest.main()
