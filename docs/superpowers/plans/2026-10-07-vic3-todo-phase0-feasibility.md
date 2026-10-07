@@ -4,7 +4,7 @@
 
 **Goal:** Build a reproducible Victoria 3 1.14.x feasibility probe that can determine whether Vic3-TODO can persist arbitrary Unicode TODO text, maintain independent TODO/tracker state, capture creation-time baselines, and integrate safely with the Journal before any production TODO implementation begins.
 
-**Architecture:** Keep Phase 0 isolated from production code. A Python offline auditor reads the user's installed Victoria 3 1.14.x files and emits a machine-readable API/evidence manifest; a generated probe mod then exercises the smallest possible GUI/script paths for text capture, fixed slots, tracker selection, baseline persistence, and Journal presentation. Runtime evidence is recorded separately and is the hard gate for the later production implementation plan.
+**Architecture:** Keep Phase 0 isolated from production code. A Python offline auditor reads the user's installed Victoria 3 1.14.x files and emits a machine-readable API/evidence manifest; a generated probe mod then exercises the smallest possible GUI/script paths for text capture, fixed slots, tracker selection, baseline persistence, and Journal presentation. Probes are intentionally independent so Tasks 1–6 can be completed in one uninterrupted offline run even when one capability is unsupported or still needs runtime proof. Runtime evidence is recorded separately and is the hard gate for the later production implementation plan.
 
 **Tech Stack:** Victoria 3 1.14.x PDXScript/Jomini GUI/localization, Python 3.10+ standard library, `unittest`, PowerShell installer/launcher helper.
 
@@ -14,6 +14,7 @@
 
 - Target Victoria 3 1.14.x; baseline verification is Victoria 3 1.14.5.
 - Do not implement the production TODO system in this plan.
+- Execute Tasks 1–6 continuously in one run without pausing for user confirmation unless an irreversible/security-sensitive action is required.
 - Arbitrary Unicode free-text persistence across full game restart/load is a hard gate.
 - Do not use state/city/company/military-formation/treaty or other visible game-object names as hidden storage.
 - Do not add native code or third-party framework dependencies.
@@ -163,7 +164,7 @@ git commit -m "build: add safe Phase 0 probe builder"
   - editbox accepts text;
   - text reached persistent mod-owned state;
   - restored value after UI recreation/load.
-- If no mod-definable callback/storage path can be justified from installed 1.14.x evidence, this task must produce a documented `unsupported` result and **stop the entire plan before Task 4**.
+- If no mod-definable callback/storage path can be justified from installed 1.14.x evidence, this task records `unsupported` or `candidate` with evidence. It does **not** block Tasks 4–6; those probes must remain independently buildable so one game session can validate all other capabilities.
 
 - [ ] **Step 1: Add static tests for probe wiring**
 
@@ -183,7 +184,7 @@ Expected: FAIL until the text probe source/wiring exists.
 
 Use only callbacks/storage mechanisms proven by Task 1. Do not infer that a vanilla engine callback is callable with arbitrary mod state. If new files in `journal_entry_widgets/` are not auto-loaded, the builder may generate a minimal patch from the installed `custom_widgets.gui` only when Task 1 evidence proves that file is the required integration surface.
 
-If the only available result is session-local editbox text, mark the pure-mod persistence capability unsupported and stop.
+If the only evidence-backed result is session-local editbox text, mark free-text persistence unsupported for the pure-mod path, but continue Tasks 4–6. Do not turn that limitation into a production implementation.
 
 - [ ] **Step 4: Run static verification**
 
@@ -214,8 +215,8 @@ git commit -m "feat: add free-text persistence feasibility probe"
 - Create: `docs/feasibility/slot-selector-baseline-probe.md`
 
 **Interfaces:**
-- Consumes: successful Task 3 text-storage path.
-- Produces two independent probe TODO slots and one tracker slot per probe TODO.
+- Consumes: Task 2 build layout and Task 1 capability evidence. It must not depend on Task 3 succeeding.
+- Produces two independent numeric/configuration probe slots and one tracker slot per probe item. Static localized labels may stand in for arbitrary user text so slot/baseline behavior can be tested independently of free-text persistence.
 - Probe tracker kinds required here:
   - building target: `building_furniture_manufacturies`;
   - boolean target: one installed-game technology selected from verified 1.14.x data;
@@ -242,7 +243,7 @@ Expected: FAIL before slot/tracker probe files are complete.
 
 - [ ] **Step 3: Implement fixed-slot and baseline probe**
 
-Keep the probe deliberately at two TODO slots and one tracker each. The production limits of 32 × 4 are not implemented in Phase 0.
+Keep the probe deliberately at two probe slots and one tracker each. The production limits of 32 × 4 are not implemented in Phase 0. If free-text capture is unavailable, use fixed localized probe labels and continue testing slot isolation, selector state, and baseline persistence.
 
 - [ ] **Step 4: Run all static verification**
 
@@ -272,7 +273,7 @@ git commit -m "feat: add slot selector and baseline feasibility probes"
 - Generated at runtime: `docs/feasibility/tracker-capability-matrix.md`
 
 **Interfaces:**
-- Consumes: Task 1 evidence.
+- Consumes: Task 1 evidence and Task 2 build layout; it must not depend on Task 3 succeeding.
 - Produces CLI: `python tools/render_capability_matrix.py --evidence research/generated/phase0-api-evidence.json --output docs/feasibility/tracker-capability-matrix.md`
 - Matrix rows: building level, GDP, population, literacy, army size, navy size, technology, law, relations, country rank.
 - Matrix status values: `supported`, `supported-with-limitation`, `unsupported`.
@@ -322,6 +323,7 @@ git commit -m "feat: add Journal presentation probe and capability matrix"
 
 **Files:**
 - Create: `tools/install_probe.ps1`
+- Create: `tools/collect_phase0_results.ps1`
 - Create: `docs/runtime-verification-phase0.md`
 - Create: `README.md`
 - Modify: `tests/test_build_probe.py`
@@ -332,6 +334,9 @@ git commit -m "feat: add Journal presentation probe and capability matrix"
   `powershell -ExecutionPolicy Bypass -File .\tools\install_probe.ps1 -GameDir "<Victoria 3 root>"`
 - Installer output:
   `Documents\Paradox Interactive\Victoria 3\mod\Vic3TODOProbe`
+- Result collector command:
+  `powershell -ExecutionPolicy Bypass -File .\tools\collect_phase0_results.ps1`
+- Result collector writes a timestamped text/JSON bundle under `research/runtime/` containing the user's entered PASS/FAIL values plus copies of relevant `error.log`/`gui.log` excerpts when available.
 - Runtime evidence to record manually:
   - Probe A: text persistence sequence from the spec;
   - Probe B: two-slot isolation;
@@ -347,9 +352,11 @@ Tests must verify the builder refuses:
 - output equal to the source/probe tree;
 - partial publish after validation failure.
 
-- [ ] **Step 2: Implement `install_probe.ps1` and runtime checklist**
+- [ ] **Step 2: Implement `install_probe.ps1`, `collect_phase0_results.ps1`, and runtime checklist**
 
-The PowerShell script may auto-detect conventional Steam locations, but `-GameDir` must override detection. It invokes the Python auditor first, then the builder, then copies/publishes only after successful validation.
+The installer may auto-detect conventional Steam locations, but `-GameDir` must override detection. It invokes the Python auditor first, then the builder, then copies/publishes only after successful validation.
+
+The collector must never infer a PASS. It records explicit user-entered PASS/FAIL/NOT_TESTED values and gathers relevant log evidence to reduce the next handoff to one bundle.
 
 The runtime checklist must use the exact Japanese string `日本で家具工場を10レベル建てる` and explicitly require full process exit/restart before declaring Probe A passed.
 
@@ -374,7 +381,7 @@ If no full installed-game tree is available in the execution environment, do not
 - [ ] **Step 5: Commit**
 
 ```bash
-git add README.md tools/install_probe.ps1 docs/runtime-verification-phase0.md tests/test_build_probe.py
+git add README.md tools/install_probe.ps1 tools/collect_phase0_results.ps1 docs/runtime-verification-phase0.md tests/test_build_probe.py
 git commit -m "docs: prepare Phase 0 runtime verification"
 ```
 
