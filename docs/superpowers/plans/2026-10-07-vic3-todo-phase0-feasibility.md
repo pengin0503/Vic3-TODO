@@ -96,6 +96,7 @@ git commit -m "test: add Victoria 3 API evidence auditor"
 **Files:**
 - Create: `tools/build_probe.py`
 - Create: `tests/test_build_probe.py`
+- Create: `.gitignore`
 - Create: `probe_src/.metadata/metadata.json`
 - Create: `probe_src/localization/english/vic3_todo_probe_l_english.yml`
 - Create: `probe_src/localization/japanese/vic3_todo_probe_l_japanese.yml`
@@ -129,7 +130,7 @@ Expected: FAIL because `tools.build_probe` does not exist.
 
 The builder must stage to a temporary directory, validate it, then atomically replace the requested output. It must never write inside the game installation.
 
-Do not create production TODO files. At this task, the probe source contains metadata/localization only; later tasks add probe-specific GUI/script files.
+Do not create production TODO files. At this task, the probe source contains metadata/localization only; later tasks add probe-specific GUI/script files. `.gitignore` must exclude `dist/`, Python cache files, and locally generated installed-game evidence unless a later task explicitly commits a text report.
 
 - [ ] **Step 4: Run tests**
 
@@ -147,7 +148,8 @@ git commit -m "build: add safe Phase 0 probe builder"
 ### Task 3: Free-text capture and persistence probe
 
 **Files:**
-- Create: `probe_src/gui/journal_entry_widgets/vic3_todo_probe_widget.gui`
+- Create when 1.14.5 evidence proves directory autoload: `probe_src/gui/journal_entry_widgets/vic3_todo_probe_widget.gui`
+- Otherwise generate only the narrow evidence-backed `journal_entry_widgets/custom_widgets.gui` override from the user's installed file; never hand-copy a stale vanilla file into the repository.
 - Create: `probe_src/common/journal_entries/vic3_todo_probe.txt`
 - Create only if supported by evidence: the narrowest namespaced script/callback files required to transfer editbox text into save-serialized state.
 - Modify: `tools/build_probe.py`
@@ -179,7 +181,7 @@ Expected: FAIL until the text probe source/wiring exists.
 
 - [ ] **Step 3: Implement the smallest evidence-backed text probe**
 
-Use only callbacks/storage mechanisms proven by Task 1. Do not infer that a vanilla engine callback is callable with arbitrary mod state.
+Use only callbacks/storage mechanisms proven by Task 1. Do not infer that a vanilla engine callback is callable with arbitrary mod state. If new files in `journal_entry_widgets/` are not auto-loaded, the builder may generate a minimal patch from the installed `custom_widgets.gui` only when Task 1 evidence proves that file is the required integration surface.
 
 If the only available result is session-local editbox text, mark the pure-mod persistence capability unsupported and stop.
 
@@ -361,8 +363,7 @@ python -m py_compile tools/*.py tests/*.py
 
 Expected: PASS.
 
-Also search the repository for forbidden placeholders in executable/release-facing files:
-`TBD`, `TODO IMPLEMENT`, invented callback names, and visible-object-name storage hacks.
+Also search executable/release-facing files for unfinished placeholder markers, invented callback names, and visible-object-name storage hacks.
 
 - [ ] **Step 4: Build against the best available 1.14.5 source**
 
