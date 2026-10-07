@@ -1,0 +1,2 @@
+# Original synthetic fixture.
+building_furniture_manufactory = { aliases = { building_furniture_manufacturies } }

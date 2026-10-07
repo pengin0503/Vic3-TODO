@@ -1,0 +1,2 @@
+# Original synthetic fixture.
+test_capture = { set_variable = { name = test_baseline value = test_levels } }

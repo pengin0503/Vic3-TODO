@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+dist/
+.superpowers/
+research/runtime/
+research/generated/installed-*.json
+research/generated/source-comparison.json

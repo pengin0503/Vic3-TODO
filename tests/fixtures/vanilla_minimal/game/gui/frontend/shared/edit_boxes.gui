@@ -1,0 +1,2 @@
+# Original synthetic fixture, not vanilla source.
+editbox = { name = "test_input" ontextedited = "[Test.OnEdit]" oneditingfinished = "[Test.OnFinish]" }

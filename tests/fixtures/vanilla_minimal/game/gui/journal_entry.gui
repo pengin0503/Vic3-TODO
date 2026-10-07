@@ -1,0 +1,3 @@
+# Original synthetic fixture.
+widget = { visible = "[JournalEntry.HasCustomWidget('custom_widget_container_1')]" }
+button = { onclick = "[JournalEntry.TogglePinInOutliner]" }
