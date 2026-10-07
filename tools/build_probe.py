@@ -8,9 +8,9 @@ import shutil
 import tempfile
 from pathlib import Path
 try:
-    from tools.audit_vanilla import audit, write_evidence
+    from tools.audit_vanilla import audit, read_source, write_evidence
 except ModuleNotFoundError:
-    from audit_vanilla import audit, write_evidence
+    from audit_vanilla import audit, read_source, write_evidence
 
 PROBE_SOURCE=Path(__file__).resolve().parents[1]/'probe_src'
 MANDATORY=('journal_custom_widget','script_variable')
@@ -158,17 +158,21 @@ def add_presentation(stage,r):
     gui.write_text(g,encoding='utf-8')
     write_evidence({'scripted_progress_bar':bar_ready,'bar_update_cadence':'weekly','pin':'vanilla-journal-toggle' if caps.get('journal_pin')=='supported' else 'candidate-or-unsupported','status':caps.get('journal_status_desc'),'runtime_verified':False},stage/'vic3_todo_presentation_capabilities.json')
 
-def validate_output(output_dir):
+def validate_output(output_dir,source=None):
     output_dir=Path(output_dir)
     definitions=set()
     loc_keys={}
+    journals={};groups={};building_references=set()
     for p in output_dir.rglob('*'):
         if p.is_symlink():raise ValueError('Symlink in probe')
         if not p.is_file():continue
         n=p.relative_to(output_dir).as_posix()
         if n.startswith('gui/') and n not in ALLOWED_GUI:raise ValueError('Unapproved vanilla GUI override: '+n)
         if p.suffix=='.txt':
-            blocks=parse_definitions(p.read_text('utf-8-sig'))
+            text=p.read_text('utf-8-sig');blocks=parse_definitions(text)
+            if n.startswith('common/journal_entries/'):journals.update(blocks)
+            if n.startswith('common/journal_entry_groups/'):groups.update(blocks)
+            building_references.update(re.findall(r'\bis_building_type\s*=\s*(\w+)',text))
             for key in blocks:
                 if not key.startswith('vic3_todo_') or key in definitions:raise ValueError('Unnamespaced or duplicate PDX definition: '+key)
                 definitions.add(key)
@@ -182,6 +186,22 @@ def validate_output(output_dir):
             if re.search(r'\b(set_name|rename_state|rename_company|set_country_name|SetTextPersistent|SaveTodoText)\b',s):raise ValueError('Unverified callback or visible-name storage')
             if re.search(r'\b(TBD|FIXME|PLACEHOLDER)\b',s):raise ValueError('Unfinished release marker')
     if loc_keys.get('english')!=loc_keys.get('japanese'):raise ValueError('Localization key coverage differs')
+    for key,body in journals.items():
+        group=re.search(r'\bgroup\s*=\s*(\w+)',body)
+        if not group or not re.search(r'\bcontext\s*=\s*country\b',groups.get(group[1],'')):
+            raise ValueError('Journal requires a defined country-context group: '+key)
+        for lang in ('english','japanese'):
+            if not {key,key+'_reason'}.issubset(loc_keys.get(lang,set())):
+                raise ValueError('Missing Journal localization in '+lang+': '+key)
+    if source is not None:
+        _,_,data,_=read_source(source)
+        building_ids=set()
+        for name,raw in data.items():
+            if name.startswith('common/buildings/') and name.endswith('.txt'):
+                # Only actual database declarations qualify; aliases are not trigger IDs.
+                building_ids.update(re.findall(r'^\s*(building_\w+)\s*=\s*\{',raw.decode('utf-8-sig'),re.MULTILINE))
+        missing=building_references-building_ids
+        if missing:raise ValueError('Undefined building type in source: '+', '.join(sorted(missing)))
     md=json.loads((output_dir/'.metadata/metadata.json').read_text('utf-8'))
     if md.get('supported_game_version')!='1.14.*':raise ValueError('Wrong game version')
     for lang in ('english','japanese'):
@@ -226,7 +246,7 @@ def build_probe(game_dir,evidence_path,output_dir):
         write_evidence({'free_text_persistence':r['capability_details']['free_text_persistence'],
                         'unicode_input':'日本で家具工場を10レベル建てる',
                         'input_only':True,'runtime_verified':False}, stage/'vic3_todo_probe_capabilities.json')
-        validate_output(stage)
+        validate_output(stage,source)
         manifest={'schema_version':1,'source_identity':r['source_identity'],'capabilities':r['capabilities'],'runtime_verified':False,'files':{p.relative_to(stage).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(stage.rglob('*')) if p.is_file()}}
         write_evidence(manifest,stage/'vic3_todo_build_manifest.json')
         if output.exists():

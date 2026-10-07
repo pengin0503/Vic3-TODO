@@ -6,6 +6,8 @@ Victoria 3 1.14.x向けTODO MODのPhase 0 feasibility probeです。Task 1–6�
 
 ## 実測を始める
 
+初回実測で見つかったJournal非表示の原因を修正しました。[修正記録](docs/feasibility/2026-10-07-journal-activation-fix.md)。旧版導入済みの場合も、下記2コマンドで更新と再導入を行ってください。修正後のゲーム内表示は再検証待ちです。
+
 Python 3.10以上。最新mainを取得し、Victoria 3を完全終了した状態でリポジトリ直下から実行します。
 
 ```powershell

@@ -121,4 +121,63 @@ class BuildTests(unittest.TestCase):
         with self.assertRaises(ValueError):b.build_probe(FIXTURE,self.evidence,out)
         self.assertEqual((out/'keep').read_text(),'original')
 
+    def test_generated_journals_have_country_context_for_player_activation(self):
+        import re
+        out=self.build()
+        entries=b.parse_definitions((out/'common/journal_entries/vic3_todo_probe.txt').read_text())
+        groups={}
+        for path in (out/'common/journal_entry_groups').glob('*.txt'):
+            groups.update(b.parse_definitions(path.read_text()))
+        self.assertEqual(len(entries),3)
+        for name,body in entries.items():
+            group=re.search(r'\bgroup\s*=\s*(\w+)',body)
+            self.assertIsNotNone(group,name+' has no country-context group')
+            self.assertIn(group[1],groups)
+            self.assertRegex(groups[group[1]],r'\bcontext\s*=\s*country\b')
+
+    def test_validator_rejects_missing_or_contextless_journal_group(self):
+        out=self.build();p=out/'common/journal_entry_groups/vic3_todo_probe_groups.txt'
+        p.parent.mkdir(exist_ok=True)
+        for content in ('','vic3_todo_probe_group = { context = none }'):
+            with self.subTest(content=content):
+                p.write_text(content)
+                with self.assertRaisesRegex(ValueError,'country-context group'):
+                    b.validate_output(out)
+
+    def test_generated_journal_reason_localization_covers_both_languages(self):
+        import re
+        out=self.build()
+        entries=b.parse_definitions((out/'common/journal_entries/vic3_todo_probe.txt').read_text())
+        for lang in ('english','japanese'):
+            text=(out/f'localization/{lang}/vic3_todo_probe_l_{lang}.yml').read_text('utf-8-sig')
+            keys=set(re.findall(r'^\s+(\w+):',text,re.MULTILINE))
+            for name in entries:
+                self.assertIn(name+'_reason',keys)
+
+    def test_validator_rejects_missing_journal_reason_in_both_languages(self):
+        import re
+        out=self.build()
+        for lang in ('english','japanese'):
+            p=out/f'localization/{lang}/vic3_todo_probe_l_{lang}.yml'
+            p.write_text(re.sub(r'^ vic3_todo_probe_reason:.*\n','',p.read_text('utf-8-sig'),flags=re.MULTILINE),encoding='utf-8-sig')
+        with self.assertRaisesRegex(ValueError,'Journal localization'):
+            b.validate_output(out)
+
+    def test_generated_building_triggers_reference_canonical_database_ids(self):
+        import re
+        out=self.build()
+        text=(out/'common/script_values/vic3_todo_probe_values.txt').read_text()
+        self.assertEqual(set(re.findall(r'\bis_building_type\s*=\s*(\w+)',text)),
+                         {'building_furniture_manufactory','building_textile_mill'})
+
+    def test_build_rejects_missing_canonical_building_before_publish(self):
+        import shutil
+        source=self.root/'source';shutil.copytree(FIXTURE,source)
+        (source/'game/common/buildings/01_industry.txt').write_text('building_furniture_manufactory = {}')
+        a.write_evidence(a.audit_game(source),self.evidence)
+        out=self.root/'mod'
+        with self.assertRaisesRegex(ValueError,'Undefined building type'):
+            b.build_probe(source,self.evidence,out)
+        self.assertFalse(out.exists())
+
 if __name__=='__main__':unittest.main()

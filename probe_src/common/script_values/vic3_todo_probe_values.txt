@@ -1,7 +1,7 @@
 vic3_todo_furniture_current = {
     value = {
         every_scope_building = {
-            limit = { is_building_type = building_furniture_manufacturies }
+            limit = { is_building_type = building_furniture_manufactory }
             add = this.level
         }
     }
@@ -9,7 +9,7 @@ vic3_todo_furniture_current = {
 vic3_todo_textile_current = {
     value = {
         every_scope_building = {
-            limit = { is_building_type = building_textile_mills }
+            limit = { is_building_type = building_textile_mill }
             add = this.level
         }
     }
