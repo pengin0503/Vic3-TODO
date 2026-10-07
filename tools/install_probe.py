@@ -32,7 +32,8 @@ def publish_install(dist,mod_root):
         shutil.copytree(dist,stage,dirs_exist_ok=True);validate_output(stage)
         path=target.as_posix()
         if '"' in path or '\n' in path or '\r' in path:raise ValueError('Invalid descriptor path')
-        descriptor_stage.write_text(f'name="Vic3 TODO Phase 0 Probe"\nversion="0.0.1"\nsupported_version="1.14.*"\npath="{path}"\n',encoding='utf-8')
+        version=json.loads((stage/'.metadata/metadata.json').read_text('utf-8'))['version']
+        descriptor_stage.write_text(f'name="Vic3 TODO Phase 0 Probe"\nversion="{version}"\nsupported_version="1.14.*"\npath="{path}"\n',encoding='utf-8')
         if target.exists():
             backup=Path(tempfile.mkdtemp(prefix='.vic3_todo_previous_',dir=mod_root));backup.rmdir();os.replace(target,backup)
         try:
@@ -79,6 +80,8 @@ def install(game_dir,user_data_dir,source_archive=None):
     print(f"Archive/installed: {comparison['overlap_count']} overlaps, {len(comparison['hash_mismatches'])} hash mismatches, {len(comparison['capability_differences'])} capability differences. Details: {generated/'source-comparison.json'}")
     output=ROOT/'dist/Vic3TODOProbe';build_probe(game_dir,evidence,output)
     target=publish_install(output,user_data_dir/'mod')
+    keyboard=json.loads((target/'vic3_todo_keyboard_integration.json').read_text('utf-8'))
+    print('Direct probe: Ctrl+Shift+T or the TODO probe HUD button. Initialize enabled: '+str(keyboard['initialize_enabled'])+'; Journal registration enabled: '+str(keyboard['register_enabled']))
     print('Installed: '+str(target));print('Enable Vic3 TODO Phase 0 Probe in a separate launcher playset. Verify actual game version 1.14.x. Runtime results remain NOT_TESTED.')
     return target
 

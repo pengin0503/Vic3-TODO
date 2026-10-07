@@ -9,8 +9,10 @@ import tempfile
 from pathlib import Path
 try:
     from tools.audit_vanilla import audit, read_source, write_evidence
+    from tools.keyboard_probe import INTEGRATED_GUI,add_keyboard_probe,validate_keyboard_probe
 except ModuleNotFoundError:
     from audit_vanilla import audit, read_source, write_evidence
+    from keyboard_probe import INTEGRATED_GUI,add_keyboard_probe,validate_keyboard_probe
 
 PROBE_SOURCE=Path(__file__).resolve().parents[1]/'probe_src'
 MANDATORY=('journal_custom_widget','script_variable')
@@ -167,7 +169,7 @@ def validate_output(output_dir,source=None):
         if p.is_symlink():raise ValueError('Symlink in probe')
         if not p.is_file():continue
         n=p.relative_to(output_dir).as_posix()
-        if n.startswith('gui/') and n not in ALLOWED_GUI:raise ValueError('Unapproved vanilla GUI override: '+n)
+        if n.startswith('gui/') and n not in ALLOWED_GUI and n not in INTEGRATED_GUI:raise ValueError('Unapproved vanilla GUI override: '+n)
         if p.suffix=='.txt':
             text=p.read_text('utf-8-sig');blocks=parse_definitions(text)
             if n.startswith('common/journal_entries/'):journals.update(blocks)
@@ -176,7 +178,7 @@ def validate_output(output_dir,source=None):
             for key in blocks:
                 if not key.startswith('vic3_todo_') or key in definitions:raise ValueError('Unnamespaced or duplicate PDX definition: '+key)
                 definitions.add(key)
-        if p.suffix=='.gui':parse_definitions(p.read_text('utf-8-sig'))
+        if p.suffix=='.gui' and n not in INTEGRATED_GUI:parse_definitions(p.read_text('utf-8-sig'))
         if p.suffix=='.yml':
             keys=re.findall(r'^\s+(\w+):',p.read_text('utf-8-sig'),re.MULTILINE)
             if len(keys)!=len(set(keys)) or any(not k.startswith('vic3_todo_') for k in keys):raise ValueError('Duplicate or unnamespaced localization')
@@ -186,6 +188,7 @@ def validate_output(output_dir,source=None):
             if re.search(r'\b(set_name|rename_state|rename_company|set_country_name|SetTextPersistent|SaveTodoText)\b',s):raise ValueError('Unverified callback or visible-name storage')
             if re.search(r'\b(TBD|FIXME|PLACEHOLDER)\b',s):raise ValueError('Unfinished release marker')
     if loc_keys.get('english')!=loc_keys.get('japanese'):raise ValueError('Localization key coverage differs')
+    validate_keyboard_probe(output_dir,source)
     for key,body in journals.items():
         group=re.search(r'\bgroup\s*=\s*(\w+)',body)
         if not group or not re.search(r'\bcontext\s*=\s*country\b',groups.get(group[1],'')):
@@ -241,6 +244,7 @@ def build_probe(game_dir,evidence_path,output_dir):
         shutil.copytree(PROBE_SOURCE,stage,dirs_exist_ok=True)
         add_slot_probes(stage,r)
         add_presentation(stage,r)
+        add_keyboard_probe(stage,source,r)
         for p in sorted(stage.rglob('*.yml')):
             s=p.read_text('utf-8-sig');p.write_bytes(b'\xef\xbb\xbf'+s.encode('utf-8'))
         write_evidence({'free_text_persistence':r['capability_details']['free_text_persistence'],

@@ -1,0 +1,4 @@
+shortcutbindings = {
+    close_window = "ESCAPE"
+    focus_search = "ctrl+F"
+}

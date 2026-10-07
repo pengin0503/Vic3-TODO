@@ -9,6 +9,7 @@ import subprocess
 import zipfile
 from pathlib import Path
 CHECKS=('journal_integration','unicode_input','ascii_punctuation_input','length_200_input','empty_input','newline_input','journal_reopen_text','save_load_text','full_restart_text','slot_isolation','slot_completion','baseline_persistence','cosmetic_preserves_baseline','reconfiguration_once','selector_ui','tracker_target_config_persistence','relations_target_binding','building_net_delta','progress_update','technology_boolean','dynamic_status','pinning','pin_persistence','error_log_clean','gui_log_clean')
+CHECKS+=('keyboard_open','keyboard_hud_button','keyboard_register')
 STATUSES={'PASS','FAIL','NOT_TESTED'}
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -27,7 +28,7 @@ def collect(answers,output_root,log_dir,notes='',mod_dir=None,game_version='NOT_
     try:commit=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True,stderr=subprocess.DEVNULL).strip()
     except (OSError,subprocess.CalledProcessError):commit='NOT_RECORDED'
     payload={'schema_version':1,'recorded_at_utc':stamp,'results':results,'result_origin':'explicit user report; not automatically validated','notes':notes,'game_version_reported':game_version,'project_commit':commit,'phase0_decision_executed':False,'logs':{}}
-    for name in ('error.log','gui.log'):
+    for name in ('error.log','gui.log','game.log'):
         p=Path(log_dir)/name
         if p.is_file():
             with p.open('r',encoding='utf-8-sig',errors='replace') as f:tail=''.join(deque(f,maxlen=300))
@@ -37,8 +38,9 @@ def collect(answers,output_root,log_dir,notes='',mod_dir=None,game_version='NOT_
         p=ROOT/'research/generated'/name
         if p.is_file():shutil.copy2(p,out/name)
     if mod_dir:
-        p=Path(mod_dir)/'vic3_todo_build_manifest.json'
-        if p.is_file():shutil.copy2(p,out/p.name)
+        for name in ('vic3_todo_build_manifest.json','vic3_todo_keyboard_integration.json'):
+            p=Path(mod_dir)/name
+            if p.is_file():shutil.copy2(p,out/p.name)
     (out/'results.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     (out/'results.txt').write_text('\n'.join([f'{k}: {v}' for k,v in results.items()])+f'\n\nNotes: {notes}\n\nNo Phase 0 decision executed.\n',encoding='utf-8')
     with zipfile.ZipFile(out.with_suffix('.zip'),'w',compression=zipfile.ZIP_DEFLATED) as z:

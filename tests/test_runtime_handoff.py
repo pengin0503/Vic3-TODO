@@ -15,6 +15,25 @@ class HandoffTests(unittest.TestCase):
         self.assertEqual(r['unicode_input'],'PASS');self.assertEqual(r['slot_isolation'],'FAIL')
         self.assertEqual(r['full_restart_text'],'NOT_TESTED')
         with self.assertRaises(ValueError):c.normalize_results({'unicode_input':'yes'})
+
+    def test_collector_records_keyboard_results_without_inferring_journal_success(self):
+        try:r=c.normalize_results({'keyboard_open':'PASS','keyboard_hud_button':'PASS','keyboard_register':'FAIL'})
+        except ValueError as e:self.fail('Collector rejects valid keyboard results: '+str(e))
+        self.assertEqual(r['keyboard_open'],'PASS')
+        self.assertEqual(r['keyboard_register'],'FAIL')
+        self.assertEqual(r['journal_integration'],'NOT_TESTED')
+
+    def test_bundle_includes_game_log_and_installed_keyboard_metadata(self):
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t);logs=p/'logs';logs.mkdir();mod=p/'mod';mod.mkdir()
+            (logs/'game.log').write_text('Journal group error\n')
+            meta={'shortcut':'ctrl+shift+T','runtime_verified':False}
+            (mod/'vic3_todo_keyboard_integration.json').write_text(json.dumps(meta))
+            out=c.collect({},p/'results',logs,mod_dir=mod)
+            self.assertTrue((out/'game.log').is_file())
+            self.assertEqual((out/'game.log').read_text(),'Journal group error\n')
+            self.assertTrue((out/'vic3_todo_keyboard_integration.json').is_file())
+            self.assertEqual(json.loads((out/'vic3_todo_keyboard_integration.json').read_text()),meta)
     def test_bundle_copies_log_tail_and_records_user_reports_only(self):
         with tempfile.TemporaryDirectory() as t:
             p=Path(t);logs=p/'logs';logs.mkdir();(logs/'error.log').write_text('test error 日本\n')

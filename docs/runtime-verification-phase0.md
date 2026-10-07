@@ -27,6 +27,16 @@ installerはZIPを指定した場合にZIPを先に監査し、続いてinstalle
 
 ランチャーで新しい検証用playsetを作り、`Vic3 TODO Phase 0 Probe`を有効化してください。ゲーム画面の実際のバージョンが1.14.xであることを確認・記録します。GUI MODを併用せず、通常の新規ゲームまたは検証用セーブを使用します。Ironmanを避け、必要なScript Explorer調査時だけランチャーの起動引数へ `-debug_mode` を追加します。
 
+## キーから検証画面を開く（version 0.0.2）
+
+ゲーム開始後、時間を進める前に`Ctrl+Shift+T`を押してください。画面上部の`TODO検証 (Ctrl+Shift+T)`ボタンでも開閉できます。この直接画面はJournal項目の存在に依存しません。
+
+開閉時のslot初期化は既存のoccupied guardを通します。開き直しでbaselineを再取得しません。「検証用Journalを登録」ボタンがある場合は押し、「Journal一覧を開く」で3項目を確認してください。登録済み項目は重複追加しません。操作ボタンの生成は実際のinstalled treeの証拠に依存します。
+
+`keyboard_open`、`keyboard_hud_button`、`keyboard_register`は個別に記録します。直接画面だけ開けても`journal_integration`をPASSにしないでください。自動表示とボタンによる手動登録もNotesで区別してください。
+
+キーも上部ボタンも使えない場合は、更新後の`game.log` / `error.log` / `gui.log`と導入先の`vic3_todo_keyboard_integration.json` / `vic3_todo_build_manifest.json`を収集してください。同じHUDを置換する他のGUI MODが有効でないことも確認します。
+
 ## 最初の起動で行う検証
 
 ゲームを開始して一度時間を進め、Journalに以下が出ることを確認します。
@@ -83,6 +93,6 @@ powershell -ExecutionPolicy Bypass -File .\tools\collect_phase0_results.ps1
 
 各項目に `PASS` / `FAIL` / `NOT_TESTED` を入力します。空欄はNOT_TESTEDです。国・開始日・変更前後のbaseline/current/goal・capture countと失敗の再現手順をNotesへ記入してください。ログがないことだけを理由にclean=PASSにしないでください。
 
-`research/runtime/vic3_todo_phase0_<UTC>.zip` に手入力の結果、`error.log` / `gui.log` の末尾300行、利用可能な派生evidenceとbuild manifestをまとめます。セーブファイルやvanilla原本は収集しません。このZIPを次の確認へ渡してください。collectorはTask 7の決定を行いません。
+`research/runtime/vic3_todo_phase0_<UTC>.zip` に手入力の結果、`error.log` / `gui.log` / `game.log` の末尾300行、利用可能な派生evidence、build manifestとkeyboard integration metadataをまとめます。セーブファイルやvanilla原本は収集しません。このZIPを次の確認へ渡してください。collectorはTask 7の決定を行いません。
 
 PowerShell wrappersはこのLinux実行環境では実行していません。Pythonの監査・ビルド・publish/rollback・collectorはoffline testsで検証しています。ゲーム内結果はすべて未実測です。

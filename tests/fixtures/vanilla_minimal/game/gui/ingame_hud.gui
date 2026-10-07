@@ -1,0 +1,7 @@
+# Original synthetic fixture, not a vanilla source copy.
+template fixture_panel { widget = { name = "fixture_child" } }
+widget = {
+    name = "ingame_hud"
+    size = { 100% 100% }
+    widget = { name = "existing_hud_child" }
+}

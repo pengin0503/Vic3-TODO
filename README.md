@@ -6,7 +6,7 @@ Victoria 3 1.14.x向けTODO MODのPhase 0 feasibility probeです。Task 1–6�
 
 ## 実測を始める
 
-初回実測で見つかったJournal非表示の原因を修正しました。[修正記録](docs/feasibility/2026-10-07-journal-activation-fix.md)。旧版導入済みの場合も、下記2コマンドで更新と再導入を行ってください。修正後のゲーム内表示は再検証待ちです。
+`Ctrl+Shift+T`または画面上部の`TODO検証`ボタンで直接検証画面を開ける経路を追加しました（version 0.0.2）。Journalの自動表示を待つ必要はありません。[操作と実装記録](docs/feasibility/2026-10-07-keyboard-probe.md)。旧版導入済みの場合も、下記2コマンドで更新と再導入を行ってください。キー経路のゲーム内表示は再検証待ちです。
 
 Python 3.10以上。最新mainを取得し、Victoria 3を完全終了した状態でリポジトリ直下から実行します。
 
@@ -44,4 +44,4 @@ python -m py_compile @PythonFiles
 
 [Tracker matrix](docs/feasibility/tracker-capability-matrix.md)はAPIの静的証拠とruntime未検証を分けています。candidateをunsupportedへ変えるにはcoverageの証明が必要です。任意の `phase0-source-coverage.json` は `complete_directories` を明示する利用者側の宣言であり、exeとディレクトリの存在だけから完全性を断定しません。
 
-Vanilla ZIP/展開ファイルはコミットしません。testsのfixtureは独自に作成した小さな合成資料です。probeはnamespaced stateのみを変更し、vanilla GUIをoverrideせず、AI・経済・外交・建設のルールは変更しません。
+Vanilla ZIP/展開ファイルはコミットしません。testsのfixtureは独自に作成した小さな合成資料です。probeはnamespaced stateのみを変更し、AI・経済・外交・建設のルールは変更しません。Journal GUIは置換しません。キー経路のため、入力sourceのHUDとshortcutbindingsに子要素を挿入して生成・導入します。同じHUD/shortcutファイルを変更するGUI MODとの併用は避けてください。

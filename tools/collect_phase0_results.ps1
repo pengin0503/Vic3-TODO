@@ -16,7 +16,8 @@ $Checks = @(
     "journal_reopen_text", "save_load_text", "full_restart_text", "slot_isolation", "slot_completion",
     "baseline_persistence", "cosmetic_preserves_baseline", "reconfiguration_once", "selector_ui",
     "tracker_target_config_persistence", "relations_target_binding", "building_net_delta", "progress_update",
-    "technology_boolean", "dynamic_status", "pinning", "pin_persistence", "error_log_clean", "gui_log_clean"
+    "technology_boolean", "dynamic_status", "pinning", "pin_persistence", "error_log_clean", "gui_log_clean",
+    "keyboard_open", "keyboard_hud_button", "keyboard_register"
 )
 $TemporaryAnswers = $null
 try {
