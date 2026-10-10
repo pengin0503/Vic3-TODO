@@ -42,7 +42,13 @@
 
 ## 不具合があったとき
 
-ゲームを終了したあと、次のフォルダーのログを添付してください。
+ゲームを終了したあと、リポジトリ直下で次を実行すると、必要なログが `research\runtime\vic3_todo_logs_*.zip` にまとまります。
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tools\collect_logs.ps1
+```
+
+手動で集める場合は、次のフォルダーのログを添付してください。
 
 `Documents\Paradox Interactive\Victoria 3\logs\` の `error.log`、`game.log`、`gui.log`
 
