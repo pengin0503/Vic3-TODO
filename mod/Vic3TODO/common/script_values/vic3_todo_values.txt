@@ -17,7 +17,8 @@
 
 ### ---- tracker scope ------------------------------------------------------
 
-# 1 when the tracker can be evaluated: its target is chosen and valid.
+# 1 when the tracker can be evaluated: its target is chosen and valid (a
+# target country that no longer exists, or is ourselves, is invalid).
 vic3_todo_tr_valid = {
 	value = 1
 	if = {
@@ -29,18 +30,15 @@ vic3_todo_tr_valid = {
 	}
 	else_if = {
 		limit = {
-			var:vic3_todo_kind = 1
+			vic3_todo_tr_scope_target = yes
 			NOT = { exists = var:vic3_todo_target }
 		}
 		value = 0
 	}
 	else_if = {
 		limit = {
-			var:vic3_todo_kind = 9
-			OR = {
-				NOT = { exists = var:vic3_todo_target }
-				var:vic3_todo_target = var:vic3_todo_owner
-			}
+			vic3_todo_tr_country_target = yes
+			var:vic3_todo_target = var:vic3_todo_owner
 		}
 		value = 0
 	}
@@ -202,6 +200,15 @@ vic3_todo_tr_valid_or_done = {
 	add = vic3_todo_tr_done
 	max = 1
 }
+# 1 for a failure condition.
+vic3_todo_tr_is_fail = {
+	value = 0
+	if = {
+		limit = { has_tag = vic3_todo_tr_fail }
+		value = 1
+	}
+}
+
 # 1 while this tracker's settings are open in the editor.
 vic3_todo_tr_is_editing = {
 	value = 0
@@ -220,12 +227,30 @@ vic3_todo_tr_has_steps = {
 }
 ### ---- todo scope ---------------------------------------------------------
 
+# Trackers come in two roles: progress conditions (the completion rule
+# counts them) and failure conditions (tag vic3_todo_tr_fail: the journal
+# fails as soon as any of them is met, as a vanilla Journal Entry's fail
+# trigger does).
+
+# All trackers, both roles (the four-tracker limit counts these).
+vic3_todo_tr_all_count = {
+	value = 0
+	if = {
+		limit = { has_variable_list = vic3_todo_trackers }
+		every_in_list = {
+			variable = vic3_todo_trackers
+			add = 1
+		}
+	}
+}
+
 vic3_todo_tr_count = {
 	value = 0
 	if = {
 		limit = { has_variable_list = vic3_todo_trackers }
 		every_in_list = {
 			variable = vic3_todo_trackers
+			limit = { NOT = { has_tag = vic3_todo_tr_fail } }
 			add = 1
 		}
 	}
@@ -237,9 +262,29 @@ vic3_todo_tr_done_count = {
 		limit = { has_variable_list = vic3_todo_trackers }
 		every_in_list = {
 			variable = vic3_todo_trackers
+			limit = { NOT = { has_tag = vic3_todo_tr_fail } }
 			add = vic3_todo_tr_done
 		}
 	}
+}
+
+vic3_todo_fail_count = {
+	value = vic3_todo_tr_all_count
+	subtract = vic3_todo_tr_count
+}
+
+# 1 when any failure condition is met.
+vic3_todo_fail_hit = {
+	value = 0
+	if = {
+		limit = { has_variable_list = vic3_todo_trackers }
+		every_in_list = {
+			variable = vic3_todo_trackers
+			limit = { has_tag = vic3_todo_tr_fail }
+			add = vic3_todo_tr_done
+		}
+	}
+	max = 1
 }
 
 # 1 when the completion rule over the trackers holds (ALL, or ANY with the

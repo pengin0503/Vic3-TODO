@@ -1,7 +1,7 @@
 ﻿# Vic3 TODO: scripted triggers (hand-written part). Per-kind triggers are in
 # vic3_todo_generated_triggers.txt.
 
-# todo scope: fewer than four trackers.
+# todo scope: fewer than four trackers (both roles).
 vic3_todo_can_add_tracker = {
 	OR = {
 		NOT = { has_variable_list = vic3_todo_trackers }

@@ -3946,6 +3946,59 @@ vic3_todo_tr_raw = {
 		limit = { var:vic3_todo_kind = 33 }
 		add = game_date
 	}
+	else_if = {
+		limit = { var:vic3_todo_kind = 34 }
+		if = {
+			limit = { exists = var:vic3_todo_target }
+			add = var:vic3_todo_target.state_population
+		}
+	}
+	else_if = {
+		limit = { var:vic3_todo_kind = 35 }
+		if = {
+			limit = { exists = var:vic3_todo_target }
+			add = var:vic3_todo_target.average_sol
+		}
+	}
+	else_if = {
+		limit = { var:vic3_todo_kind = 36 }
+		if = {
+			limit = { exists = var:vic3_todo_target }
+			add = var:vic3_todo_target.literacy_rate
+		}
+	}
+	else_if = {
+		limit = { var:vic3_todo_kind = 37 }
+		if = {
+			limit = { exists = var:vic3_todo_target }
+			add = var:vic3_todo_target.radical_fraction
+		}
+	}
+	else_if = {
+		limit = { var:vic3_todo_kind = 38 }
+		if = {
+			limit = { exists = var:vic3_todo_target }
+			add = var:vic3_todo_target.turmoil
+		}
+	}
+	else_if = {
+		limit = { var:vic3_todo_kind = 39 }
+		if = {
+			limit = { exists = var:vic3_todo_target }
+			add = var:vic3_todo_target.infrastructure
+		}
+	}
+	else_if = {
+		limit = { var:vic3_todo_kind = 40 }
+		if = {
+			limit = {
+				exists = var:vic3_todo_target
+				NOT = { var:vic3_todo_target = var:vic3_todo_owner }
+				var:vic3_todo_owner = { has_war_with = scope:vic3_todo_calc.var:vic3_todo_target }
+			}
+			add = 1
+		}
+	}
 }
 
 # Small goal step.
@@ -3960,11 +4013,11 @@ vic3_todo_tr_step_s = {
 		value = 100000
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 25 var:vic3_todo_kind = 26 var:vic3_todo_kind = 27 var:vic3_todo_kind = 29 } }
+		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 25 var:vic3_todo_kind = 26 var:vic3_todo_kind = 27 var:vic3_todo_kind = 29 var:vic3_todo_kind = 36 var:vic3_todo_kind = 37 var:vic3_todo_kind = 38 } }
 		value = 0.01
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 9 } }
+		limit = { OR = { var:vic3_todo_kind = 9 var:vic3_todo_kind = 39 } }
 		value = 5
 	}
 	if = {
@@ -3972,7 +4025,7 @@ vic3_todo_tr_step_s = {
 		value = 10
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 12 } }
+		limit = { OR = { var:vic3_todo_kind = 12 var:vic3_todo_kind = 35 } }
 		value = 0.5
 	}
 	if = {
@@ -3980,7 +4033,7 @@ vic3_todo_tr_step_s = {
 		value = 1000
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 18 var:vic3_todo_kind = 19 var:vic3_todo_kind = 21 var:vic3_todo_kind = 22 } }
+		limit = { OR = { var:vic3_todo_kind = 18 var:vic3_todo_kind = 19 var:vic3_todo_kind = 21 var:vic3_todo_kind = 22 var:vic3_todo_kind = 34 } }
 		value = 10000
 	}
 	if = {
@@ -3999,7 +4052,11 @@ vic3_todo_tr_step_s = {
 
 # Medium goal step; the default delta goal.
 vic3_todo_tr_step_m = {
-	value = 5
+	value = 0.05
+	if = {
+		limit = { OR = { var:vic3_todo_kind = 1 var:vic3_todo_kind = 6 var:vic3_todo_kind = 13 var:vic3_todo_kind = 14 var:vic3_todo_kind = 15 var:vic3_todo_kind = 17 } }
+		value = 5
+	}
 	if = {
 		limit = { OR = { var:vic3_todo_kind = 2 } }
 		value = 10000000
@@ -4009,15 +4066,11 @@ vic3_todo_tr_step_m = {
 		value = 1000000
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 25 var:vic3_todo_kind = 26 var:vic3_todo_kind = 27 var:vic3_todo_kind = 29 } }
-		value = 0.05
-	}
-	if = {
-		limit = { OR = { var:vic3_todo_kind = 5 var:vic3_todo_kind = 9 } }
+		limit = { OR = { var:vic3_todo_kind = 5 var:vic3_todo_kind = 9 var:vic3_todo_kind = 39 } }
 		value = 10
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 7 var:vic3_todo_kind = 8 var:vic3_todo_kind = 10 var:vic3_todo_kind = 12 var:vic3_todo_kind = 32 } }
+		limit = { OR = { var:vic3_todo_kind = 7 var:vic3_todo_kind = 8 var:vic3_todo_kind = 10 var:vic3_todo_kind = 12 var:vic3_todo_kind = 32 var:vic3_todo_kind = 35 var:vic3_todo_kind = 40 } }
 		value = 1
 	}
 	if = {
@@ -4029,7 +4082,7 @@ vic3_todo_tr_step_m = {
 		value = 10000
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 18 var:vic3_todo_kind = 19 var:vic3_todo_kind = 21 var:vic3_todo_kind = 22 } }
+		limit = { OR = { var:vic3_todo_kind = 18 var:vic3_todo_kind = 19 var:vic3_todo_kind = 21 var:vic3_todo_kind = 22 var:vic3_todo_kind = 34 } }
 		value = 100000
 	}
 	if = {
@@ -4066,7 +4119,7 @@ vic3_todo_tr_step_l = {
 		value = 10000000
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 5 } }
+		limit = { OR = { var:vic3_todo_kind = 5 var:vic3_todo_kind = 39 } }
 		value = 50
 	}
 	if = {
@@ -4074,7 +4127,7 @@ vic3_todo_tr_step_l = {
 		value = 20
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 7 var:vic3_todo_kind = 8 var:vic3_todo_kind = 10 var:vic3_todo_kind = 32 } }
+		limit = { OR = { var:vic3_todo_kind = 7 var:vic3_todo_kind = 8 var:vic3_todo_kind = 10 var:vic3_todo_kind = 32 var:vic3_todo_kind = 40 } }
 		value = 1
 	}
 	if = {
@@ -4086,7 +4139,7 @@ vic3_todo_tr_step_l = {
 		value = 250
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 12 var:vic3_todo_kind = 28 } }
+		limit = { OR = { var:vic3_todo_kind = 12 var:vic3_todo_kind = 28 var:vic3_todo_kind = 35 } }
 		value = 5
 	}
 	if = {
@@ -4094,7 +4147,7 @@ vic3_todo_tr_step_l = {
 		value = 100000
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 18 var:vic3_todo_kind = 19 var:vic3_todo_kind = 21 var:vic3_todo_kind = 22 } }
+		limit = { OR = { var:vic3_todo_kind = 18 var:vic3_todo_kind = 19 var:vic3_todo_kind = 21 var:vic3_todo_kind = 22 var:vic3_todo_kind = 34 } }
 		value = 1000000
 	}
 	if = {
@@ -4119,7 +4172,7 @@ vic3_todo_tr_step_l = {
 vic3_todo_tr_scale = {
 	value = 1
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 20 var:vic3_todo_kind = 24 var:vic3_todo_kind = 25 var:vic3_todo_kind = 26 var:vic3_todo_kind = 27 var:vic3_todo_kind = 29 } }
+		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 20 var:vic3_todo_kind = 24 var:vic3_todo_kind = 25 var:vic3_todo_kind = 26 var:vic3_todo_kind = 27 var:vic3_todo_kind = 29 var:vic3_todo_kind = 36 var:vic3_todo_kind = 37 var:vic3_todo_kind = 38 } }
 		value = 100
 	}
 }
@@ -4128,15 +4181,15 @@ vic3_todo_tr_scale = {
 vic3_todo_tr_fmt = {
 	value = 1
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 2 var:vic3_todo_kind = 3 var:vic3_todo_kind = 16 var:vic3_todo_kind = 18 var:vic3_todo_kind = 19 var:vic3_todo_kind = 21 var:vic3_todo_kind = 22 var:vic3_todo_kind = 23 } }
+		limit = { OR = { var:vic3_todo_kind = 2 var:vic3_todo_kind = 3 var:vic3_todo_kind = 16 var:vic3_todo_kind = 18 var:vic3_todo_kind = 19 var:vic3_todo_kind = 21 var:vic3_todo_kind = 22 var:vic3_todo_kind = 23 var:vic3_todo_kind = 34 } }
 		value = 2
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 20 var:vic3_todo_kind = 24 var:vic3_todo_kind = 25 var:vic3_todo_kind = 26 var:vic3_todo_kind = 27 var:vic3_todo_kind = 29 } }
+		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 20 var:vic3_todo_kind = 24 var:vic3_todo_kind = 25 var:vic3_todo_kind = 26 var:vic3_todo_kind = 27 var:vic3_todo_kind = 29 var:vic3_todo_kind = 36 var:vic3_todo_kind = 37 var:vic3_todo_kind = 38 } }
 		value = 4
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 7 var:vic3_todo_kind = 8 var:vic3_todo_kind = 32 } }
+		limit = { OR = { var:vic3_todo_kind = 7 var:vic3_todo_kind = 8 var:vic3_todo_kind = 32 var:vic3_todo_kind = 40 } }
 		value = 5
 	}
 	if = {
@@ -4144,7 +4197,7 @@ vic3_todo_tr_fmt = {
 		value = 6
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 12 var:vic3_todo_kind = 13 var:vic3_todo_kind = 28 } }
+		limit = { OR = { var:vic3_todo_kind = 12 var:vic3_todo_kind = 13 var:vic3_todo_kind = 28 var:vic3_todo_kind = 35 } }
 		value = 3
 	}
 	if = {
@@ -4157,16 +4210,16 @@ vic3_todo_tr_fmt = {
 vic3_todo_tr_default_mode = {
 	value = 1
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 7 var:vic3_todo_kind = 8 var:vic3_todo_kind = 9 var:vic3_todo_kind = 10 var:vic3_todo_kind = 12 var:vic3_todo_kind = 17 var:vic3_todo_kind = 25 var:vic3_todo_kind = 27 var:vic3_todo_kind = 28 var:vic3_todo_kind = 29 var:vic3_todo_kind = 32 } }
+		limit = { OR = { var:vic3_todo_kind = 4 var:vic3_todo_kind = 7 var:vic3_todo_kind = 8 var:vic3_todo_kind = 9 var:vic3_todo_kind = 10 var:vic3_todo_kind = 12 var:vic3_todo_kind = 17 var:vic3_todo_kind = 25 var:vic3_todo_kind = 27 var:vic3_todo_kind = 28 var:vic3_todo_kind = 29 var:vic3_todo_kind = 32 var:vic3_todo_kind = 35 var:vic3_todo_kind = 36 var:vic3_todo_kind = 39 var:vic3_todo_kind = 40 } }
 		value = 2
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 13 var:vic3_todo_kind = 19 var:vic3_todo_kind = 20 var:vic3_todo_kind = 24 var:vic3_todo_kind = 26 } }
+		limit = { OR = { var:vic3_todo_kind = 13 var:vic3_todo_kind = 19 var:vic3_todo_kind = 20 var:vic3_todo_kind = 24 var:vic3_todo_kind = 26 var:vic3_todo_kind = 37 var:vic3_todo_kind = 38 } }
 		value = 4
 	}
 }
 
-# Which picker the tracker needs: 1 building, 2 technology, 3 law, 4 country, 5 rank, 6 goods, 7 interest_group.
+# Which picker the tracker needs: 1 building, 2 technology, 3 law, 4 country, 5 rank, 6 goods, 7 interest_group, 8 state.
 vic3_todo_tr_target_type = {
 	value = 0
 	if = {
@@ -4182,7 +4235,7 @@ vic3_todo_tr_target_type = {
 		value = 3
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 9 } }
+		limit = { OR = { var:vic3_todo_kind = 9 var:vic3_todo_kind = 40 } }
 		value = 4
 	}
 	if = {
@@ -4197,6 +4250,10 @@ vic3_todo_tr_target_type = {
 		limit = { OR = { var:vic3_todo_kind = 28 var:vic3_todo_kind = 29 } }
 		value = 7
 	}
+	if = {
+		limit = { OR = { var:vic3_todo_kind = 34 var:vic3_todo_kind = 35 var:vic3_todo_kind = 36 var:vic3_todo_kind = 37 var:vic3_todo_kind = 38 var:vic3_todo_kind = 39 } }
+		value = 8
+	}
 }
 
 # Kind category.
@@ -4207,7 +4264,7 @@ vic3_todo_tr_category = {
 		value = 2
 	}
 	if = {
-		limit = { OR = { var:vic3_todo_kind = 5 var:vic3_todo_kind = 6 var:vic3_todo_kind = 32 } }
+		limit = { OR = { var:vic3_todo_kind = 5 var:vic3_todo_kind = 6 var:vic3_todo_kind = 32 var:vic3_todo_kind = 40 } }
 		value = 5
 	}
 	if = {
@@ -4220,6 +4277,10 @@ vic3_todo_tr_category = {
 	}
 	if = {
 		limit = { OR = { var:vic3_todo_kind = 33 } }
+		value = 7
+	}
+	if = {
+		limit = { OR = { var:vic3_todo_kind = 34 var:vic3_todo_kind = 35 var:vic3_todo_kind = 36 var:vic3_todo_kind = 37 var:vic3_todo_kind = 38 var:vic3_todo_kind = 39 } }
 		value = 6
 	}
 }

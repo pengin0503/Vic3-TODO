@@ -452,6 +452,100 @@ types vic3_todo_generated_types {
 					onclick = "[GetScriptedGui('vic3_todo_edit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)132' ) ).End )]"
 					onclick = "[GetVariableSystem.Clear('vic3_todo_kind_picker')]"
 				}
+				button = {
+					using = default_button
+					size = { 250 26 }
+					text = "vic3_todo_kind_war_with"
+					using = fontsize_small
+					tooltip = "vic3_todo_kind_war_with_tt"
+					enabled = "[GetScriptedGui('vic3_todo_edit_sgui').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)140' ) ).End )]"
+					onclick = "[GetScriptedGui('vic3_todo_edit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)140' ) ).End )]"
+					onclick = "[GetVariableSystem.Clear('vic3_todo_kind_picker')]"
+				}
+			}
+		}
+		textbox = {
+			text = "vic3_todo_cat_state"
+			using = fontsize_medium
+			default_format = "#title"
+			autoresize = yes
+			margin_top = 6
+			align = left|nobaseline
+		}
+		flowcontainer = {
+			direction = vertical
+			spacing = 3
+			flowcontainer = {
+				direction = horizontal
+				spacing = 4
+				button = {
+					using = default_button
+					size = { 250 26 }
+					text = "vic3_todo_kind_state_population"
+					using = fontsize_small
+					tooltip = "vic3_todo_kind_state_population_tt"
+					enabled = "[GetScriptedGui('vic3_todo_edit_sgui').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)134' ) ).End )]"
+					onclick = "[GetScriptedGui('vic3_todo_edit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)134' ) ).End )]"
+					onclick = "[GetVariableSystem.Clear('vic3_todo_kind_picker')]"
+				}
+				button = {
+					using = default_button
+					size = { 250 26 }
+					text = "vic3_todo_kind_state_sol"
+					using = fontsize_small
+					tooltip = "vic3_todo_kind_state_sol_tt"
+					enabled = "[GetScriptedGui('vic3_todo_edit_sgui').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)135' ) ).End )]"
+					onclick = "[GetScriptedGui('vic3_todo_edit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)135' ) ).End )]"
+					onclick = "[GetVariableSystem.Clear('vic3_todo_kind_picker')]"
+				}
+			}
+			flowcontainer = {
+				direction = horizontal
+				spacing = 4
+				button = {
+					using = default_button
+					size = { 250 26 }
+					text = "vic3_todo_kind_state_literacy"
+					using = fontsize_small
+					tooltip = "vic3_todo_kind_state_literacy_tt"
+					enabled = "[GetScriptedGui('vic3_todo_edit_sgui').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)136' ) ).End )]"
+					onclick = "[GetScriptedGui('vic3_todo_edit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)136' ) ).End )]"
+					onclick = "[GetVariableSystem.Clear('vic3_todo_kind_picker')]"
+				}
+				button = {
+					using = default_button
+					size = { 250 26 }
+					text = "vic3_todo_kind_state_radicals"
+					using = fontsize_small
+					tooltip = "vic3_todo_kind_state_radicals_tt"
+					enabled = "[GetScriptedGui('vic3_todo_edit_sgui').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)137' ) ).End )]"
+					onclick = "[GetScriptedGui('vic3_todo_edit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)137' ) ).End )]"
+					onclick = "[GetVariableSystem.Clear('vic3_todo_kind_picker')]"
+				}
+			}
+			flowcontainer = {
+				direction = horizontal
+				spacing = 4
+				button = {
+					using = default_button
+					size = { 250 26 }
+					text = "vic3_todo_kind_state_turmoil"
+					using = fontsize_small
+					tooltip = "vic3_todo_kind_state_turmoil_tt"
+					enabled = "[GetScriptedGui('vic3_todo_edit_sgui').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)138' ) ).End )]"
+					onclick = "[GetScriptedGui('vic3_todo_edit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)138' ) ).End )]"
+					onclick = "[GetVariableSystem.Clear('vic3_todo_kind_picker')]"
+				}
+				button = {
+					using = default_button
+					size = { 250 26 }
+					text = "vic3_todo_kind_state_infrastructure"
+					using = fontsize_small
+					tooltip = "vic3_todo_kind_state_infrastructure_tt"
+					enabled = "[GetScriptedGui('vic3_todo_edit_sgui').IsValid( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)139' ) ).End )]"
+					onclick = "[GetScriptedGui('vic3_todo_edit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)139' ) ).End )]"
+					onclick = "[GetVariableSystem.Clear('vic3_todo_kind_picker')]"
+				}
 			}
 		}
 		textbox = {

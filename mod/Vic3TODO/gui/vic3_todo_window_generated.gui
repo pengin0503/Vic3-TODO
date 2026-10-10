@@ -28,134 +28,6 @@
 @vic3_todo_w = 500
 @vic3_todo_text_w = 380
 
-### ==========================================================================
-### THE LAUNCHER: the next slot under the sidebar's Map List (the sidebar sits
-### at { 0 200 }, Map List at +580, small slots are 40 high).
-### ==========================================================================
-widget = {
-	name = "vic3_todo_launcher"
-	layer = top
-	parentanchor = top|left
-	position = { 0 825 }
-	size = { 42 40 }
-	allow_outside = yes
-	visible = "[And( GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, Not( GetMetaPlayer.IsObserver ) )]"
-
-	### A vanilla side panel or the ledger opening closes the window.
-	widget = {
-		state = {
-			trigger_when = "[InformationPanelBar.IsAnyPanelOpen]"
-			on_finish = "[GetVariableSystem.Clear('com_open_window')]"
-		}
-	}
-	widget = {
-		state = {
-			trigger_when = "[MapListPanelManager.IsVisible]"
-			on_finish = "[GetVariableSystem.Clear('com_open_window')]"
-		}
-	}
-
-	widget = {
-		size = { 100% 100% }
-		using = hud_visibility
-
-		widget = {
-			size = { 42 40 }
-			visible = "[Not( GetVariableSystem.HasValue('com_open_window', 'vic3_todo_window') )]"
-			widget = {
-				using = clickthrough_blocker
-				using = sidebar_button_size_small
-				using = selected_sidepanel_animation_small
-				blockoverride "selected_visibility" {
-					visible = no
-				}
-				sidepanel_button_small = {
-					blockoverride "icon" {
-						texture = "gfx/interface/icons/generic_icons/map_list_plus_and_checkmark.dds"
-					}
-					blockoverride "button_selected" {
-						visible = no
-					}
-					onclick = "[GetVariableSystem.Set('com_open_window', 'vic3_todo_window')]"
-					tooltip = "vic3_todo_launcher_tt"
-				}
-			}
-		}
-		widget = {
-			size = { 42 40 }
-			visible = "[GetVariableSystem.HasValue('com_open_window', 'vic3_todo_window')]"
-			widget = {
-				using = clickthrough_blocker
-				using = sidebar_button_size_small
-				using = selected_sidepanel_animation_small
-				blockoverride "selected_visibility" {
-					visible = yes
-				}
-				sidepanel_button_small = {
-					blockoverride "icon" {
-						texture = "gfx/interface/icons/generic_icons/map_list_plus_and_checkmark.dds"
-					}
-					blockoverride "button_selected" {
-						visible = yes
-					}
-					onclick = "[GetVariableSystem.Clear('com_open_window')]"
-					tooltip = "vic3_todo_launcher_tt"
-				}
-			}
-		}
-		### Count of active journals, as the sidebar's Journal button shows.
-		textbox = {
-			visible = "[GreaterThan_CFixedPoint( GetPlayer.MakeScope.ScriptValue('vic3_todo_n_active'), '(CFixedPoint)0' )]"
-			position = { 30 -4 }
-			autoresize = yes
-			raw_text = "#bold [GetPlayer.MakeScope.ScriptValue('vic3_todo_n_active')|0]#!"
-			align = left|nobaseline
-			using = fontsize_small
-			background = {
-				using = default_background
-				margin = { 6 3 }
-			}
-		}
-	}
-}
-
-### ==========================================================================
-### THE WINDOW
-### ==========================================================================
-widget = {
-	name = "vic3_todo_window"
-	size = { 100% 100% }
-	layer = layer_ingame_menu
-	visible = "[And( And( GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, Not( GetMetaPlayer.IsObserver ) ), GetVariableSystem.HasValue('com_open_window', 'vic3_todo_window') )]"
-
-	state = {
-		name = _show
-		on_start = "[InformationPanelBar.ClosePanel]"
-		on_start = "[MapListPanelManager.CloseCurrentPanel]"
-		on_start = "[GetScriptedGui('vic3_todo_refresh_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
-	}
-
-	vbox = {
-		parentanchor = top|left
-		layoutpolicy_horizontal = expanding
-		layoutpolicy_vertical = expanding
-		margin_top = 85
-
-		widget = {
-			layoutpolicy_horizontal = expanding
-			layoutpolicy_vertical = expanding
-
-			hbox = {
-				layoutpolicy_horizontal = expanding
-				layoutpolicy_vertical = expanding
-
-				vic3_todo_panel = {}
-				expand = {}
-			}
-		}
-	}
-}
-
 types vic3_todo_window_types
 {
 	### ----------------------------------------------------------------------
@@ -262,7 +134,7 @@ types vic3_todo_window_types
 					direction = vertical
 					spacing = 8
 					ignoreinvisible = yes
-					visible = "[Not( GetVariableSystem.HasValue('vic3_todo_tab', 'finished') )]"
+					visible = "[And( Not( GetVariableSystem.HasValue('vic3_todo_tab', 'finished') ), GreaterThan_CFixedPoint( GetPlayer.MakeScope.ScriptValue('vic3_todo_n_total'), '(CFixedPoint)0' ) )]"
 					datamodel = "[GetPlayer.MakeScope.GetList('vic3_todo_items')]"
 					item = {
 						vic3_todo_row = {
@@ -314,6 +186,7 @@ types vic3_todo_window_types
 						direction = vertical
 						spacing = 8
 						ignoreinvisible = yes
+						visible = "[GreaterThan_CFixedPoint( GetPlayer.MakeScope.ScriptValue('vic3_todo_n_total'), '(CFixedPoint)0' )]"
 						datamodel = "[GetPlayer.MakeScope.GetList('vic3_todo_items')]"
 						item = {
 							vic3_todo_row = {
@@ -332,10 +205,23 @@ types vic3_todo_window_types
 	### company company_vic3_todo_carrier; the player types into the base
 	### game's company-rename popup. As this banner appears it stores the
 	### carrier's starting name and opens the popup (the popup cannot open in
-	### the click that creates the company). The 1x1 watcher sends the new
-	### name the moment it differs from the starting one; "Use this text"
-	### does the same by hand.
+	### the click that creates the company). The watcher in the launcher
+	### (vic3_todo_input_watcher) sends the new name the moment it differs
+	### from the starting one, whether or not this window is still open;
+	### "Use this text" does the same by hand.
 	### ----------------------------------------------------------------------
+	type vic3_todo_input_watcher = widget {
+		size = { 1 1 }
+		visible = "[EqualTo_CFixedPoint( GetPlayer.MakeScope.ScriptValue('vic3_todo_input_state'), '(CFixedPoint)1' )]"
+		widget = {
+			size = { 1 1 }
+			state = {
+				trigger_when = "[And( EqualTo_CFixedPoint( GetPlayer.MakeScope.ScriptValue('vic3_todo_input_has_old'), '(CFixedPoint)1' ), Not( EqualTo_string( GetPlayer.MakeScope.Var('vic3_todo_in_carrier').GetCompany.GetNameNoFormatting, GetPlayer.MakeScope.Var('vic3_todo_in_old').GetFlagName ) ) )]"
+				on_finish = "[GetScriptedGui('vic3_todo_input_commit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_text', MakeScopeFlag( GetPlayer.MakeScope.Var('vic3_todo_in_carrier').GetCompany.GetNameNoFormatting ) ).End )]"
+			}
+		}
+	}
+
 	type vic3_todo_input_banner = flowcontainer {
 		direction = vertical
 		spacing = 4
@@ -346,14 +232,6 @@ types vic3_todo_window_types
 			name = _show
 			on_start = "[GetScriptedGui('vic3_todo_input_mark_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_text', MakeScopeFlag( GetPlayer.MakeScope.Var('vic3_todo_in_carrier').GetCompany.GetNameNoFormatting ) ).End )]"
 			on_start = "[PopupManager.ShowCompanyChangeName( GetPlayer.MakeScope.Var('vic3_todo_in_carrier').GetCompany.Self )]"
-		}
-
-		widget = {
-			size = { 1 1 }
-			state = {
-				trigger_when = "[And( EqualTo_CFixedPoint( GetPlayer.MakeScope.ScriptValue('vic3_todo_input_has_old'), '(CFixedPoint)1' ), Not( EqualTo_string( GetPlayer.MakeScope.Var('vic3_todo_in_carrier').GetCompany.GetNameNoFormatting, GetPlayer.MakeScope.Var('vic3_todo_in_old').GetFlagName ) ) )]"
-				on_finish = "[GetScriptedGui('vic3_todo_input_commit_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_text', MakeScopeFlag( GetPlayer.MakeScope.Var('vic3_todo_in_carrier').GetCompany.GetNameNoFormatting ) ).End )]"
-			}
 		}
 
 		background = {
@@ -444,7 +322,7 @@ types vic3_todo_window_types
 			text = "vic3_todo_deadline_line"
 		}
 		vic3_todo_label = {
-			visible = "[GreaterThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_count'), '(CFixedPoint)0' )]"
+			visible = "[GreaterThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_all_count'), '(CFixedPoint)0' )]"
 			text = "vic3_todo_conditions_line"
 		}
 	}
@@ -507,7 +385,7 @@ types vic3_todo_window_types
 			direction = vertical
 			spacing = 4
 			ignoreinvisible = yes
-			visible = "[Not( ScriptContainer.HasTag('vic3_todo_editing') )]"
+			visible = "[And( Not( ScriptContainer.HasTag('vic3_todo_editing') ), GreaterThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_all_count'), '(CFixedPoint)0' ) )]"
 			datamodel = "[ScriptContainer.MakeScope.GetList('vic3_todo_trackers')]"
 			item = {
 				vic3_todo_tracker_view = {
@@ -653,7 +531,7 @@ types vic3_todo_window_types
 		### Conditions
 		vic3_todo_heading = { text = "vic3_todo_h_conditions" }
 		vic3_todo_label = {
-			visible = "[EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_count'), '(CFixedPoint)0' )]"
+			visible = "[EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_all_count'), '(CFixedPoint)0' )]"
 			text = "vic3_todo_no_conditions"
 			multiline = yes
 			max_width = @vic3_todo_w
@@ -662,6 +540,7 @@ types vic3_todo_window_types
 			direction = vertical
 			spacing = 6
 			ignoreinvisible = yes
+			visible = "[GreaterThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_all_count'), '(CFixedPoint)0' )]"
 			datamodel = "[ScriptContainer.MakeScope.GetList('vic3_todo_trackers')]"
 			item = {
 				vic3_todo_tracker_edit = {
@@ -673,11 +552,11 @@ types vic3_todo_window_types
 			size = { 240 26 }
 			text = "vic3_todo_add_condition"
 			tooltip = "vic3_todo_add_condition_tt"
-			enabled = "[LessThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_count'), '(CFixedPoint)4' )]"
+			enabled = "[LessThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_all_count'), '(CFixedPoint)4' )]"
 			onclick = "[GetVariableSystem.Toggle('vic3_todo_kind_picker')]"
 		}
 		vic3_todo_kind_picker = {
-			visible = "[And( GetVariableSystem.Exists('vic3_todo_kind_picker'), LessThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_count'), '(CFixedPoint)4' ) )]"
+			visible = "[And( GetVariableSystem.Exists('vic3_todo_kind_picker'), LessThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_all_count'), '(CFixedPoint)4' ) )]"
 		}
 
 		### Delete
@@ -727,6 +606,10 @@ types vic3_todo_window_types
 		spacing = 6
 		ignoreinvisible = yes
 		vic3_todo_label = {
+			visible = "[EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_is_fail'), '(CFixedPoint)1' )]"
+			text = "vic3_todo_tr_fail_prefix"
+		}
+		vic3_todo_label = {
 			text = "vic3_todo_tr_title"
 		}
 		vic3_todo_label = {
@@ -758,6 +641,10 @@ types vic3_todo_window_types
 			text = "vic3_todo_tr_target_interest_group"
 		}
 		vic3_todo_label = {
+			visible = "[And( EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_target_type'), '(CFixedPoint)8' ), ScriptContainer.HasVariable('vic3_todo_target') )]"
+			text = "vic3_todo_tr_target_state"
+		}
+		vic3_todo_label = {
 			visible = "[EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_valid'), '(CFixedPoint)0' )]"
 			text = "vic3_todo_tr_invalid"
 		}
@@ -777,7 +664,17 @@ types vic3_todo_window_types
 		}
 		green_progressbar_horizontal = {
 			size = { 100% 100% }
-			visible = "[EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_done'), '(CFixedPoint)1' )]"
+			visible = "[And( EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_done'), '(CFixedPoint)1' ), EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_is_fail'), '(CFixedPoint)0' ) )]"
+			blockoverride "values" {
+				value = "[FixedPointToFloat( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_ratio') )]"
+				min = 0
+				max = 1
+			}
+		}
+		### A failure condition that is met: red, as vanilla's bad bars.
+		bad_progressbar_horizontal = {
+			size = { 100% 100% }
+			visible = "[And( EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_done'), '(CFixedPoint)1' ), EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_is_fail'), '(CFixedPoint)1' ) )]"
 			blockoverride "values" {
 				value = "[FixedPointToFloat( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_ratio') )]"
 				min = 0
@@ -999,6 +896,18 @@ types vic3_todo_window_types
 			ignoreinvisible = yes
 			vic3_todo_button = {
 				size = { 200 26 }
+				text = "vic3_todo_tr_role"
+				tooltip = "vic3_todo_tr_role_tt"
+				onclick = "[GetScriptedGui('vic3_todo_tracker_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_item', ScriptContainer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)4' ) ).End )]"
+			}
+		}
+
+		flowcontainer = {
+			direction = horizontal
+			spacing = 4
+			ignoreinvisible = yes
+			vic3_todo_button = {
+				size = { 200 26 }
 				visible = "[GreaterThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_target_type'), '(CFixedPoint)0' )]"
 				text = "vic3_todo_pick_target"
 				onclick = "[GetVariableSystem.Toggle('vic3_todo_picker_open')]"
@@ -1088,6 +997,23 @@ types vic3_todo_window_types
 			vic3_todo_picker_interest_group = {
 				visible = "[EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_target_type'), '(CFixedPoint)7' )]"
 			}
+			### Our states, as vanilla lists them (AccessPlayer.AccessStates).
+			flowcontainer = {
+				direction = vertical
+				spacing = 3
+				visible = "[EqualTo_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_target_type'), '(CFixedPoint)8' )]"
+				datamodel = "[AccessPlayer.AccessStates]"
+				item = {
+					button = {
+						using = default_button
+						size = { 250 26 }
+						using = fontsize_small
+						text = "vic3_todo_state_choice"
+						onclick = "[GetScriptedGui('vic3_todo_pick_state_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_pick', State.MakeScope ).End )]"
+						onclick = "[GetVariableSystem.Clear('vic3_todo_picker_open')]"
+					}
+				}
+			}
 		}
 	}
 
@@ -1106,6 +1032,7 @@ types vic3_todo_window_types
 			direction = vertical
 			spacing = 4
 			ignoreinvisible = yes
+			visible = "[GreaterThan_CFixedPoint( ScriptContainer.MakeScope.ScriptValue('vic3_todo_tr_all_count'), '(CFixedPoint)0' )]"
 			datamodel = "[ScriptContainer.MakeScope.GetList('vic3_todo_trackers')]"
 			item = {
 				vic3_todo_tracker_view = {
@@ -1128,6 +1055,138 @@ types vic3_todo_window_types
 				text = "vic3_todo_open_in_window"
 				onclick = "[GetScriptedGui('vic3_todo_item_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).AddScope( 'vic3_todo_item', ScriptContainer.MakeScope ).AddScope( 'vic3_todo_op', MakeScopeValue( '(CFixedPoint)5' ) ).End )]"
 				onclick = "[GetVariableSystem.Set('com_open_window', 'vic3_todo_window')]"
+			}
+		}
+	}
+}
+
+### ==========================================================================
+### THE LAUNCHER: the next slot under the sidebar's Map List (the sidebar sits
+### at { 0 200 }, Map List at +580, small slots are 40 high).
+### ==========================================================================
+widget = {
+	name = "vic3_todo_launcher"
+	layer = top
+	parentanchor = top|left
+	position = { 0 825 }
+	size = { 42 40 }
+	allow_outside = yes
+	visible = "[And( GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, Not( GetMetaPlayer.IsObserver ) )]"
+
+	### A vanilla side panel or the ledger opening closes the window.
+	widget = {
+		state = {
+			trigger_when = "[InformationPanelBar.IsAnyPanelOpen]"
+			on_finish = "[GetVariableSystem.Clear('com_open_window')]"
+		}
+	}
+	widget = {
+		state = {
+			trigger_when = "[MapListPanelManager.IsVisible]"
+			on_finish = "[GetVariableSystem.Clear('com_open_window')]"
+		}
+	}
+
+	### The text-input watcher: shown, and so evaluated, only while an
+	### input is open.
+	vic3_todo_input_watcher = {}
+
+	widget = {
+		size = { 100% 100% }
+		using = hud_visibility
+
+		widget = {
+			size = { 42 40 }
+			visible = "[Not( GetVariableSystem.HasValue('com_open_window', 'vic3_todo_window') )]"
+			widget = {
+				using = clickthrough_blocker
+				using = sidebar_button_size_small
+				using = selected_sidepanel_animation_small
+				blockoverride "selected_visibility" {
+					visible = no
+				}
+				sidepanel_button_small = {
+					blockoverride "icon" {
+						texture = "gfx/interface/icons/generic_icons/map_list_plus_and_checkmark.dds"
+					}
+					blockoverride "button_selected" {
+						visible = no
+					}
+					onclick = "[GetVariableSystem.Set('com_open_window', 'vic3_todo_window')]"
+					tooltip = "vic3_todo_launcher_tt"
+				}
+			}
+		}
+		widget = {
+			size = { 42 40 }
+			visible = "[GetVariableSystem.HasValue('com_open_window', 'vic3_todo_window')]"
+			widget = {
+				using = clickthrough_blocker
+				using = sidebar_button_size_small
+				using = selected_sidepanel_animation_small
+				blockoverride "selected_visibility" {
+					visible = yes
+				}
+				sidepanel_button_small = {
+					blockoverride "icon" {
+						texture = "gfx/interface/icons/generic_icons/map_list_plus_and_checkmark.dds"
+					}
+					blockoverride "button_selected" {
+						visible = yes
+					}
+					onclick = "[GetVariableSystem.Clear('com_open_window')]"
+					tooltip = "vic3_todo_launcher_tt"
+				}
+			}
+		}
+		### Count of active journals, as the sidebar's Journal button shows.
+		textbox = {
+			visible = "[GreaterThan_CFixedPoint( GetPlayer.MakeScope.ScriptValue('vic3_todo_n_active'), '(CFixedPoint)0' )]"
+			position = { 30 -4 }
+			autoresize = yes
+			raw_text = "#bold [GetPlayer.MakeScope.ScriptValue('vic3_todo_n_active')|0]#!"
+			align = left|nobaseline
+			using = fontsize_small
+			background = {
+				using = default_background
+				margin = { 6 3 }
+			}
+		}
+	}
+}
+
+### ==========================================================================
+### THE WINDOW
+### ==========================================================================
+widget = {
+	name = "vic3_todo_window"
+	size = { 100% 100% }
+	layer = layer_ingame_menu
+	visible = "[And( And( GetMetaPlayer.GetPlayedOrObservedCountry.IsValid, Not( GetMetaPlayer.IsObserver ) ), GetVariableSystem.HasValue('com_open_window', 'vic3_todo_window') )]"
+
+	state = {
+		name = _show
+		on_start = "[InformationPanelBar.ClosePanel]"
+		on_start = "[MapListPanelManager.CloseCurrentPanel]"
+		on_start = "[GetScriptedGui('vic3_todo_refresh_sgui').Execute( GuiScope.SetRoot( GetPlayer.MakeScope ).End )]"
+	}
+
+	vbox = {
+		parentanchor = top|left
+		layoutpolicy_horizontal = expanding
+		layoutpolicy_vertical = expanding
+		margin_top = 85
+
+		widget = {
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				layoutpolicy_vertical = expanding
+
+				vic3_todo_panel = {}
+				expand = {}
 			}
 		}
 	}

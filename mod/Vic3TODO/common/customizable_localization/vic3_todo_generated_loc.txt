@@ -138,6 +138,34 @@ vic3_todo_kind_name = {
 		localization_key = vic3_todo_kind_days
 	}
 	text = {
+		trigger = { var:vic3_todo_kind = 34 }
+		localization_key = vic3_todo_kind_state_population
+	}
+	text = {
+		trigger = { var:vic3_todo_kind = 35 }
+		localization_key = vic3_todo_kind_state_sol
+	}
+	text = {
+		trigger = { var:vic3_todo_kind = 36 }
+		localization_key = vic3_todo_kind_state_literacy
+	}
+	text = {
+		trigger = { var:vic3_todo_kind = 37 }
+		localization_key = vic3_todo_kind_state_radicals
+	}
+	text = {
+		trigger = { var:vic3_todo_kind = 38 }
+		localization_key = vic3_todo_kind_state_turmoil
+	}
+	text = {
+		trigger = { var:vic3_todo_kind = 39 }
+		localization_key = vic3_todo_kind_state_infrastructure
+	}
+	text = {
+		trigger = { var:vic3_todo_kind = 40 }
+		localization_key = vic3_todo_kind_war_with
+	}
+	text = {
 		trigger = { always = yes }
 		localization_key = vic3_todo_kind_unknown
 	}

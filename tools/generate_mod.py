@@ -35,6 +35,7 @@ CATEGORIES = OrderedDict([
     ("politics", ("政治・技術", "Politics & Technology")),
     ("diplomacy", ("外交・国力", "Diplomacy & Power")),
     ("military", ("軍事", "Military")),
+    ("state", ("州", "States")),
     ("time", ("時間", "Time")),
 ])
 
@@ -51,6 +52,10 @@ def K(id, key, cat, fmt, steps, ja, en, raw=None, target=None, discrete=False,
 
 def owner_value(link):
     return ["add = %s.%s" % (OWNER, link)]
+
+
+def state_value(link):
+    return ["if = {", "\tlimit = { exists = var:vic3_todo_target }", "\tadd = var:vic3_todo_target.%s" % link, "}"]
 
 
 KINDS = [
@@ -114,11 +119,29 @@ KINDS = [
     K(32, "peace", "military", 5, (1, 1, 1), "平和である", "At peace", discrete=True,
       raw=['if = {', '\tlimit = { %s = { is_at_war = no } }' % OWNER, '\tadd = 1', '}']),
     K(33, "days", "time", 7, (30, 365, 3650), "経過日数", "Days passed", raw=["add = game_date"], modes=(1,)),
+    K(34, "state_population", "state", 2, (10000, 100000, 1000000), "州の人口", "State population", target="state",
+      raw=state_value("state_population"), nonneg=True),
+    K(35, "state_sol", "state", 3, (0.5, 1, 5), "州の平均生活水準", "State standard of living", target="state",
+      raw=state_value("average_sol"), default_mode=2, nonneg=True),
+    K(36, "state_literacy", "state", 4, (0.01, 0.05, 0.1), "州の識字率 (%)", "State literacy (%)", target="state",
+      raw=state_value("literacy_rate"), default_mode=2, fraction=True),
+    K(37, "state_radicals", "state", 4, (0.01, 0.05, 0.1), "州の急進派の割合 (%)", "State radicals (%)", target="state",
+      raw=state_value("radical_fraction"), default_mode=4, fraction=True),
+    K(38, "state_turmoil", "state", 4, (0.01, 0.05, 0.1), "州の騒乱 (%)", "State turmoil (%)", target="state",
+      raw=state_value("turmoil"), default_mode=4, fraction=True),
+    K(39, "state_infrastructure", "state", 1, (5, 10, 50), "州のインフラ", "State infrastructure", target="state",
+      raw=state_value("infrastructure"), default_mode=2, nonneg=True),
+    K(40, "war_with", "military", 5, (1, 1, 1), "特定の国と戦争中", "At war with a country", target="country",
+      discrete=True,
+      raw=['if = {', '\tlimit = {', '\t\texists = var:vic3_todo_target',
+           '\t\tNOT = { var:vic3_todo_target = %s }' % OWNER,
+           '\t\t%s = { has_war_with = scope:vic3_todo_calc.var:vic3_todo_target }' % OWNER, '\t}',
+           '\tadd = 1', '}']),
 ]
 
 TARGET_TYPES = OrderedDict([
     ("building", 1), ("technology", 2), ("law", 3), ("country", 4), ("rank", 5),
-    ("goods", 6), ("interest_group", 7),
+    ("goods", 6), ("interest_group", 7), ("state", 8),
 ])
 
 RANK_NAMES = {
@@ -292,6 +315,9 @@ def gen_triggers():
     L += ors("vic3_todo_tr_fraction_kind", lambda k: k["fraction"], "Shares kept within 0..1.")
     L += ors("vic3_todo_tr_nonnegative_kind", lambda k: k["nonneg"], "Readings that are never negative.")
     L += ors("vic3_todo_tr_modes_all", lambda k: tuple(k["modes"]) == ALL, "Kinds that offer all four modes.")
+    L += ors("vic3_todo_tr_scope_target", lambda k: k["target"] in ("building", "country", "state"),
+             "Kinds whose target is a scope held in vic3_todo_target.")
+    L += ors("vic3_todo_tr_country_target", lambda k: k["target"] == "country", "Kinds whose target is another country.")
     # Journal Entry slot triggers, parameterised by $SLOT$.
     L += [
         "# country scope: the journal bound to slot $SLOT$ is completed / failed / overdue / met.",
@@ -764,6 +790,10 @@ def gen_loc(cat, lang):
         8: ("選んだ法律が施行されているかどうか。", "Whether the chosen law is in force."),
         10: ("国家ランクが選んだランク以上かどうか。", "Whether our rank is at least the chosen one."),
         9: ("選んだ国との関係値（-100〜100）。", "Relations with the chosen country (-100 to 100)."),
+        40: ("選んだ国と戦争中かどうか。失敗条件にすると「この国と戦争になったら失敗」も作れます。",
+             "Whether we are at war with the chosen country. As a failure condition: fail if war breaks out."),
+        34: ("選んだ自国の州の人口。", "Population of the chosen state of ours."),
+        38: ("選んだ自国の州の騒乱（0〜100%）。", "Turmoil in the chosen state of ours (0-100%)."),
     }
     for k in KINDS:
         add("vic3_todo_kind_%s" % k["key"], k["ja"], k["en"])

@@ -12,7 +12,8 @@
 #                           4 fail when overdue, 11-14 deadline -365/-30/+30/+365,
 #                           100+K add a tracker of kind K
 #   vic3_todo_tracker_sgui  1 open/close settings, 2 remove, 3 recapture
-#                           baseline, 11-14 mode, 21-26 goal -L/-M/-S/+S/+M/+L
+#                           baseline, 4 progress/failure role,
+#                           11-14 mode, 21-26 goal -L/-M/-S/+S/+M/+L
 #   vic3_todo_pick_sgui     target index for the open tracker
 
 vic3_todo_new_sgui = {
@@ -310,6 +311,10 @@ vic3_todo_tracker_sgui = {
 					vic3_todo_tr_capture = yes
 				}
 				else_if = {
+					limit = { scope:vic3_todo_op = 4 }
+					vic3_todo_toggle_tag = { TAG = vic3_todo_tr_fail }
+				}
+				else_if = {
 					limit = { scope:vic3_todo_op = 11 }
 					vic3_todo_tr_set_mode = { MODE = 1 }
 				}
@@ -398,6 +403,27 @@ vic3_todo_pick_country_sgui = {
 				limit = { exists = scope:vic3_todo_pick_capital }
 				set_variable = { name = vic3_todo_target_cap value = scope:vic3_todo_pick_capital }
 			}
+			vic3_todo_tr_target_changed = yes
+		}
+	}
+	ai_is_valid = { always = no }
+}
+
+# The target of a state tracker: scope:vic3_todo_pick is one of our states
+# (the picker lists AccessPlayer.AccessStates).
+vic3_todo_pick_state_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_pick }
+	is_shown = { always = yes }
+	is_valid = {
+		exists = scope:vic3_todo_pick
+		scope:vic3_todo_pick = { owner ?= root }
+		vic3_todo_has_edit_tr = yes
+	}
+	effect = {
+		var:vic3_todo_edit_tr = {
+			set_variable = { name = vic3_todo_target value = scope:vic3_todo_pick }
+			set_variable = { name = vic3_todo_target_idx value = 1 }
 			vic3_todo_tr_target_changed = yes
 		}
 	}

@@ -230,7 +230,8 @@ vic3_todo_mark_failed = {
 }
 
 # todo scope. Reopening turns automatic completion off, or a TODO whose
-# conditions still hold would complete again at the next check.
+# conditions still hold would complete again at the next check; likewise a
+# failure condition that still holds is suppressed until it clears.
 vic3_todo_reopen = {
 	if = {
 		limit = { has_tag = vic3_todo_done }
@@ -246,6 +247,13 @@ vic3_todo_reopen = {
 	if = {
 		limit = { has_tag = vic3_todo_failed }
 		remove_tag = vic3_todo_failed
+		if = {
+			limit = {
+				vic3_todo_fail_hit > 0
+				NOT = { has_tag = vic3_todo_fail_suppressed }
+			}
+			add_tag = vic3_todo_fail_suppressed
+		}
 		if = {
 			limit = {
 				has_tag = vic3_todo_fail_on_deadline
@@ -324,12 +332,28 @@ vic3_todo_evaluate_one = {
 	}
 	if = {
 		limit = { vic3_todo_is_active = yes }
+		# A journal reopened while a failure condition held does not fail
+		# again until that condition has cleared once.
+		if = {
+			limit = {
+				has_tag = vic3_todo_fail_suppressed
+				vic3_todo_fail_hit = 0
+			}
+			remove_tag = vic3_todo_fail_suppressed
+		}
 		if = {
 			limit = {
 				has_tag = vic3_todo_auto
 				vic3_todo_met > 0
 			}
 			vic3_todo_mark_done = yes
+		}
+		else_if = {
+			limit = {
+				vic3_todo_fail_hit > 0
+				NOT = { has_tag = vic3_todo_fail_suppressed }
+			}
+			vic3_todo_mark_failed = yes
 		}
 		else_if = {
 			limit = {

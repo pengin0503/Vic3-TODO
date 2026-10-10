@@ -1620,6 +1620,34 @@ vic3_todo_tracker_add_by_op = {
 		limit = { scope:vic3_todo_op = 133 }
 		vic3_todo_tracker_add = { KIND = 33 }
 	}
+	else_if = {
+		limit = { scope:vic3_todo_op = 134 }
+		vic3_todo_tracker_add = { KIND = 34 }
+	}
+	else_if = {
+		limit = { scope:vic3_todo_op = 135 }
+		vic3_todo_tracker_add = { KIND = 35 }
+	}
+	else_if = {
+		limit = { scope:vic3_todo_op = 136 }
+		vic3_todo_tracker_add = { KIND = 36 }
+	}
+	else_if = {
+		limit = { scope:vic3_todo_op = 137 }
+		vic3_todo_tracker_add = { KIND = 37 }
+	}
+	else_if = {
+		limit = { scope:vic3_todo_op = 138 }
+		vic3_todo_tracker_add = { KIND = 38 }
+	}
+	else_if = {
+		limit = { scope:vic3_todo_op = 139 }
+		vic3_todo_tracker_add = { KIND = 39 }
+	}
+	else_if = {
+		limit = { scope:vic3_todo_op = 140 }
+		vic3_todo_tracker_add = { KIND = 40 }
+	}
 }
 
 # country scope, scope:vic3_todo_new: give the new journal the first free

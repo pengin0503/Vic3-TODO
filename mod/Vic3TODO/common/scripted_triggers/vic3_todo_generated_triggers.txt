@@ -8,6 +8,7 @@ vic3_todo_tr_discrete = {
 		var:vic3_todo_kind = 8
 		var:vic3_todo_kind = 10
 		var:vic3_todo_kind = 32
+		var:vic3_todo_kind = 40
 	}
 }
 
@@ -23,6 +24,13 @@ vic3_todo_tr_needs_target = {
 		var:vic3_todo_kind = 24
 		var:vic3_todo_kind = 28
 		var:vic3_todo_kind = 29
+		var:vic3_todo_kind = 34
+		var:vic3_todo_kind = 35
+		var:vic3_todo_kind = 36
+		var:vic3_todo_kind = 37
+		var:vic3_todo_kind = 38
+		var:vic3_todo_kind = 39
+		var:vic3_todo_kind = 40
 	}
 }
 
@@ -34,6 +42,9 @@ vic3_todo_tr_fraction_kind = {
 		var:vic3_todo_kind = 26
 		var:vic3_todo_kind = 27
 		var:vic3_todo_kind = 29
+		var:vic3_todo_kind = 36
+		var:vic3_todo_kind = 37
+		var:vic3_todo_kind = 38
 	}
 }
 
@@ -57,6 +68,9 @@ vic3_todo_tr_nonnegative_kind = {
 		var:vic3_todo_kind = 21
 		var:vic3_todo_kind = 22
 		var:vic3_todo_kind = 23
+		var:vic3_todo_kind = 34
+		var:vic3_todo_kind = 35
+		var:vic3_todo_kind = 39
 	}
 }
 
@@ -91,6 +105,35 @@ vic3_todo_tr_modes_all = {
 		var:vic3_todo_kind = 29
 		var:vic3_todo_kind = 30
 		var:vic3_todo_kind = 31
+		var:vic3_todo_kind = 34
+		var:vic3_todo_kind = 35
+		var:vic3_todo_kind = 36
+		var:vic3_todo_kind = 37
+		var:vic3_todo_kind = 38
+		var:vic3_todo_kind = 39
+	}
+}
+
+# Kinds whose target is a scope held in vic3_todo_target.
+vic3_todo_tr_scope_target = {
+	OR = {
+		var:vic3_todo_kind = 1
+		var:vic3_todo_kind = 9
+		var:vic3_todo_kind = 34
+		var:vic3_todo_kind = 35
+		var:vic3_todo_kind = 36
+		var:vic3_todo_kind = 37
+		var:vic3_todo_kind = 38
+		var:vic3_todo_kind = 39
+		var:vic3_todo_kind = 40
+	}
+}
+
+# Kinds whose target is another country.
+vic3_todo_tr_country_target = {
+	OR = {
+		var:vic3_todo_kind = 9
+		var:vic3_todo_kind = 40
 	}
 }
 
