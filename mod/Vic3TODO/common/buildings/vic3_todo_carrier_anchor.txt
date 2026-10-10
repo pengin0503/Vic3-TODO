@@ -1,0 +1,17 @@
+﻿# Vic3 TODO: the building type company_vic3_todo_carrier lists (every company
+# type lists one). Never built: not buildable, and no script creates it.
+# Keep this type once released: a save made with it lists the type.
+building_vic3_todo_carrier_anchor = {
+	building_group = bg_monuments
+	icon = "gfx/interface/icons/building_icons/food_industry.dds"
+	city_type = city
+	levels_per_mesh = -1
+
+	buildable = no
+	expandable = no
+	downsizeable = no
+
+	production_method_groups = {
+		pmg_vic3_todo_carrier_anchor
+	}
+}

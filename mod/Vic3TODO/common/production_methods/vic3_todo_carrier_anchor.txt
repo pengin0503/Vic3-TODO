@@ -1,0 +1,4 @@
+﻿# Vic3 TODO: an empty method for the never-built carrier anchor building.
+pm_vic3_todo_carrier_anchor = {
+	texture = "gfx/interface/icons/production_method_icons/bakeries.dds"
+}

@@ -1,0 +1,474 @@
+﻿# Vic3 TODO: script values (hand-written part).
+# Per-kind values (raw reading, steps, scale, format) are generated into
+# vic3_todo_generated_values.txt by tools/generate_mod.py.
+#
+# Scopes
+#   tracker  a script container tagged vic3_todo_tracker
+#            vars: vic3_todo_owner (country), vic3_todo_parent (todo),
+#                  vic3_todo_kind, vic3_todo_mode, vic3_todo_baseline,
+#                  vic3_todo_goal, vic3_todo_captures, vic3_todo_target_idx,
+#                  vic3_todo_target (scope target for building/country kinds)
+#   todo     a script container tagged vic3_todo
+#   country  the player's country (owner of the list vic3_todo_items)
+#
+# Modes: 1 increase from creation, 2 reach at least, 3 decrease from
+# creation, 4 reach at most. Discrete kinds (technology, law, rank, peace)
+# always use mode 2 and never show a fake partial percentage.
+
+### ---- tracker scope ------------------------------------------------------
+
+# 1 when the tracker can be evaluated: its target is chosen and valid.
+vic3_todo_tr_valid = {
+	value = 1
+	if = {
+		limit = {
+			vic3_todo_tr_needs_target = yes
+			NOT = { has_variable = vic3_todo_has_target }
+		}
+		value = 0
+	}
+	else_if = {
+		limit = {
+			var:vic3_todo_kind = 1
+			NOT = { exists = var:vic3_todo_target }
+		}
+		value = 0
+	}
+	else_if = {
+		limit = {
+			var:vic3_todo_kind = 9
+			OR = {
+				NOT = { exists = var:vic3_todo_target }
+				var:vic3_todo_target = var:vic3_todo_owner
+			}
+		}
+		value = 0
+	}
+}
+
+# Net change in the direction the mode asks for (modes 1 and 3), or the
+# current reading (modes 2 and 4).
+vic3_todo_tr_amount = {
+	value = vic3_todo_tr_raw
+	if = {
+		limit = { var:vic3_todo_mode = 1 }
+		subtract = var:vic3_todo_baseline
+	}
+	else_if = {
+		limit = { var:vic3_todo_mode = 3 }
+		multiply = -1
+		add = var:vic3_todo_baseline
+	}
+}
+
+vic3_todo_tr_done = {
+	value = 0
+	if = {
+		limit = { vic3_todo_tr_valid > 0 }
+		if = {
+			limit = {
+				OR = {
+					var:vic3_todo_mode = 1
+					var:vic3_todo_mode = 3
+				}
+				vic3_todo_tr_amount >= var:vic3_todo_goal
+			}
+			value = 1
+		}
+		else_if = {
+			limit = {
+				var:vic3_todo_mode = 2
+				vic3_todo_tr_raw >= var:vic3_todo_goal
+			}
+			value = 1
+		}
+		else_if = {
+			limit = {
+				var:vic3_todo_mode = 4
+				vic3_todo_tr_raw <= var:vic3_todo_goal
+			}
+			value = 1
+		}
+	}
+}
+
+# 0..1 for the progress bar. Discrete kinds are 0 or 1 only.
+vic3_todo_tr_ratio = {
+	value = 0
+	if = {
+		limit = { vic3_todo_tr_done > 0 }
+		value = 1
+	}
+	else_if = {
+		limit = {
+			vic3_todo_tr_valid > 0
+			NOT = { vic3_todo_tr_discrete = yes }
+		}
+		if = {
+			limit = {
+				OR = {
+					var:vic3_todo_mode = 1
+					var:vic3_todo_mode = 3
+				}
+				var:vic3_todo_goal > 0
+			}
+			value = vic3_todo_tr_amount
+			divide = var:vic3_todo_goal
+		}
+		else_if = {
+			limit = {
+				var:vic3_todo_mode = 2
+				var:vic3_todo_goal > var:vic3_todo_baseline
+			}
+			value = vic3_todo_tr_raw
+			subtract = var:vic3_todo_baseline
+			divide = {
+				value = var:vic3_todo_goal
+				subtract = var:vic3_todo_baseline
+			}
+		}
+		else_if = {
+			limit = {
+				var:vic3_todo_mode = 4
+				var:vic3_todo_baseline > var:vic3_todo_goal
+			}
+			value = var:vic3_todo_baseline
+			subtract = vic3_todo_tr_raw
+			divide = {
+				value = var:vic3_todo_baseline
+				subtract = var:vic3_todo_goal
+			}
+		}
+		min = 0
+		max = 1
+	}
+}
+
+# The ratio as a percentage, for text.
+vic3_todo_tr_percent = {
+	value = vic3_todo_tr_ratio
+	multiply = 100
+}
+
+# Display values, in display units (vic3_todo_tr_scale is 100 for shares).
+# Progress in delta modes is clamped to 0..goal, as the design specifies;
+# the current reading and the creation-time baseline are shown beside it.
+vic3_todo_tr_disp_cur = {
+	value = vic3_todo_tr_amount
+	if = {
+		limit = {
+			OR = {
+				var:vic3_todo_mode = 1
+				var:vic3_todo_mode = 3
+			}
+		}
+		min = 0
+		max = var:vic3_todo_goal
+	}
+	multiply = vic3_todo_tr_scale
+}
+vic3_todo_tr_disp_goal = {
+	value = var:vic3_todo_goal
+	multiply = vic3_todo_tr_scale
+}
+vic3_todo_tr_disp_raw = {
+	value = vic3_todo_tr_raw
+	multiply = vic3_todo_tr_scale
+}
+vic3_todo_tr_disp_base = {
+	value = var:vic3_todo_baseline
+	multiply = vic3_todo_tr_scale
+}
+# The value at which a delta tracker completes (baseline +/- goal).
+vic3_todo_tr_disp_finish = {
+	value = var:vic3_todo_baseline
+	if = {
+		limit = { var:vic3_todo_mode = 3 }
+		subtract = var:vic3_todo_goal
+	}
+	else = {
+		add = var:vic3_todo_goal
+	}
+	multiply = vic3_todo_tr_scale
+}
+vic3_todo_tr_mode_value = {
+	value = var:vic3_todo_mode
+}
+vic3_todo_tr_kind_value = {
+	value = var:vic3_todo_kind
+}
+vic3_todo_tr_valid_or_done = {
+	value = vic3_todo_tr_valid
+	add = vic3_todo_tr_done
+	max = 1
+}
+# 1 while this tracker's settings are open in the editor.
+vic3_todo_tr_is_editing = {
+	value = 0
+	if = {
+		limit = { has_tag = vic3_todo_tr_editing }
+		value = 1
+	}
+}
+# 1 when the tracker can change its goal with the steppers.
+vic3_todo_tr_has_steps = {
+	value = 1
+	if = {
+		limit = { vic3_todo_tr_discrete = yes }
+		value = 0
+	}
+}
+### ---- todo scope ---------------------------------------------------------
+
+vic3_todo_tr_count = {
+	value = 0
+	if = {
+		limit = { has_variable_list = vic3_todo_trackers }
+		every_in_list = {
+			variable = vic3_todo_trackers
+			add = 1
+		}
+	}
+}
+
+vic3_todo_tr_done_count = {
+	value = 0
+	if = {
+		limit = { has_variable_list = vic3_todo_trackers }
+		every_in_list = {
+			variable = vic3_todo_trackers
+			add = vic3_todo_tr_done
+		}
+	}
+}
+
+# 1 when the completion rule over the trackers holds (ALL, or ANY with the
+# tag vic3_todo_any). A TODO without trackers never meets it.
+vic3_todo_met = {
+	value = 0
+	if = {
+		limit = {
+			vic3_todo_tr_count > 0
+			has_tag = vic3_todo_any
+			vic3_todo_tr_done_count > 0
+		}
+		value = 1
+	}
+	else_if = {
+		limit = {
+			vic3_todo_tr_count > 0
+			NOT = { has_tag = vic3_todo_any }
+			vic3_todo_tr_done_count >= vic3_todo_tr_count
+		}
+		value = 1
+	}
+}
+
+# 0 active, 1 completed, 2 failed.
+vic3_todo_state = {
+	value = 0
+	if = {
+		limit = { has_tag = vic3_todo_done }
+		value = 1
+	}
+	else_if = {
+		limit = { has_tag = vic3_todo_failed }
+		value = 2
+	}
+}
+
+vic3_todo_is_finished = {
+	value = 0
+	if = {
+		limit = {
+			OR = {
+				has_tag = vic3_todo_done
+				has_tag = vic3_todo_failed
+			}
+		}
+		value = 1
+	}
+}
+
+vic3_todo_is_editing = {
+	value = 0
+	if = {
+		limit = { has_tag = vic3_todo_editing }
+		value = 1
+	}
+}
+
+vic3_todo_lines_value = {
+	value = 1
+	if = {
+		limit = { has_variable = vic3_todo_lines }
+		value = var:vic3_todo_lines
+	}
+}
+
+# Days until the deadline; negative once it has passed.
+vic3_todo_days_left = {
+	value = 0
+	if = {
+		limit = { has_variable = vic3_todo_deadline }
+		value = var:vic3_todo_deadline
+		subtract = game_date
+	}
+}
+
+vic3_todo_days_overdue = {
+	value = vic3_todo_days_left
+	multiply = -1
+	min = 0
+}
+
+vic3_todo_overdue = {
+	value = 0
+	if = {
+		limit = {
+			has_tag = vic3_todo_deadline_on
+			NOT = { has_tag = vic3_todo_done }
+			NOT = { has_tag = vic3_todo_failed }
+			vic3_todo_days_left < 0
+		}
+		value = 1
+	}
+}
+
+# The deadline as a calendar date. game_date read as a value is a day
+# count from year 0 with 365-day years (1 March 2069 = 2069 * 365 + 59).
+vic3_todo_dl_year = {
+	value = var:vic3_todo_deadline
+	divide = 365
+	floor = yes
+}
+vic3_todo_dl_doy = {
+	value = var:vic3_todo_deadline
+	subtract = {
+		value = vic3_todo_dl_year
+		multiply = 365
+	}
+}
+vic3_todo_dl_month = {
+	value = 1
+	if = { limit = { vic3_todo_dl_doy >= 31 } value = 2 }
+	if = { limit = { vic3_todo_dl_doy >= 59 } value = 3 }
+	if = { limit = { vic3_todo_dl_doy >= 90 } value = 4 }
+	if = { limit = { vic3_todo_dl_doy >= 120 } value = 5 }
+	if = { limit = { vic3_todo_dl_doy >= 151 } value = 6 }
+	if = { limit = { vic3_todo_dl_doy >= 181 } value = 7 }
+	if = { limit = { vic3_todo_dl_doy >= 212 } value = 8 }
+	if = { limit = { vic3_todo_dl_doy >= 243 } value = 9 }
+	if = { limit = { vic3_todo_dl_doy >= 273 } value = 10 }
+	if = { limit = { vic3_todo_dl_doy >= 304 } value = 11 }
+	if = { limit = { vic3_todo_dl_doy >= 334 } value = 12 }
+}
+vic3_todo_dl_day = {
+	value = vic3_todo_dl_doy
+	add = 1
+	if = { limit = { vic3_todo_dl_doy >= 31 } subtract = 31 }
+	if = { limit = { vic3_todo_dl_doy >= 59 } subtract = 28 }
+	if = { limit = { vic3_todo_dl_doy >= 90 } subtract = 31 }
+	if = { limit = { vic3_todo_dl_doy >= 120 } subtract = 30 }
+	if = { limit = { vic3_todo_dl_doy >= 151 } subtract = 31 }
+	if = { limit = { vic3_todo_dl_doy >= 181 } subtract = 30 }
+	if = { limit = { vic3_todo_dl_doy >= 212 } subtract = 31 }
+	if = { limit = { vic3_todo_dl_doy >= 243 } subtract = 31 }
+	if = { limit = { vic3_todo_dl_doy >= 273 } subtract = 30 }
+	if = { limit = { vic3_todo_dl_doy >= 304 } subtract = 31 }
+	if = { limit = { vic3_todo_dl_doy >= 334 } subtract = 30 }
+}
+
+vic3_todo_id_value = {
+	value = 0
+	if = {
+		limit = { has_variable = vic3_todo_id }
+		value = var:vic3_todo_id
+	}
+}
+
+### ---- country scope ------------------------------------------------------
+
+vic3_todo_n_total = {
+	value = 0
+	if = {
+		limit = { has_variable_list = vic3_todo_items }
+		every_in_list = {
+			variable = vic3_todo_items
+			add = 1
+		}
+	}
+}
+
+vic3_todo_n_active = {
+	value = 0
+	if = {
+		limit = { has_variable_list = vic3_todo_items }
+		every_in_list = {
+			variable = vic3_todo_items
+			limit = { vic3_todo_is_finished = 0 }
+			add = 1
+		}
+	}
+}
+
+vic3_todo_n_finished = {
+	value = vic3_todo_n_total
+	subtract = vic3_todo_n_active
+}
+
+vic3_todo_n_overdue = {
+	value = 0
+	if = {
+		limit = { has_variable_list = vic3_todo_items }
+		every_in_list = {
+			variable = vic3_todo_items
+			add = vic3_todo_overdue
+		}
+	}
+}
+
+vic3_todo_n_free = {
+	value = vic3_todo_max_items
+	subtract = vic3_todo_n_total
+	min = 0
+}
+
+# 1 while the player is typing into the input carrier.
+vic3_todo_input_state = {
+	value = 0
+	if = {
+		limit = { has_variable = vic3_todo_in_active }
+		value = 1
+	}
+}
+
+# 1 once the carrier's starting name is stored (the watcher waits for it).
+vic3_todo_input_has_old = {
+	value = 0
+	if = {
+		limit = {
+			has_variable = vic3_todo_in_active
+			has_variable = vic3_todo_in_old
+		}
+		value = 1
+	}
+}
+
+vic3_todo_input_mode_value = {
+	value = 0
+	if = {
+		limit = { has_variable = vic3_todo_in_mode }
+		value = var:vic3_todo_in_mode
+	}
+}
+
+# Days since the open input started.
+vic3_todo_input_age = {
+	value = 0
+	if = {
+		limit = { has_variable = vic3_todo_in_started }
+		value = game_date
+		subtract = var:vic3_todo_in_started
+	}
+}

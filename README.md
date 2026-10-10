@@ -1,51 +1,54 @@
-# Vic3-TODO
+# Vic3 TODO — カスタムジャーナル
 
-Victoria 3 1.14.x向けTODO MODのPhase 0 feasibility probeです。Task 1–6のoffline成果を用意しました。**ゲーム内実測は未実施、Task 7は未実行です。** Productionの32 TODO × 4 trackerは実装していません。
+Victoria 3（1.14.5）で、ゲーム内のジャーナルと同じように **自分でジャーナルを作れる** MODです。
 
-任意Unicode free-textをsaveへ渡すMOD専用経路はcandidateで、入力probeに保存callbackはありません。日本語の固定表示やsession-only保持を永続化成功として扱いません。pure-mod viabilityの判断はruntime evidence後に行います。
+- 自由入力のタイトルと説明（日本語可、最大4行×50文字）
+- 実際のゲーム状態から自動計算される進捗条件を、1件につき最大4つ（33種類）：建物のレベル、GDP、人口、識字率、陸海軍、技術、法律、他国との関係、国家ランク、威信、生活水準、悪名、国庫・負債、商品の生産量と価格、利益集団の支持と影響力、急進派・支持派、権威・官僚、平和、経過日数 など
+- 「作成時から増加」（作成前からある分は数えない）／「目標値以上」／「作成時から減少」／「目標値以下」
+- すべて満たす／どれか1つ、自動完了、手動完了・再開、期限（期限切れ表示、または任意で失敗扱い）
+- 作成したジャーナルは、ゲームのジャーナル画面の「カスタムジャーナル」グループに本物のJournal Entryとして表示される。ピン留め、アウトライナー表示、完了・失敗の通知はバニラと同じように動く
+- バニラのファイルは置き換えない
 
-## 実測を始める
+**ゲーム内での動作はまだ確認していません。** 開発環境ではゲームを起動できないため、静的検査とテストで確認した段階です。[ゲーム内確認手順](docs/runtime-checklist.md)で試し、結果を共有してください。
 
-`Ctrl+Shift+T`または画面上部の`TODO検証`ボタンで直接検証画面を開ける経路を追加しました（version 0.0.2）。Journalの自動表示を待つ必要はありません。[操作と実装記録](docs/feasibility/2026-10-07-keyboard-probe.md)。旧版導入済みの場合も、下記2コマンドで更新と再導入を行ってください。キー経路のゲーム内表示は再検証待ちです。
+## インストール
 
-Python 3.10以上。最新mainを取得し、Victoria 3を完全終了した状態でリポジトリ直下から実行します。
-
-```powershell
-git pull --ff-only origin main
-powershell -ExecutionPolicy Bypass -File .\tools\install_probe.ps1 -GameDir "D:\SteamLibrary\steamapps\common\Victoria 3"
-```
-
-installerはZIP由来の派生evidenceとinstalled treeを比較し、実際のinstalled treeに基づいてprobeを生成します。ZIPをPC上でも直接監査する場合は `-SourceArchive` を指定してください。country scripted-GUI定義が確認できたときだけselectorのGUI controlsを生成します。ZIPだけではその定義が不足しています。
-
-[実測手順と結果収集](docs/runtime-verification-phase0.md)に従い、最初の起動でUnicode入力・2 slot・家具工場レベル・baseline・設定変更・Technology・Relations・Journal progress/status/pinをまとめて確認してください。full restart/loadのみ完全終了後の再起動が必須です。
-
-確認後：
+Victoria 3を完全に終了し、リポジトリ直下で実行します（Python 3.10以上）。
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\tools\collect_phase0_results.ps1
+git pull
+powershell -ExecutionPolicy Bypass -File .\tools\install_mod.ps1 -GameDir "D:\SteamLibrary\steamapps\common\Victoria 3"
 ```
 
-## 文字列保存APIの追加調査
+`Documents\Paradox Interactive\Victoria 3\mod\Vic3TODO` に入ります。ランチャーのプレイセットで「Vic3 TODO - Custom Journals」を有効にしてください。以前の **「Vic3 TODO Phase 0 Probe」は無効にしてください**（HUDのファイルを置き換えるため）。
 
-軽量化プロジェクトの保存資料を流用し、GUIの型一覧出力、変数編集API、組み込みテストとprofilerを確認しました。[根拠と不足している接続](docs/feasibility/2026-10-07-optimization-api-reuse.md)、[現行ゲームから型・関数一覧を取得する手順](docs/runtime-api-evidence.md)。実際のruntime型一覧は未取得で、free-text保存は引き続きcandidateです。今回の調査だけでは入力callbackを追加せず、Task 7の判定も行いません。
+`-GameDir` は任意です。付けると、建物・技術・法律の一覧をインストール済みのゲームから作り直します。
 
-## Offline tooling
+## 使い方
+
+1. サイドバー（Map Listの下）のボタンで「カスタムジャーナル」ウィンドウを開く
+2. 「＋ 新しいジャーナル」を押すと、ゲームの「名前の変更」入力欄が開く。タイトルを入力して確定する
+3. 編集画面で、説明行の追加、自動完了・達成ルール・期限の設定、条件の追加を行う
+4. ジャーナル画面にも同じジャーナルが表示される。完了・ピン留めはどちらからでも操作できる
+
+### 入力の仕組みについて
+
+1.14では、MOD独自の入力欄の文字列をスクリプトに渡す方法がありません。そのため、ゲーム標準の「会社名の変更」入力欄を借りています。入力の間だけ入力用の一時的な会社が作られ、確定またはキャンセルですぐに消えます。このとき、会社数の上限に関する通知が一瞬出ることがあります。文字列はジャーナル側の変数に保存され、会社名として残ることはありません。詳しくは[設計と根拠](docs/design/custom-journals.md)を参照してください。
+
+## 開発
 
 ```bash
-python tools/audit_vanilla.py --source-archive /path/to/Vic3_todo_source.zip --output research/generated/phase0-api-evidence.json
-python tools/build_probe.py --source-archive /path/to/Vic3_todo_source.zip --evidence research/generated/phase0-api-evidence.json --output dist/Vic3TODOProbe
-python tools/render_capability_matrix.py --evidence research/generated/phase0-api-evidence.json --output docs/feasibility/tracker-capability-matrix.md
-python -m unittest discover -s tests -v
-python -m py_compile tools/*.py tests/*.py
+python tools/build_catalog.py --source /path/to/Vic3_todo_source.zip --parsed-vanilla /path/to/vanilla_parsed   # data/vic3_catalog.json
+python tools/generate_mod.py          # 生成ファイルを更新（--check で鮮度確認）
+python tools/lint_mod.py              # 静的検査
+python -m unittest discover -s tests
 ```
 
-Windowsでpy_compileのglob展開が必要な場合：
+- `mod/Vic3TODO/` — MOD本体。ファイル名に `generated` を含むものは `tools/generate_mod.py` の出力なので、直接編集しない
+- `tools/templates/vic3_todo_window.gui.in` — ウィンドウのGUIテンプレート（マクロを展開して出力）
+- `tools/templates/loc_strings.py` — 画面の文言（日本語・英語を1つの表で管理）
+- `data/vic3_catalog.json` — 対象一覧。番号 `idx` はセーブに保存されるため固定で、再生成しても変わらない
 
-```powershell
-$PythonFiles = Get-ChildItem .\tools\*.py, .\tests\*.py | ForEach-Object { $_.FullName }
-python -m py_compile @PythonFiles
-```
+## 以前のPhase 0 probe
 
-[Tracker matrix](docs/feasibility/tracker-capability-matrix.md)はAPIの静的証拠とruntime未検証を分けています。candidateをunsupportedへ変えるにはcoverageの証明が必要です。任意の `phase0-source-coverage.json` は `complete_directories` を明示する利用者側の宣言であり、exeとディレクトリの存在だけから完全性を断定しません。
-
-Vanilla ZIP/展開ファイルはコミットしません。testsのfixtureは独自に作成した小さな合成資料です。probeはnamespaced stateのみを変更し、AI・経済・外交・建設のルールは変更しません。Journal GUIは置換しません。キー経路のため、入力sourceのHUDとshortcutbindingsに子要素を挿入して生成・導入します。同じHUD/shortcutファイルを変更するGUI MODとの併用は避けてください。
+`probe_src/`、`tools/*probe*`、`docs/feasibility/` は、実現可能性を調べるための検証用probeの記録です。本体MODとは別物で、インストールは不要です。

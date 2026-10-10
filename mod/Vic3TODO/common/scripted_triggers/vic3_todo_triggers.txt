@@ -1,0 +1,41 @@
+﻿# Vic3 TODO: scripted triggers (hand-written part). Per-kind triggers are in
+# vic3_todo_generated_triggers.txt.
+
+# todo scope: fewer than four trackers.
+vic3_todo_can_add_tracker = {
+	OR = {
+		NOT = { has_variable_list = vic3_todo_trackers }
+		variable_list_size = {
+			name = vic3_todo_trackers
+			target < 4
+		}
+	}
+}
+
+# todo scope: neither completed nor failed.
+vic3_todo_is_active = {
+	NOT = { has_tag = vic3_todo_done }
+	NOT = { has_tag = vic3_todo_failed }
+}
+
+# country scope: room for another journal.
+vic3_todo_has_room = {
+	vic3_todo_n_total < vic3_todo_max_items
+}
+
+# country scope: no text input in progress.
+vic3_todo_no_input = {
+	NOT = { has_variable = vic3_todo_in_active }
+}
+
+# country scope: a TODO is open in the editor.
+vic3_todo_has_edit = {
+	has_variable = vic3_todo_edit
+	exists = var:vic3_todo_edit
+}
+
+# country scope: a tracker is open in the editor.
+vic3_todo_has_edit_tr = {
+	has_variable = vic3_todo_edit_tr
+	exists = var:vic3_todo_edit_tr
+}

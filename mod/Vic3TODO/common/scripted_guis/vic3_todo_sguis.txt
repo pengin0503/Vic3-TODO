@@ -1,0 +1,430 @@
+﻿# Vic3 TODO: scripted GUIs. Every one is rooted on the player's country
+# (GuiScope.SetRoot( GetPlayer.MakeScope ) or JournalEntry.GetCountry) and
+# never used by the AI.
+#
+# Op codes passed as the saved scope vic3_todo_op (MakeScopeValue):
+#   vic3_todo_text_sgui     11-14 rewrite line 1-4, 15 add a line,
+#                           21 remove the last line
+#   vic3_todo_item_sgui     1 open/close the editor, 2 complete, 3 reopen,
+#                           4 delete (the GUI asks for confirmation first),
+#                           5 open the editor (from the Journal Entry)
+#   vic3_todo_edit_sgui     1 auto-complete, 2 ALL/ANY, 3 deadline on/off,
+#                           4 fail when overdue, 11-14 deadline -365/-30/+30/+365,
+#                           100+K add a tracker of kind K
+#   vic3_todo_tracker_sgui  1 open/close settings, 2 remove, 3 recapture
+#                           baseline, 11-14 mode, 21-26 goal -L/-M/-S/+S/+M/+L
+#   vic3_todo_pick_sgui     target index for the open tracker
+
+vic3_todo_new_sgui = {
+	scope = country
+	is_shown = { always = yes }
+	is_valid = {
+		custom_tooltip = {
+			text = vic3_todo_tt_no_input
+			vic3_todo_no_input = yes
+		}
+		custom_tooltip = {
+			text = vic3_todo_tt_has_room
+			vic3_todo_has_room = yes
+		}
+	}
+	effect = {
+		vic3_todo_carrier_open = { MODE = 1 }
+	}
+	ai_is_valid = { always = no }
+}
+
+vic3_todo_text_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_op }
+	is_shown = { always = yes }
+	is_valid = {
+		exists = scope:vic3_todo_op
+		vic3_todo_no_input = yes
+		vic3_todo_has_edit = yes
+		trigger_if = {
+			limit = { scope:vic3_todo_op = 15 }
+			var:vic3_todo_edit = { vic3_todo_lines_value < 4 }
+		}
+		trigger_else_if = {
+			limit = { scope:vic3_todo_op = 21 }
+			var:vic3_todo_edit = { vic3_todo_lines_value > 1 }
+		}
+		trigger_else_if = {
+			limit = { scope:vic3_todo_op = 12 }
+			var:vic3_todo_edit = { vic3_todo_lines_value >= 2 }
+		}
+		trigger_else_if = {
+			limit = { scope:vic3_todo_op = 13 }
+			var:vic3_todo_edit = { vic3_todo_lines_value >= 3 }
+		}
+		trigger_else_if = {
+			limit = { scope:vic3_todo_op = 14 }
+			var:vic3_todo_edit = { vic3_todo_lines_value >= 4 }
+		}
+	}
+	effect = {
+		if = {
+			limit = { scope:vic3_todo_op = 21 }
+			var:vic3_todo_edit = { vic3_todo_remove_last_line = yes }
+		}
+		else = {
+			if = {
+				limit = { scope:vic3_todo_op = 11 }
+				vic3_todo_carrier_open = { MODE = 11 }
+			}
+			else_if = {
+				limit = { scope:vic3_todo_op = 12 }
+				vic3_todo_carrier_open = { MODE = 12 }
+			}
+			else_if = {
+				limit = { scope:vic3_todo_op = 13 }
+				vic3_todo_carrier_open = { MODE = 13 }
+			}
+			else_if = {
+				limit = { scope:vic3_todo_op = 14 }
+				vic3_todo_carrier_open = { MODE = 14 }
+			}
+			else = {
+				vic3_todo_carrier_open = { MODE = 15 }
+			}
+			set_variable = { name = vic3_todo_in_target value = var:vic3_todo_edit }
+		}
+	}
+	ai_is_valid = { always = no }
+}
+
+# Stores the carrier's name as the popup opens, so the watcher can tell
+# when the player has confirmed a new one.
+vic3_todo_input_mark_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_text }
+	is_shown = { always = yes }
+	is_valid = {
+		has_variable = vic3_todo_in_active
+		NOT = { has_variable = vic3_todo_in_old }
+		exists = scope:vic3_todo_text
+	}
+	effect = {
+		if = {
+			limit = {
+				has_variable = vic3_todo_in_active
+				NOT = { has_variable = vic3_todo_in_old }
+			}
+			set_variable = { name = vic3_todo_in_old value = scope:vic3_todo_text }
+		}
+	}
+	ai_is_valid = { always = no }
+}
+
+# The typed text arrives as scope:vic3_todo_text, a flag made in the GUI
+# by MakeScopeFlag( <carrier company>.GetNameNoFormatting ).
+vic3_todo_input_commit_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_text }
+	is_shown = { always = yes }
+	is_valid = {
+		has_variable = vic3_todo_in_active
+		exists = scope:vic3_todo_text
+	}
+	effect = {
+		vic3_todo_carrier_commit = yes
+	}
+	ai_is_valid = { always = no }
+}
+
+vic3_todo_input_cancel_sgui = {
+	scope = country
+	is_shown = { always = yes }
+	is_valid = {
+		has_variable = vic3_todo_in_active
+	}
+	effect = {
+		vic3_todo_carrier_close = yes
+	}
+	ai_is_valid = { always = no }
+}
+
+vic3_todo_item_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_item vic3_todo_op }
+	is_shown = { always = yes }
+	is_valid = {
+		exists = scope:vic3_todo_item
+		exists = scope:vic3_todo_op
+		scope:vic3_todo_item = {
+			has_tag = vic3_todo
+			var:vic3_todo_owner ?= root
+		}
+		trigger_if = {
+			limit = { scope:vic3_todo_op = 2 }
+			scope:vic3_todo_item = { vic3_todo_is_active = yes }
+		}
+		trigger_else_if = {
+			limit = { scope:vic3_todo_op = 3 }
+			scope:vic3_todo_item = { vic3_todo_is_active = no }
+		}
+	}
+	effect = {
+		if = {
+			limit = { scope:vic3_todo_op = 1 }
+			if = {
+				limit = { scope:vic3_todo_item = { has_tag = vic3_todo_editing } }
+				vic3_todo_edit_close = yes
+			}
+			else = {
+				vic3_todo_edit_open = yes
+			}
+		}
+		else_if = {
+			limit = { scope:vic3_todo_op = 2 }
+			scope:vic3_todo_item = { vic3_todo_mark_done = yes }
+		}
+		else_if = {
+			limit = { scope:vic3_todo_op = 3 }
+			scope:vic3_todo_item = { vic3_todo_reopen = yes }
+		}
+		else_if = {
+			limit = { scope:vic3_todo_op = 4 }
+			vic3_todo_delete = yes
+		}
+		else_if = {
+			limit = { scope:vic3_todo_op = 5 }
+			vic3_todo_edit_open = yes
+		}
+	}
+	ai_is_valid = { always = no }
+}
+
+vic3_todo_edit_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_op }
+	is_shown = { always = yes }
+	is_valid = {
+		exists = scope:vic3_todo_op
+		vic3_todo_has_edit = yes
+		trigger_if = {
+			limit = { scope:vic3_todo_op >= 100 }
+			var:vic3_todo_edit = { vic3_todo_can_add_tracker = yes }
+		}
+		trigger_else_if = {
+			limit = {
+				OR = {
+					scope:vic3_todo_op = 4
+					scope:vic3_todo_op = 11
+					scope:vic3_todo_op = 12
+					scope:vic3_todo_op = 13
+					scope:vic3_todo_op = 14
+				}
+			}
+			var:vic3_todo_edit = { has_tag = vic3_todo_deadline_on }
+		}
+	}
+	effect = {
+		if = {
+			limit = { scope:vic3_todo_op >= 100 }
+			vic3_todo_tracker_add_by_op = yes
+		}
+		else = {
+			var:vic3_todo_edit = {
+				if = {
+					limit = { scope:vic3_todo_op = 1 }
+					vic3_todo_toggle_tag = { TAG = vic3_todo_auto }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 2 }
+					vic3_todo_toggle_tag = { TAG = vic3_todo_any }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 3 }
+					if = {
+						limit = { has_tag = vic3_todo_deadline_on }
+						vic3_todo_deadline_disable = yes
+					}
+					else = {
+						vic3_todo_deadline_enable = yes
+					}
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 4 }
+					vic3_todo_toggle_tag = { TAG = vic3_todo_fail_on_deadline }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 11 }
+					vic3_todo_deadline_move = { DAYS = -365 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 12 }
+					vic3_todo_deadline_move = { DAYS = -30 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 13 }
+					vic3_todo_deadline_move = { DAYS = 30 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 14 }
+					vic3_todo_deadline_move = { DAYS = 365 }
+				}
+			}
+		}
+	}
+	ai_is_valid = { always = no }
+}
+
+vic3_todo_tracker_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_item vic3_todo_op }
+	is_shown = { always = yes }
+	is_valid = {
+		exists = scope:vic3_todo_item
+		exists = scope:vic3_todo_op
+		scope:vic3_todo_item = {
+			has_tag = vic3_todo_tracker
+			var:vic3_todo_owner ?= root
+		}
+		trigger_if = {
+			limit = {
+				scope:vic3_todo_op >= 11
+				scope:vic3_todo_op <= 14
+			}
+			scope:vic3_todo_item = { vic3_todo_tr_discrete = no }
+		}
+		trigger_else_if = {
+			limit = { scope:vic3_todo_op >= 21 }
+			scope:vic3_todo_item = { vic3_todo_tr_discrete = no }
+		}
+	}
+	effect = {
+		if = {
+			limit = { scope:vic3_todo_op = 1 }
+			vic3_todo_tracker_toggle_edit = yes
+		}
+		else_if = {
+			limit = { scope:vic3_todo_op = 2 }
+			vic3_todo_tracker_remove = yes
+		}
+		else = {
+			scope:vic3_todo_item = {
+				if = {
+					limit = { scope:vic3_todo_op = 3 }
+					vic3_todo_tr_capture = yes
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 11 }
+					vic3_todo_tr_set_mode = { MODE = 1 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 12 }
+					vic3_todo_tr_set_mode = { MODE = 2 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 13 }
+					vic3_todo_tr_set_mode = { MODE = 3 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 14 }
+					vic3_todo_tr_set_mode = { MODE = 4 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 21 }
+					vic3_todo_tr_step_goal = { STEP = vic3_todo_tr_step_l SIGN = -1 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 22 }
+					vic3_todo_tr_step_goal = { STEP = vic3_todo_tr_step_m SIGN = -1 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 23 }
+					vic3_todo_tr_step_goal = { STEP = vic3_todo_tr_step_s SIGN = -1 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 24 }
+					vic3_todo_tr_step_goal = { STEP = vic3_todo_tr_step_s SIGN = 1 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 25 }
+					vic3_todo_tr_step_goal = { STEP = vic3_todo_tr_step_m SIGN = 1 }
+				}
+				else_if = {
+					limit = { scope:vic3_todo_op = 26 }
+					vic3_todo_tr_step_goal = { STEP = vic3_todo_tr_step_l SIGN = 1 }
+				}
+			}
+		}
+	}
+	ai_is_valid = { always = no }
+}
+
+# A target index for the open tracker; what the index means depends on the
+# tracker's kind (vic3_todo_tr_apply_target, generated).
+vic3_todo_pick_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_op }
+	is_shown = { always = yes }
+	is_valid = {
+		exists = scope:vic3_todo_op
+		vic3_todo_has_edit_tr = yes
+	}
+	effect = {
+		var:vic3_todo_edit_tr = {
+			vic3_todo_tr_set_target_idx = yes
+			vic3_todo_tr_apply_target = yes
+			vic3_todo_tr_target_changed = yes
+		}
+	}
+	ai_is_valid = { always = no }
+}
+
+# The relations target: scope:vic3_todo_pick is a country from the choice
+# list (vic3_todo_country_choices holds capitals; the GUI passes
+# Scope.GetState.GetCountry.MakeScope).
+vic3_todo_pick_country_sgui = {
+	scope = country
+	saved_scopes = { vic3_todo_pick }
+	is_shown = { always = yes }
+	is_valid = {
+		exists = scope:vic3_todo_pick
+		NOT = { scope:vic3_todo_pick = root }
+		vic3_todo_has_edit_tr = yes
+	}
+	effect = {
+		var:vic3_todo_edit_tr = {
+			set_variable = { name = vic3_todo_target value = scope:vic3_todo_pick }
+			set_variable = { name = vic3_todo_target_idx value = 1 }
+			scope:vic3_todo_pick = {
+				capital ?= { save_scope_as = vic3_todo_pick_capital }
+			}
+			if = {
+				limit = { exists = scope:vic3_todo_pick_capital }
+				set_variable = { name = vic3_todo_target_cap value = scope:vic3_todo_pick_capital }
+			}
+			vic3_todo_tr_target_changed = yes
+		}
+	}
+	ai_is_valid = { always = no }
+}
+
+vic3_todo_clear_finished_sgui = {
+	scope = country
+	is_shown = { always = yes }
+	is_valid = {
+		vic3_todo_n_finished > 0
+	}
+	effect = {
+		vic3_todo_clear_finished = yes
+	}
+	ai_is_valid = { always = no }
+}
+
+# Run when the window opens: automatic completion now (not only on the
+# weekly/monthly pulse) and a fresh list of relations targets.
+vic3_todo_refresh_sgui = {
+	scope = country
+	is_shown = { always = yes }
+	is_valid = { always = yes }
+	effect = {
+		vic3_todo_evaluate_all = yes
+		vic3_todo_build_country_choices = yes
+	}
+	ai_is_valid = { always = no }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Vic3 TODO - Custom Journals",
+  "id": "vic3_todo",
+  "version": "1.0.0",
+  "supported_game_version": "1.14.5",
+  "short_description": "Write your own Journal Entries: free text, live progress trackers, deadlines and automatic completion.",
+  "tags": ["Journal Entries", "Gameplay"],
+  "relationships": [],
+  "game_custom_data": {
+    "multiplayer_synchronized": true
+  }
+}

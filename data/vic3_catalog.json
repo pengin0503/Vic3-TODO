@@ -1,0 +1,2473 @@
+{
+ "buildings": [
+  {
+   "group": "bg_military_industry",
+   "idx": 1,
+   "key": "building_arms_industry"
+  },
+  {
+   "group": "bg_arts",
+   "idx": 2,
+   "key": "building_art_academy"
+  },
+  {
+   "group": "bg_military_industry",
+   "idx": 3,
+   "key": "building_artillery_foundry"
+  },
+  {
+   "group": "bg_heavy_industry",
+   "idx": 4,
+   "key": "building_automotive_industry"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 5,
+   "key": "building_banana_plantation"
+  },
+  {
+   "group": "bg_army",
+   "idx": 6,
+   "key": "building_barrack"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 7,
+   "key": "building_big_ben"
+  },
+  {
+   "group": "bg_heavy_industry",
+   "idx": 8,
+   "key": "building_chemical_plant"
+  },
+  {
+   "group": "bg_mining",
+   "idx": 9,
+   "key": "building_coal_mine"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 10,
+   "key": "building_coffee_plantation"
+  },
+  {
+   "group": "bg_construction",
+   "idx": 11,
+   "key": "building_construction_sector"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 12,
+   "key": "building_cotton_plantation"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 13,
+   "key": "building_cristo_redentor"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 14,
+   "key": "building_dye_plantation"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 15,
+   "key": "building_eiffel_tower"
+  },
+  {
+   "group": "bg_heavy_industry",
+   "idx": 16,
+   "key": "building_electrics_industry"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 17,
+   "key": "building_estacion_de_madrid_atocha"
+  },
+  {
+   "group": "bg_heavy_industry",
+   "idx": 18,
+   "key": "building_explosives_factory"
+  },
+  {
+   "group": "bg_fishing",
+   "idx": 19,
+   "key": "building_fishing_wharf"
+  },
+  {
+   "group": "bg_light_industry",
+   "idx": 20,
+   "key": "building_food_industry"
+  },
+  {
+   "group": "bg_light_industry",
+   "idx": 21,
+   "key": "building_furniture_manufactory"
+  },
+  {
+   "group": "bg_light_industry",
+   "idx": 22,
+   "key": "building_glassworks"
+  },
+  {
+   "group": "bg_mining",
+   "idx": 23,
+   "key": "building_gold_mine"
+  },
+  {
+   "group": "bg_bureaucracy",
+   "idx": 24,
+   "key": "building_government_administration"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 25,
+   "key": "building_gran_teatro_de_la_habana"
+  },
+  {
+   "group": "bg_mining",
+   "idx": 26,
+   "key": "building_iron_mine"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 27,
+   "key": "building_kaiserforum_1"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 28,
+   "key": "building_kaiserforum_2"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 29,
+   "key": "building_kaiserforum_3"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 30,
+   "key": "building_kaiserforum_4"
+  },
+  {
+   "group": "bg_canals",
+   "idx": 31,
+   "key": "building_kiel_canal"
+  },
+  {
+   "group": "bg_mining",
+   "idx": 32,
+   "key": "building_lead_mine"
+  },
+  {
+   "group": "bg_ranching",
+   "idx": 33,
+   "key": "building_livestock_ranch"
+  },
+  {
+   "group": "bg_logging",
+   "idx": 34,
+   "key": "building_logging_camp"
+  },
+  {
+   "group": "bg_staple_crops",
+   "idx": 35,
+   "key": "building_maize_farm"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 36,
+   "key": "building_manila_cathedral_monument"
+  },
+  {
+   "group": "bg_staple_crops",
+   "idx": 37,
+   "key": "building_millet_farm"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 38,
+   "key": "building_mosque_of_djenne"
+  },
+  {
+   "group": "bg_heavy_industry",
+   "idx": 39,
+   "key": "building_motor_industry"
+  },
+  {
+   "group": "bg_military_industry",
+   "idx": 40,
+   "key": "building_munition_plant"
+  },
+  {
+   "group": "bg_naval_administration",
+   "idx": 41,
+   "key": "building_naval_administration"
+  },
+  {
+   "group": "bg_naval_fortification",
+   "idx": 42,
+   "key": "building_naval_fortification"
+  },
+  {
+   "group": "bg_oil_extraction",
+   "idx": 43,
+   "key": "building_oil_rig"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 44,
+   "key": "building_opium_plantation"
+  },
+  {
+   "group": "bg_canals",
+   "idx": 45,
+   "key": "building_panama_canal"
+  },
+  {
+   "group": "bg_light_industry",
+   "idx": 46,
+   "key": "building_paper_mill"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 47,
+   "key": "building_pena_palace"
+  },
+  {
+   "group": "bg_private_infrastructure",
+   "idx": 48,
+   "key": "building_port"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 49,
+   "key": "building_power_bloc_statue"
+  },
+  {
+   "group": "bg_power",
+   "idx": 50,
+   "key": "building_power_plant"
+  },
+  {
+   "group": "bg_private_infrastructure",
+   "idx": 51,
+   "key": "building_railway"
+  },
+  {
+   "group": "bg_staple_crops",
+   "idx": 52,
+   "key": "building_rice_farm"
+  },
+  {
+   "group": "bg_rubber",
+   "idx": 53,
+   "key": "building_rubber_plantation"
+  },
+  {
+   "group": "bg_staple_crops",
+   "idx": 54,
+   "key": "building_rye_farm"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 55,
+   "key": "building_sagrada_familia_cathedral_1"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 56,
+   "key": "building_sagrada_familia_cathedral_2"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 57,
+   "key": "building_sagrada_familia_cathedral_3"
+  },
+  {
+   "group": "bg_ship_construction",
+   "idx": 58,
+   "key": "building_shipyard"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 59,
+   "key": "building_silk_plantation"
+  },
+  {
+   "group": "bg_skyscraper",
+   "idx": 60,
+   "key": "building_skyscraper"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 61,
+   "key": "building_statue_of_liberty"
+  },
+  {
+   "group": "bg_heavy_industry",
+   "idx": 62,
+   "key": "building_steel_mill"
+  },
+  {
+   "group": "bg_canals",
+   "idx": 63,
+   "key": "building_suez_canal"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 64,
+   "key": "building_sugar_plantation"
+  },
+  {
+   "group": "bg_mining",
+   "idx": 65,
+   "key": "building_sulfur_mine"
+  },
+  {
+   "group": "bg_heavy_industry",
+   "idx": 66,
+   "key": "building_synthetics_plant"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 67,
+   "key": "building_tea_plantation"
+  },
+  {
+   "group": "bg_light_industry",
+   "idx": 68,
+   "key": "building_textile_mill"
+  },
+  {
+   "group": "bg_plantations",
+   "idx": 69,
+   "key": "building_tobacco_plantation"
+  },
+  {
+   "group": "bg_light_industry",
+   "idx": 70,
+   "key": "building_tooling_workshop"
+  },
+  {
+   "group": "bg_trade",
+   "idx": 71,
+   "key": "building_trade_center"
+  },
+  {
+   "group": "bg_technology",
+   "idx": 72,
+   "key": "building_university"
+  },
+  {
+   "group": "bg_monuments",
+   "idx": 73,
+   "key": "building_victoria_terminus"
+  },
+  {
+   "group": "bg_agriculture",
+   "idx": 74,
+   "key": "building_vineyard"
+  },
+  {
+   "group": "bg_whaling",
+   "idx": 75,
+   "key": "building_whaling_station"
+  },
+  {
+   "group": "bg_staple_crops",
+   "idx": 76,
+   "key": "building_wheat_farm"
+  }
+ ],
+ "format": 1,
+ "goods": [
+  {
+   "idx": 1,
+   "key": "aeroplanes"
+  },
+  {
+   "idx": 2,
+   "key": "ammunition"
+  },
+  {
+   "idx": 3,
+   "key": "artillery"
+  },
+  {
+   "idx": 4,
+   "key": "automobiles"
+  },
+  {
+   "idx": 5,
+   "key": "clippers"
+  },
+  {
+   "idx": 6,
+   "key": "clothes"
+  },
+  {
+   "idx": 7,
+   "key": "coal"
+  },
+  {
+   "idx": 8,
+   "key": "coffee"
+  },
+  {
+   "idx": 9,
+   "key": "dye"
+  },
+  {
+   "idx": 10,
+   "key": "electricity"
+  },
+  {
+   "idx": 11,
+   "key": "engines"
+  },
+  {
+   "idx": 12,
+   "key": "explosives"
+  },
+  {
+   "idx": 13,
+   "key": "fabric"
+  },
+  {
+   "idx": 14,
+   "key": "fertilizer"
+  },
+  {
+   "idx": 15,
+   "key": "fine_art"
+  },
+  {
+   "idx": 16,
+   "key": "fish"
+  },
+  {
+   "idx": 17,
+   "key": "fruit"
+  },
+  {
+   "idx": 18,
+   "key": "furniture"
+  },
+  {
+   "idx": 19,
+   "key": "glass"
+  },
+  {
+   "idx": 20,
+   "key": "gold"
+  },
+  {
+   "idx": 21,
+   "key": "grain"
+  },
+  {
+   "idx": 22,
+   "key": "groceries"
+  },
+  {
+   "idx": 23,
+   "key": "hardwood"
+  },
+  {
+   "idx": 24,
+   "key": "iron"
+  },
+  {
+   "idx": 25,
+   "key": "ironclads"
+  },
+  {
+   "idx": 26,
+   "key": "lead"
+  },
+  {
+   "idx": 27,
+   "key": "liquor"
+  },
+  {
+   "idx": 28,
+   "key": "luxury_clothes"
+  },
+  {
+   "idx": 29,
+   "key": "luxury_furniture"
+  },
+  {
+   "idx": 30,
+   "key": "manowars"
+  },
+  {
+   "idx": 31,
+   "key": "meat"
+  },
+  {
+   "idx": 32,
+   "key": "merchant_marine"
+  },
+  {
+   "idx": 33,
+   "key": "oil"
+  },
+  {
+   "idx": 34,
+   "key": "opium"
+  },
+  {
+   "idx": 35,
+   "key": "paper"
+  },
+  {
+   "idx": 36,
+   "key": "porcelain"
+  },
+  {
+   "idx": 37,
+   "key": "radios"
+  },
+  {
+   "idx": 38,
+   "key": "rubber"
+  },
+  {
+   "idx": 39,
+   "key": "services"
+  },
+  {
+   "idx": 40,
+   "key": "silk"
+  },
+  {
+   "idx": 41,
+   "key": "small_arms"
+  },
+  {
+   "idx": 42,
+   "key": "steamers"
+  },
+  {
+   "idx": 43,
+   "key": "steel"
+  },
+  {
+   "idx": 44,
+   "key": "sugar"
+  },
+  {
+   "idx": 45,
+   "key": "sulfur"
+  },
+  {
+   "idx": 46,
+   "key": "tanks"
+  },
+  {
+   "idx": 47,
+   "key": "tea"
+  },
+  {
+   "idx": 48,
+   "key": "telephones"
+  },
+  {
+   "idx": 49,
+   "key": "tobacco"
+  },
+  {
+   "idx": 50,
+   "key": "tools"
+  },
+  {
+   "idx": 51,
+   "key": "transportation"
+  },
+  {
+   "idx": 52,
+   "key": "wine"
+  },
+  {
+   "idx": 53,
+   "key": "wood"
+  }
+ ],
+ "interest_groups": [
+  {
+   "idx": 1,
+   "key": "ig_armed_forces"
+  },
+  {
+   "idx": 2,
+   "key": "ig_devout"
+  },
+  {
+   "idx": 3,
+   "key": "ig_industrialists"
+  },
+  {
+   "idx": 4,
+   "key": "ig_intelligentsia"
+  },
+  {
+   "idx": 5,
+   "key": "ig_landowners"
+  },
+  {
+   "idx": 6,
+   "key": "ig_petty_bourgeoisie"
+  },
+  {
+   "idx": 7,
+   "key": "ig_rural_folk"
+  },
+  {
+   "idx": 8,
+   "key": "ig_trade_unions"
+  }
+ ],
+ "laws": [
+  {
+   "group": "lawgroup_caste_hegemony",
+   "idx": 1,
+   "key": "law_affirmative_action"
+  },
+  {
+   "group": "lawgroup_economic_system",
+   "idx": 2,
+   "key": "law_agrarianism"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 3,
+   "key": "law_anarchy"
+  },
+  {
+   "group": "lawgroup_labour_associations",
+   "idx": 4,
+   "key": "law_anti_strike_laws"
+  },
+  {
+   "group": "lawgroup_bureaucracy",
+   "idx": 5,
+   "key": "law_appointed_bureaucrats"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 6,
+   "key": "law_autocracy"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 7,
+   "key": "law_bakufu"
+  },
+  {
+   "group": "lawgroup_trade_policy",
+   "idx": 8,
+   "key": "law_canton_system"
+  },
+  {
+   "group": "lawgroup_free_speech",
+   "idx": 9,
+   "key": "law_censorship"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 10,
+   "key": "law_census_voting"
+  },
+  {
+   "group": "lawgroup_health_system",
+   "idx": 11,
+   "key": "law_charitable_health_system"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 12,
+   "key": "law_chiefdom"
+  },
+  {
+   "group": "lawgroup_welfare",
+   "idx": 13,
+   "key": "law_chiefs_distribute_aid"
+  },
+  {
+   "group": "lawgroup_childrens_rights",
+   "idx": 14,
+   "key": "law_child_labor_allowed"
+  },
+  {
+   "group": "lawgroup_migration",
+   "idx": 15,
+   "key": "law_closed_borders"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 16,
+   "key": "law_collectivized_agriculture"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 17,
+   "key": "law_colonial_administration"
+  },
+  {
+   "group": "lawgroup_colonization",
+   "idx": 18,
+   "key": "law_colonial_exploitation"
+  },
+  {
+   "group": "lawgroup_colonization",
+   "idx": 19,
+   "key": "law_colonial_resettlement"
+  },
+  {
+   "group": "lawgroup_slavery",
+   "idx": 20,
+   "key": "law_colonial_slavery"
+  },
+  {
+   "group": "lawgroup_labour_associations",
+   "idx": 21,
+   "key": "law_combination_acts"
+  },
+  {
+   "group": "lawgroup_economic_system",
+   "idx": 22,
+   "key": "law_command_economy"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 23,
+   "key": "law_commercialized_agriculture"
+  },
+  {
+   "group": "lawgroup_childrens_rights",
+   "idx": 24,
+   "key": "law_compulsory_primary_school"
+  },
+  {
+   "group": "lawgroup_taxation",
+   "idx": 25,
+   "key": "law_consumption_based_taxation"
+  },
+  {
+   "group": "lawgroup_economic_system",
+   "idx": 26,
+   "key": "law_cooperative_ownership"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 27,
+   "key": "law_corporate_state"
+  },
+  {
+   "group": "lawgroup_labour_associations",
+   "idx": 28,
+   "key": "law_corporatized_unions"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 29,
+   "key": "law_council_republic"
+  },
+  {
+   "group": "lawgroup_bureaucracy",
+   "idx": 30,
+   "key": "law_crownland_diets"
+  },
+  {
+   "group": "lawgroup_citizenship",
+   "idx": 31,
+   "key": "law_cultural_exclusion"
+  },
+  {
+   "group": "lawgroup_slavery",
+   "idx": 32,
+   "key": "law_debt_slavery"
+  },
+  {
+   "group": "lawgroup_policing",
+   "idx": 33,
+   "key": "law_dedicated_police"
+  },
+  {
+   "group": "lawgroup_navy_model",
+   "idx": 34,
+   "key": "law_diplomatic_navy"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 35,
+   "key": "law_elder_council"
+  },
+  {
+   "group": "lawgroup_bureaucracy",
+   "idx": 36,
+   "key": "law_elected_bureaucrats"
+  },
+  {
+   "group": "lawgroup_citizenship",
+   "idx": 37,
+   "key": "law_ethnostate"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 38,
+   "key": "law_expanded_latifundias"
+  },
+  {
+   "group": "lawgroup_economic_system",
+   "idx": 39,
+   "key": "law_extraction_economy"
+  },
+  {
+   "group": "lawgroup_labour_associations",
+   "idx": 40,
+   "key": "law_factory_councils"
+  },
+  {
+   "group": "lawgroup_trade_policy",
+   "idx": 41,
+   "key": "law_free_trade"
+  },
+  {
+   "group": "lawgroup_church_and_state",
+   "idx": 42,
+   "key": "law_freedom_of_conscience"
+  },
+  {
+   "group": "lawgroup_colonization",
+   "idx": 43,
+   "key": "law_frontier_colonization"
+  },
+  {
+   "group": "lawgroup_taxation",
+   "idx": 44,
+   "key": "law_graduated_taxation"
+  },
+  {
+   "group": "lawgroup_internal_security",
+   "idx": 45,
+   "key": "law_guaranteed_liberties"
+  },
+  {
+   "group": "lawgroup_labour_associations",
+   "idx": 46,
+   "key": "law_guild_system"
+  },
+  {
+   "group": "lawgroup_bureaucracy",
+   "idx": 47,
+   "key": "law_hereditary_bureaucrats"
+  },
+  {
+   "group": "lawgroup_caste_hegemony",
+   "idx": 48,
+   "key": "law_hindu_caste_codified"
+  },
+  {
+   "group": "lawgroup_caste_hegemony",
+   "idx": 49,
+   "key": "law_hindu_caste_enforced"
+  },
+  {
+   "group": "lawgroup_caste_hegemony",
+   "idx": 50,
+   "key": "law_hindu_caste_not_enforced"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 51,
+   "key": "law_homesteading"
+  },
+  {
+   "group": "lawgroup_economic_system",
+   "idx": 52,
+   "key": "law_industry_banned"
+  },
+  {
+   "group": "lawgroup_edo_social_system",
+   "idx": 53,
+   "key": "law_intermediate_edo_system"
+  },
+  {
+   "group": "lawgroup_economic_system",
+   "idx": 54,
+   "key": "law_interventionism"
+  },
+  {
+   "group": "lawgroup_trade_policy",
+   "idx": 55,
+   "key": "law_isolationism"
+  },
+  {
+   "group": "lawgroup_navy_model",
+   "idx": 56,
+   "key": "law_jeune_ecole"
+  },
+  {
+   "group": "lawgroup_economic_system",
+   "idx": 57,
+   "key": "law_laissez_faire"
+  },
+  {
+   "group": "lawgroup_taxation",
+   "idx": 58,
+   "key": "law_land_based_taxation"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 59,
+   "key": "law_landed_voting"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 60,
+   "key": "law_latifundias"
+  },
+  {
+   "group": "lawgroup_edo_social_system",
+   "idx": 61,
+   "key": "law_lax_edo_system"
+  },
+  {
+   "group": "lawgroup_slavery",
+   "idx": 62,
+   "key": "law_legacy_slavery"
+  },
+  {
+   "group": "lawgroup_policing",
+   "idx": 63,
+   "key": "law_local_police"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 64,
+   "key": "law_manorialism"
+  },
+  {
+   "group": "lawgroup_army_model",
+   "idx": 65,
+   "key": "law_mass_conscription"
+  },
+  {
+   "group": "lawgroup_trade_policy",
+   "idx": 66,
+   "key": "law_mercantilism"
+  },
+  {
+   "group": "lawgroup_navy_model",
+   "idx": 67,
+   "key": "law_merchant_navy"
+  },
+  {
+   "group": "lawgroup_migration",
+   "idx": 68,
+   "key": "law_migration_controls"
+  },
+  {
+   "group": "lawgroup_policing",
+   "idx": 69,
+   "key": "law_militarized_police"
+  },
+  {
+   "group": "lawgroup_church_and_state",
+   "idx": 70,
+   "key": "law_millet_system"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 71,
+   "key": "law_monarchy"
+  },
+  {
+   "group": "lawgroup_citizenship",
+   "idx": 72,
+   "key": "law_multicultural"
+  },
+  {
+   "group": "lawgroup_internal_security",
+   "idx": 73,
+   "key": "law_national_guard"
+  },
+  {
+   "group": "lawgroup_army_model",
+   "idx": 74,
+   "key": "law_national_militia"
+  },
+  {
+   "group": "lawgroup_citizenship",
+   "idx": 75,
+   "key": "law_national_supremacy"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 76,
+   "key": "law_neo_absolutism"
+  },
+  {
+   "group": "lawgroup_colonization",
+   "idx": 77,
+   "key": "law_no_colonial_affairs"
+  },
+  {
+   "group": "lawgroup_health_system",
+   "idx": 78,
+   "key": "law_no_health_system"
+  },
+  {
+   "group": "lawgroup_internal_security",
+   "idx": 79,
+   "key": "law_no_home_affairs"
+  },
+  {
+   "group": "lawgroup_migration",
+   "idx": 80,
+   "key": "law_no_migration_controls"
+  },
+  {
+   "group": "lawgroup_policing",
+   "idx": 81,
+   "key": "law_no_police"
+  },
+  {
+   "group": "lawgroup_education_system",
+   "idx": 82,
+   "key": "law_no_schools"
+  },
+  {
+   "group": "lawgroup_welfare",
+   "idx": 83,
+   "key": "law_no_social_security"
+  },
+  {
+   "group": "lawgroup_rights_of_women",
+   "idx": 84,
+   "key": "law_no_womens_rights"
+  },
+  {
+   "group": "lawgroup_labor_rights",
+   "idx": 85,
+   "key": "law_no_workers_rights"
+  },
+  {
+   "group": "lawgroup_welfare",
+   "idx": 86,
+   "key": "law_old_age_pension"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 87,
+   "key": "law_oligarchy"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 88,
+   "key": "law_organic_regulation"
+  },
+  {
+   "group": "lawgroup_free_speech",
+   "idx": 89,
+   "key": "law_outlawed_dissent"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 90,
+   "key": "law_parliamentary_republic"
+  },
+  {
+   "group": "lawgroup_army_model",
+   "idx": 91,
+   "key": "law_peasant_levies"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 92,
+   "key": "law_peasant_proprietorship"
+  },
+  {
+   "group": "lawgroup_church_and_state",
+   "idx": 93,
+   "key": "law_people_of_the_book"
+  },
+  {
+   "group": "lawgroup_taxation",
+   "idx": 94,
+   "key": "law_per_capita_based_taxation"
+  },
+  {
+   "group": "lawgroup_welfare",
+   "idx": 95,
+   "key": "law_poor_laws"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 96,
+   "key": "law_presidential_republic"
+  },
+  {
+   "group": "lawgroup_health_system",
+   "idx": 97,
+   "key": "law_private_health_insurance"
+  },
+  {
+   "group": "lawgroup_education_system",
+   "idx": 98,
+   "key": "law_private_schools"
+  },
+  {
+   "group": "lawgroup_army_model",
+   "idx": 99,
+   "key": "law_professional_army"
+  },
+  {
+   "group": "lawgroup_navy_model",
+   "idx": 100,
+   "key": "law_professional_navy"
+  },
+  {
+   "group": "lawgroup_taxation",
+   "idx": 101,
+   "key": "law_proportional_taxation"
+  },
+  {
+   "group": "lawgroup_free_speech",
+   "idx": 102,
+   "key": "law_protected_speech"
+  },
+  {
+   "group": "lawgroup_trade_policy",
+   "idx": 103,
+   "key": "law_protectionism"
+  },
+  {
+   "group": "lawgroup_health_system",
+   "idx": 104,
+   "key": "law_public_health_insurance"
+  },
+  {
+   "group": "lawgroup_education_system",
+   "idx": 105,
+   "key": "law_public_schools"
+  },
+  {
+   "group": "lawgroup_citizenship",
+   "idx": 106,
+   "key": "law_racial_segregation"
+  },
+  {
+   "group": "lawgroup_labor_rights",
+   "idx": 107,
+   "key": "law_regulatory_bodies"
+  },
+  {
+   "group": "lawgroup_education_system",
+   "idx": 108,
+   "key": "law_religious_schools"
+  },
+  {
+   "group": "lawgroup_childrens_rights",
+   "idx": 109,
+   "key": "law_restricted_child_labor"
+  },
+  {
+   "group": "lawgroup_free_speech",
+   "idx": 110,
+   "key": "law_right_of_assembly"
+  },
+  {
+   "group": "lawgroup_labour_associations",
+   "idx": 111,
+   "key": "law_right_to_associate"
+  },
+  {
+   "group": "lawgroup_trade_policy",
+   "idx": 112,
+   "key": "law_sakoku"
+  },
+  {
+   "group": "lawgroup_internal_security",
+   "idx": 113,
+   "key": "law_secret_police"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 114,
+   "key": "law_serfdom"
+  },
+  {
+   "group": "lawgroup_internal_security",
+   "idx": 115,
+   "key": "law_shinsengumi"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 116,
+   "key": "law_single_party_state"
+  },
+  {
+   "group": "lawgroup_slavery",
+   "idx": 117,
+   "key": "law_slave_trade"
+  },
+  {
+   "group": "lawgroup_slavery",
+   "idx": 118,
+   "key": "law_slavery_banned"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 119,
+   "key": "law_social_monarchy"
+  },
+  {
+   "group": "lawgroup_church_and_state",
+   "idx": 120,
+   "key": "law_state_atheism"
+  },
+  {
+   "group": "lawgroup_church_and_state",
+   "idx": 121,
+   "key": "law_state_religion"
+  },
+  {
+   "group": "lawgroup_edo_social_system",
+   "idx": 122,
+   "key": "law_strict_edo_system"
+  },
+  {
+   "group": "lawgroup_citizenship",
+   "idx": 123,
+   "key": "law_subjecthood"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 124,
+   "key": "law_technocracy"
+  },
+  {
+   "group": "lawgroup_land_reform",
+   "idx": 125,
+   "key": "law_tenant_farmers"
+  },
+  {
+   "group": "lawgroup_education_system",
+   "idx": 126,
+   "key": "law_terakoya"
+  },
+  {
+   "group": "lawgroup_governance_principles",
+   "idx": 127,
+   "key": "law_theocracy"
+  },
+  {
+   "group": "lawgroup_church_and_state",
+   "idx": 128,
+   "key": "law_total_separation"
+  },
+  {
+   "group": "lawgroup_economic_system",
+   "idx": 129,
+   "key": "law_traditionalism"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 130,
+   "key": "law_universal_suffrage"
+  },
+  {
+   "group": "lawgroup_welfare",
+   "idx": 131,
+   "key": "law_wage_subsidies"
+  },
+  {
+   "group": "lawgroup_army_model",
+   "idx": 132,
+   "key": "law_warrior_caste"
+  },
+  {
+   "group": "lawgroup_distribution_of_power",
+   "idx": 133,
+   "key": "law_wealth_voting"
+  },
+  {
+   "group": "lawgroup_rights_of_women",
+   "idx": 134,
+   "key": "law_women_in_the_fields"
+  },
+  {
+   "group": "lawgroup_rights_of_women",
+   "idx": 135,
+   "key": "law_women_in_the_workplace"
+  },
+  {
+   "group": "lawgroup_rights_of_women",
+   "idx": 136,
+   "key": "law_women_own_property"
+  },
+  {
+   "group": "lawgroup_rights_of_women",
+   "idx": 137,
+   "key": "law_womens_suffrage"
+  },
+  {
+   "group": "lawgroup_labor_rights",
+   "idx": 138,
+   "key": "law_worker_protections"
+  }
+ ],
+ "provenance": {
+  "buildings": {
+   "kind": "archive",
+   "name": "527ffbca-Vic3_todo_source.zip",
+   "section_count": 76,
+   "sha256": "645b43686ad86db50434bbc1fd1dedf97ed3606f48cad5f32de22b11f4e39d7e"
+  },
+  "goods": {
+   "kind": "parsed-vanilla",
+   "name": "1.14.5 parsed vanilla JSON",
+   "section_count": 53,
+   "source_section_count": 0
+  },
+  "interest_groups": {
+   "kind": "parsed-vanilla",
+   "name": "1.14.5 parsed vanilla JSON",
+   "section_count": 8,
+   "source_section_count": 0
+  },
+  "laws": {
+   "kind": "archive",
+   "name": "527ffbca-Vic3_todo_source.zip",
+   "section_count": 138,
+   "sha256": "645b43686ad86db50434bbc1fd1dedf97ed3606f48cad5f32de22b11f4e39d7e"
+  },
+  "ranks": {
+   "kind": "parsed-vanilla",
+   "name": "1.14.5 parsed vanilla JSON",
+   "section_count": 8,
+   "source_section_count": 0
+  },
+  "technologies": {
+   "kind": "archive",
+   "name": "527ffbca-Vic3_todo_source.zip",
+   "section_count": 179,
+   "sha256": "645b43686ad86db50434bbc1fd1dedf97ed3606f48cad5f32de22b11f4e39d7e"
+  }
+ },
+ "ranks": [
+  {
+   "key": "decentralized_power",
+   "rank_value": 0
+  },
+  {
+   "key": "unrecognized_power",
+   "rank_value": 1
+  },
+  {
+   "key": "insignificant_power",
+   "rank_value": 2
+  },
+  {
+   "key": "unrecognized_regional_power",
+   "rank_value": 3
+  },
+  {
+   "key": "minor_power",
+   "rank_value": 4
+  },
+  {
+   "key": "unrecognized_major_power",
+   "rank_value": 5
+  },
+  {
+   "key": "major_power",
+   "rank_value": 6
+  },
+  {
+   "key": "great_power",
+   "rank_value": 7
+  }
+ ],
+ "technologies": [
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 1,
+   "key": "academia"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 2,
+   "key": "admiralty"
+  },
+  {
+   "category": "society",
+   "era": "era_5",
+   "idx": 3,
+   "key": "analytical_philosophy"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 4,
+   "key": "anarchism"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 5,
+   "key": "aniline"
+  },
+  {
+   "category": "society",
+   "era": "era_5",
+   "idx": 6,
+   "key": "antibiotics"
+  },
+  {
+   "category": "production",
+   "era": "era_5",
+   "idx": 7,
+   "key": "arc_welding"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 8,
+   "key": "army_reserves"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 9,
+   "key": "art_silk"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 10,
+   "key": "artillery"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 11,
+   "key": "atmospheric_engine"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 12,
+   "key": "automatic_bottle_blowers"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 13,
+   "key": "automatic_machine_guns"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 14,
+   "key": "baking_powder"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 15,
+   "key": "banking"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 16,
+   "key": "battlefleet_tactics"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 17,
+   "key": "battleship_tech"
+  },
+  {
+   "category": "society",
+   "era": "era_5",
+   "idx": 18,
+   "key": "behaviorism"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 19,
+   "key": "bessemer_process"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 20,
+   "key": "bolt_action_rifles"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 21,
+   "key": "breech_loading_artillery"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 22,
+   "key": "camera"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 23,
+   "key": "canneries"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 24,
+   "key": "carrier_tech"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 25,
+   "key": "central_archives"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 26,
+   "key": "central_banking"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 27,
+   "key": "central_planning"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 28,
+   "key": "centralization"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 29,
+   "key": "chemical_bleaching"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 30,
+   "key": "chemical_warfare"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 31,
+   "key": "civilizing_mission"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 32,
+   "key": "colonization"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 33,
+   "key": "combustion_engine"
+  },
+  {
+   "category": "production",
+   "era": "era_5",
+   "idx": 34,
+   "key": "compression_ignition"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 35,
+   "key": "concrete_dockyards"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 36,
+   "key": "concrete_fortifications"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 37,
+   "key": "conveyors"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 38,
+   "key": "corporate_charters"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 39,
+   "key": "corporate_management"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 40,
+   "key": "corporatism"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 41,
+   "key": "cotton_gin"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 42,
+   "key": "crystal_glass"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 43,
+   "key": "currency_standards"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 44,
+   "key": "defense_in_depth"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 45,
+   "key": "democracy"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 46,
+   "key": "destroyer"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 47,
+   "key": "dialectics"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 48,
+   "key": "distillation"
+  },
+  {
+   "category": "production",
+   "era": "era_5",
+   "idx": 49,
+   "key": "dough_rollers"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 50,
+   "key": "dreadnought_tech"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 51,
+   "key": "drydocks"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 52,
+   "key": "dynamite"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 53,
+   "key": "egalitarianism"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 54,
+   "key": "electric_arc_process"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 55,
+   "key": "electric_railway"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 56,
+   "key": "electric_telegraph"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 57,
+   "key": "electrical_capacitors"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 58,
+   "key": "electrical_generation"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 59,
+   "key": "elevator"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 60,
+   "key": "empiricism"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 61,
+   "key": "enclosure"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 62,
+   "key": "enlistment_offices"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 63,
+   "key": "feminism"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 64,
+   "key": "field_works"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 65,
+   "key": "film"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 66,
+   "key": "flamethrowers"
+  },
+  {
+   "category": "production",
+   "era": "era_5",
+   "idx": 67,
+   "key": "flash_freezing"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 68,
+   "key": "floating_harbor"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 69,
+   "key": "fractional_distillation"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 70,
+   "key": "gantry_cranes"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 71,
+   "key": "general_staff"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 72,
+   "key": "gunsmithing"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 73,
+   "key": "handcranked_machine_gun"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 74,
+   "key": "human_rights"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 75,
+   "key": "hydraulic_cranes"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 76,
+   "key": "identification_documents"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 77,
+   "key": "improved_fertilizer"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 78,
+   "key": "intensive_agriculture"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 79,
+   "key": "international_exchange_standards"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 80,
+   "key": "international_relations"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 81,
+   "key": "international_trade"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 82,
+   "key": "investment_banks"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 83,
+   "key": "ironclad_tech"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 84,
+   "key": "jeune_ecole"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 85,
+   "key": "joint_stock_companies"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 86,
+   "key": "labor_movement"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 87,
+   "key": "landing_craft"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 88,
+   "key": "lathe"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 89,
+   "key": "law_enforcement"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 90,
+   "key": "line_infantry"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 91,
+   "key": "logistics"
+  },
+  {
+   "category": "society",
+   "era": "era_5",
+   "idx": 92,
+   "key": "macroeconomics"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 93,
+   "key": "malaria_prevention"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 94,
+   "key": "mandatory_service"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 95,
+   "key": "manufacturies"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 96,
+   "key": "mass_communication"
+  },
+  {
+   "category": "society",
+   "era": "era_5",
+   "idx": 97,
+   "key": "mass_propaganda"
+  },
+  {
+   "category": "society",
+   "era": "era_5",
+   "idx": 98,
+   "key": "mass_surveillance"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 99,
+   "key": "mechanical_tools"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 100,
+   "key": "mechanized_farming"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 101,
+   "key": "mechanized_workshops"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 102,
+   "key": "medical_degrees"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 103,
+   "key": "military_aviation"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 104,
+   "key": "military_drill"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 105,
+   "key": "military_statistics"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 106,
+   "key": "mobile_armor"
+  },
+  {
+   "category": "society",
+   "era": "era_5",
+   "idx": 107,
+   "key": "modern_financial_instruments"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 108,
+   "key": "modern_nursing"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 109,
+   "key": "modern_sewerage"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 110,
+   "key": "monitor_tech"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 111,
+   "key": "multilateral_alliances"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 112,
+   "key": "mutual_funds"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 113,
+   "key": "napoleonic_warfare"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 114,
+   "key": "nationalism"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 115,
+   "key": "navigation"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 116,
+   "key": "nco_training"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 117,
+   "key": "nitrogen_fixation"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 118,
+   "key": "nitroglycerin"
+  },
+  {
+   "category": "production",
+   "era": "era_5",
+   "idx": 119,
+   "key": "oil_turbine"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 120,
+   "key": "open_hearth_process"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 121,
+   "key": "organized_sports"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 122,
+   "key": "paddle_steamer"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 123,
+   "key": "pan-nationalism"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 124,
+   "key": "pasteurization"
+  },
+  {
+   "category": "society",
+   "era": "era_5",
+   "idx": 125,
+   "key": "paved_roads"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 126,
+   "key": "percussion_cap"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 127,
+   "key": "pharmaceuticals"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 128,
+   "key": "philosophical_pragmatism"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 129,
+   "key": "plastics"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 130,
+   "key": "pneumatic_tools"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 131,
+   "key": "political_agitation"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 132,
+   "key": "postal_savings"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 133,
+   "key": "power_of_the_purse"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 134,
+   "key": "pre_dreadnought_tech"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 135,
+   "key": "prospecting"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 136,
+   "key": "psychiatry"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 137,
+   "key": "psychoanalysis"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 138,
+   "key": "pumpjacks"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 139,
+   "key": "quinine"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 140,
+   "key": "radio"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 141,
+   "key": "railways"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 142,
+   "key": "rationalism"
+  },
+  {
+   "category": "society",
+   "era": "era_2",
+   "idx": 143,
+   "key": "realism"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 144,
+   "key": "reinforced_concrete"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 145,
+   "key": "repeaters"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 146,
+   "key": "rifling"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 147,
+   "key": "romanticism"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 148,
+   "key": "rotary_valve_engine"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 149,
+   "key": "rubber_mastication"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 150,
+   "key": "screw_frigate"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 151,
+   "key": "sea_lane_strategies"
+  },
+  {
+   "category": "military",
+   "era": "era_3",
+   "idx": 152,
+   "key": "self_propelled_torpedoes"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 153,
+   "key": "sericulture"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 154,
+   "key": "shaft_mining"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 155,
+   "key": "shell_gun"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 156,
+   "key": "shift_work"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 157,
+   "key": "socialism"
+  },
+  {
+   "category": "military",
+   "era": "era_1",
+   "idx": 158,
+   "key": "standing_army"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 159,
+   "key": "steam_donkey"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 160,
+   "key": "steam_turbine"
+  },
+  {
+   "category": "society",
+   "era": "era_3",
+   "idx": 161,
+   "key": "steel_frame_buildings"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 162,
+   "key": "steel_railway_cars"
+  },
+  {
+   "category": "production",
+   "era": "era_1",
+   "idx": 163,
+   "key": "steelworking"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 164,
+   "key": "stock_exchange"
+  },
+  {
+   "category": "military",
+   "era": "era_5",
+   "idx": 165,
+   "key": "stormtroopers"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 166,
+   "key": "submarine"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 167,
+   "key": "tech_bureaucracy"
+  },
+  {
+   "category": "production",
+   "era": "era_4",
+   "idx": 168,
+   "key": "telephone"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 169,
+   "key": "threshing_machine"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 170,
+   "key": "trench_works"
+  },
+  {
+   "category": "military",
+   "era": "era_2",
+   "idx": 171,
+   "key": "triage"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 172,
+   "key": "urban_planning"
+  },
+  {
+   "category": "society",
+   "era": "era_1",
+   "idx": 173,
+   "key": "urbanization"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 174,
+   "key": "vacuum_canning"
+  },
+  {
+   "category": "production",
+   "era": "era_3",
+   "idx": 175,
+   "key": "vulcanization"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 176,
+   "key": "war_propaganda"
+  },
+  {
+   "category": "military",
+   "era": "era_4",
+   "idx": 177,
+   "key": "wargaming"
+  },
+  {
+   "category": "production",
+   "era": "era_2",
+   "idx": 178,
+   "key": "watertube_boiler"
+  },
+  {
+   "category": "society",
+   "era": "era_4",
+   "idx": 179,
+   "key": "zeppelins"
+  }
+ ]
+}

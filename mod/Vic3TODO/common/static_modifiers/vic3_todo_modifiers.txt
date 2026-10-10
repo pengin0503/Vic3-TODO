@@ -1,0 +1,7 @@
+﻿# Vic3 TODO: the company slot the input carrier takes while the player types,
+# so typing a TODO never uses up a real company slot. On the country only
+# while the carrier exists.
+vic3_todo_carrier_slot = {
+	icon = "gfx/interface/icons/timed_modifier_icons/modifier_documents_positive.dds"
+	country_max_companies_add = 1
+}

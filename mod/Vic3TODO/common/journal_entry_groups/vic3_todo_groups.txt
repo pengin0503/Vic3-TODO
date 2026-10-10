@@ -1,0 +1,4 @@
+﻿# Vic3 TODO: the Journal group the player's own journals are listed under.
+je_group_vic3_todo = {
+	context = country
+}

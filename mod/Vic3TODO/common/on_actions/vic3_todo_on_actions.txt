@@ -1,0 +1,21 @@
+﻿# Vic3 TODO: monthly upkeep for countries that have journals (automatic
+# completion, deadline failure, abandoned inputs). Other countries leave at
+# the first check. Each slot's Journal Entry also checks its own journal
+# weekly (vic3_todo_generated_journal_entries.txt).
+on_monthly_pulse_country = {
+	on_actions = {
+		vic3_todo_monthly_on_action
+	}
+}
+
+vic3_todo_monthly_on_action = {
+	trigger = {
+		OR = {
+			has_variable_list = vic3_todo_items
+			has_variable = vic3_todo_in_active
+		}
+	}
+	effect = {
+		vic3_todo_monthly = yes
+	}
+}

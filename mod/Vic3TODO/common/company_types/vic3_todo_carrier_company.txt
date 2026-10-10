@@ -1,0 +1,41 @@
+﻿# Vic3 TODO: the text-input carrier.
+#
+# A mod's own editbox cannot hand its text to script in 1.14 (its text is a
+# CUTF8String, which nothing converts to the CString that MakeScopeFlag
+# takes). The base game's company-rename popup can: it stores the typed name
+# on the company, and Company.GetNameNoFormatting returns a CString. So while
+# the player types a TODO, the country owns this placeholder company; the
+# typed name is copied into a flag variable on the TODO and the company is
+# removed again (vic3_todo_carrier_close). The text is never *stored* on the
+# company. Precedent and in-game test: docs/design/text-input.md.
+#
+# Shown only while an input is open (vic3_todo_in_active), never used by AI.
+# Its one building type is a placeholder that is never built.
+company_vic3_todo_carrier = {
+	icon = "gfx/interface/icons/company_icons/basic_construction.dds"
+	background = "gfx/interface/icons/company_icons/company_backgrounds/comp_illu_manufacturing_light.dds"
+
+	category = bureaucrat_owned
+	flavored_company = no
+	uses_dynamic_naming = no
+
+	building_types = {
+		building_vic3_todo_carrier_anchor
+	}
+
+	potential = {
+		has_variable = vic3_todo_in_active
+	}
+	attainable = {
+		always = yes
+	}
+	possible = {
+		always = yes
+	}
+
+	prosperity_modifier = { }
+
+	ai_will_do = {
+		always = no
+	}
+}

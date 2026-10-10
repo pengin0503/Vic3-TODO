@@ -1,0 +1,652 @@
+﻿# Vic3 TODO: scripted effects (hand-written part).
+# Generated helpers (per-slot Journal Entry binding, per-kind targets,
+# country choices) are in vic3_todo_generated_effects.txt.
+#
+# Every effect only touches vic3_todo_* variables, tags and containers, the
+# Journal Entries je_vic3_todo_<n>, and - while the player types - the input
+# carrier company and its slot modifier. Nothing else in the simulation.
+
+### ---- text input through the company-rename popup ----------------------
+#
+# vic3_todo_in_active   flag: an input is open
+# vic3_todo_in_mode     1 new journal, 11-14 rewrite line 1-4, 15 add a line
+# vic3_todo_in_target   the todo being edited (modes 11-15)
+# vic3_todo_in_carrier  the carrier company
+# vic3_todo_in_old      the carrier's name when the popup opened (flag)
+# vic3_todo_in_started  game_date the input opened (the monthly sweep)
+
+# country scope. $MODE$ as above. Caller checks vic3_todo_no_input.
+vic3_todo_carrier_open = {
+	# Before add_company: the company type's potential reads it.
+	set_variable = vic3_todo_in_active
+	set_variable = { name = vic3_todo_in_mode value = $MODE$ }
+	set_variable = { name = vic3_todo_in_started value = game_date }
+	add_modifier = { name = vic3_todo_carrier_slot }
+	add_company = company_type:company_vic3_todo_carrier
+	capital ?= {
+		state_region = { save_scope_as = vic3_todo_carrier_hq }
+	}
+	if = {
+		limit = { exists = scope:vic3_todo_carrier_hq }
+		company:company_vic3_todo_carrier ?= {
+			set_company_state_region = scope:vic3_todo_carrier_hq
+		}
+	}
+	company:company_vic3_todo_carrier ?= {
+		save_scope_as = vic3_todo_carrier_company
+	}
+	if = {
+		limit = { exists = scope:vic3_todo_carrier_company }
+		set_variable = { name = vic3_todo_in_carrier value = scope:vic3_todo_carrier_company }
+	}
+}
+
+# country scope: end an input, used or cancelled.
+vic3_todo_carrier_close = {
+	if = {
+		limit = { has_company = company_type:company_vic3_todo_carrier }
+		remove_company = company_type:company_vic3_todo_carrier
+	}
+	if = {
+		limit = { has_modifier = vic3_todo_carrier_slot }
+		remove_modifier = vic3_todo_carrier_slot
+	}
+	remove_variable = vic3_todo_in_active
+	remove_variable = vic3_todo_in_mode
+	remove_variable = vic3_todo_in_target
+	remove_variable = vic3_todo_in_carrier
+	remove_variable = vic3_todo_in_old
+	remove_variable = vic3_todo_in_started
+}
+
+# country scope, scope:vic3_todo_text = the typed text (a flag). The
+# watcher can send this twice before the first lands: the first closes the
+# input, so the second finds no vic3_todo_in_active and does nothing.
+vic3_todo_carrier_commit = {
+	if = {
+		limit = {
+			has_variable = vic3_todo_in_active
+			exists = scope:vic3_todo_text
+		}
+		if = {
+			limit = { var:vic3_todo_in_mode = 1 }
+			vic3_todo_create = yes
+		}
+		else_if = {
+			limit = {
+				has_variable = vic3_todo_in_target
+				exists = var:vic3_todo_in_target
+			}
+			var:vic3_todo_in_target = {
+				vic3_todo_write_line = yes
+			}
+		}
+		vic3_todo_carrier_close = yes
+	}
+}
+
+# todo scope, called from vic3_todo_carrier_commit (root = country).
+vic3_todo_write_line = {
+	if = {
+		limit = { root.var:vic3_todo_in_mode = 11 }
+		set_variable = { name = vic3_todo_line1 value = scope:vic3_todo_text }
+		vic3_todo_sync_title = yes
+	}
+	else_if = {
+		limit = { root.var:vic3_todo_in_mode = 12 }
+		set_variable = { name = vic3_todo_line2 value = scope:vic3_todo_text }
+	}
+	else_if = {
+		limit = { root.var:vic3_todo_in_mode = 13 }
+		set_variable = { name = vic3_todo_line3 value = scope:vic3_todo_text }
+	}
+	else_if = {
+		limit = { root.var:vic3_todo_in_mode = 14 }
+		set_variable = { name = vic3_todo_line4 value = scope:vic3_todo_text }
+	}
+	else_if = {
+		limit = { root.var:vic3_todo_in_mode = 15 }
+		if = {
+			limit = { var:vic3_todo_lines = 1 }
+			set_variable = { name = vic3_todo_line2 value = scope:vic3_todo_text }
+			set_variable = { name = vic3_todo_lines value = 2 }
+		}
+		else_if = {
+			limit = { var:vic3_todo_lines = 2 }
+			set_variable = { name = vic3_todo_line3 value = scope:vic3_todo_text }
+			set_variable = { name = vic3_todo_lines value = 3 }
+		}
+		else_if = {
+			limit = { var:vic3_todo_lines = 3 }
+			set_variable = { name = vic3_todo_line4 value = scope:vic3_todo_text }
+			set_variable = { name = vic3_todo_lines value = 4 }
+		}
+	}
+}
+
+# todo scope: drop the last line (never the first).
+vic3_todo_remove_last_line = {
+	if = {
+		limit = { var:vic3_todo_lines = 4 }
+		remove_variable = vic3_todo_line4
+		set_variable = { name = vic3_todo_lines value = 3 }
+	}
+	else_if = {
+		limit = { var:vic3_todo_lines = 3 }
+		remove_variable = vic3_todo_line3
+		set_variable = { name = vic3_todo_lines value = 2 }
+	}
+	else_if = {
+		limit = { var:vic3_todo_lines = 2 }
+		remove_variable = vic3_todo_line2
+		set_variable = { name = vic3_todo_lines value = 1 }
+	}
+}
+
+### ---- journals (todo containers) ----------------------------------------
+
+# country scope, scope:vic3_todo_text = first line.
+vic3_todo_create = {
+	save_scope_as = vic3_todo_owner_country
+	if = {
+		limit = { has_variable = vic3_todo_seq }
+		change_variable = { name = vic3_todo_seq add = 1 }
+	}
+	else = {
+		set_variable = { name = vic3_todo_seq value = 1 }
+	}
+	create_container = {
+		tags = { vic3_todo vic3_todo_auto }
+		parent = scope:vic3_todo_owner_country
+		save_scope_as = vic3_todo_new
+	}
+	if = {
+		limit = { exists = scope:vic3_todo_new }
+		scope:vic3_todo_new = {
+			set_variable = { name = vic3_todo_owner value = scope:vic3_todo_owner_country }
+			set_variable = { name = vic3_todo_id value = scope:vic3_todo_owner_country.var:vic3_todo_seq }
+			set_variable = { name = vic3_todo_line1 value = scope:vic3_todo_text }
+			set_variable = { name = vic3_todo_lines value = 1 }
+			set_variable = { name = vic3_todo_created value = game_date }
+		}
+		add_to_variable_list = { name = vic3_todo_items target = scope:vic3_todo_new }
+		vic3_todo_bind_slot = yes
+		scope:vic3_todo_new = { save_scope_as = vic3_todo_item }
+		vic3_todo_edit_open = yes
+	}
+}
+
+# country scope, scope:vic3_todo_item: open its editor (one at a time).
+vic3_todo_edit_open = {
+	vic3_todo_edit_close = yes
+	scope:vic3_todo_item = { add_tag = vic3_todo_editing }
+	set_variable = { name = vic3_todo_edit value = scope:vic3_todo_item }
+}
+
+# country scope: close the editor and any tracker settings.
+vic3_todo_edit_close = {
+	vic3_todo_tr_edit_close = yes
+	if = {
+		limit = { has_variable_list = vic3_todo_items }
+		every_in_list = {
+			variable = vic3_todo_items
+			limit = { has_tag = vic3_todo_editing }
+			remove_tag = vic3_todo_editing
+		}
+	}
+	remove_variable = vic3_todo_edit
+}
+
+# country scope: close the tracker settings.
+vic3_todo_tr_edit_close = {
+	if = {
+		limit = { vic3_todo_has_edit_tr = yes }
+		var:vic3_todo_edit_tr = {
+			if = {
+				limit = { has_tag = vic3_todo_tr_editing }
+				remove_tag = vic3_todo_tr_editing
+			}
+		}
+	}
+	remove_variable = vic3_todo_edit_tr
+}
+
+# todo scope.
+vic3_todo_mark_done = {
+	if = {
+		limit = { vic3_todo_is_active = yes }
+		add_tag = vic3_todo_done
+		set_variable = { name = vic3_todo_finished value = game_date }
+	}
+}
+
+# todo scope.
+vic3_todo_mark_failed = {
+	if = {
+		limit = { vic3_todo_is_active = yes }
+		add_tag = vic3_todo_failed
+		set_variable = { name = vic3_todo_finished value = game_date }
+	}
+}
+
+# todo scope. Reopening turns automatic completion off, or a TODO whose
+# conditions still hold would complete again at the next check.
+vic3_todo_reopen = {
+	if = {
+		limit = { has_tag = vic3_todo_done }
+		remove_tag = vic3_todo_done
+		if = {
+			limit = {
+				has_tag = vic3_todo_auto
+				vic3_todo_met > 0
+			}
+			remove_tag = vic3_todo_auto
+		}
+	}
+	if = {
+		limit = { has_tag = vic3_todo_failed }
+		remove_tag = vic3_todo_failed
+		if = {
+			limit = {
+				has_tag = vic3_todo_fail_on_deadline
+				vic3_todo_days_left < 0
+			}
+			remove_tag = vic3_todo_fail_on_deadline
+		}
+	}
+	remove_variable = vic3_todo_finished
+	vic3_todo_ensure_je = yes
+}
+
+# country scope, scope:vic3_todo_item: delete it and its trackers.
+vic3_todo_delete = {
+	scope:vic3_todo_item = {
+		if = {
+			limit = { has_tag = vic3_todo_editing }
+			root = { vic3_todo_edit_close = yes }
+		}
+		# Destroy the trackers, then empty the list at once. (Not through a
+		# temporary list: those live for the whole top-level effect, so when
+		# vic3_todo_clear_finished deletes several journals a second call
+		# would walk the first journal's destroyed trackers again.)
+		if = {
+			limit = { has_variable_list = vic3_todo_trackers }
+			every_in_list = {
+				variable = vic3_todo_trackers
+				destroy_container = yes
+			}
+			clear_variable_list = vic3_todo_trackers
+		}
+		vic3_todo_unbind_slot = yes
+	}
+	remove_list_variable = { name = vic3_todo_items target = scope:vic3_todo_item }
+	scope:vic3_todo_item = { destroy_container = yes }
+}
+
+# country scope: delete every completed or failed journal.
+vic3_todo_clear_finished = {
+	if = {
+		limit = { has_variable_list = vic3_todo_items }
+		every_in_list = {
+			variable = vic3_todo_items
+			limit = { vic3_todo_is_finished = 1 }
+			add_to_temporary_list = vic3_todo_doomed_items
+		}
+		every_in_list = {
+			list = vic3_todo_doomed_items
+			save_scope_as = vic3_todo_item
+			root = { vic3_todo_delete = yes }
+		}
+	}
+}
+
+# todo scope: automatic completion and deadline failure.
+vic3_todo_evaluate_one = {
+	# Keep each relations target's capital current: the GUI names the
+	# target country through it (Var('vic3_todo_target_cap').GetState.GetCountry).
+	if = {
+		limit = { has_variable_list = vic3_todo_trackers }
+		every_in_list = {
+			variable = vic3_todo_trackers
+			limit = {
+				var:vic3_todo_kind = 9
+				exists = var:vic3_todo_target
+			}
+			save_scope_as = vic3_todo_tr_refresh
+			var:vic3_todo_target = {
+				capital ?= {
+					scope:vic3_todo_tr_refresh = {
+						set_variable = { name = vic3_todo_target_cap value = PREV }
+					}
+				}
+			}
+		}
+	}
+	if = {
+		limit = { vic3_todo_is_active = yes }
+		if = {
+			limit = {
+				has_tag = vic3_todo_auto
+				vic3_todo_met > 0
+			}
+			vic3_todo_mark_done = yes
+		}
+		else_if = {
+			limit = {
+				has_tag = vic3_todo_deadline_on
+				has_tag = vic3_todo_fail_on_deadline
+				vic3_todo_days_left < 0
+			}
+			vic3_todo_mark_failed = yes
+		}
+	}
+}
+
+# country scope.
+vic3_todo_evaluate_all = {
+	if = {
+		limit = { has_variable_list = vic3_todo_items }
+		every_in_list = {
+			variable = vic3_todo_items
+			vic3_todo_evaluate_one = yes
+		}
+	}
+}
+
+# country scope: monthly upkeep. Ends an input left open for 30 days (the
+# popup was closed without confirming and the window never reopened).
+vic3_todo_monthly = {
+	vic3_todo_evaluate_all = yes
+	if = {
+		limit = {
+			has_variable = vic3_todo_in_active
+			has_variable = vic3_todo_in_started
+			vic3_todo_input_age > 30
+		}
+		vic3_todo_carrier_close = yes
+	}
+}
+
+### ---- journal options (todo scope) -------------------------------------
+
+# todo scope: switch the deadline on, one year from today.
+vic3_todo_deadline_enable = {
+	add_tag = vic3_todo_deadline_on
+	set_variable = {
+		name = vic3_todo_deadline
+		value = {
+			value = game_date
+			add = 365
+		}
+	}
+}
+
+vic3_todo_deadline_disable = {
+	if = {
+		limit = { has_tag = vic3_todo_deadline_on }
+		remove_tag = vic3_todo_deadline_on
+	}
+	if = {
+		limit = { has_tag = vic3_todo_fail_on_deadline }
+		remove_tag = vic3_todo_fail_on_deadline
+	}
+	remove_variable = vic3_todo_deadline
+}
+
+# todo scope: move the deadline by $DAYS$ (may be negative), never before
+# tomorrow.
+vic3_todo_deadline_move = {
+	if = {
+		limit = { has_variable = vic3_todo_deadline }
+		set_variable = {
+			name = vic3_todo_deadline
+			value = {
+				value = var:vic3_todo_deadline
+				add = $DAYS$
+			}
+		}
+		if = {
+			limit = { vic3_todo_days_left < 1 }
+			set_variable = {
+				name = vic3_todo_deadline
+				value = {
+					value = game_date
+					add = 1
+				}
+			}
+		}
+	}
+}
+
+# todo scope: toggle a boolean option tag.
+vic3_todo_toggle_tag = {
+	if = {
+		limit = { has_tag = $TAG$ }
+		remove_tag = $TAG$
+	}
+	else = {
+		add_tag = $TAG$
+	}
+}
+
+### ---- trackers -----------------------------------------------------------
+
+# country scope, adds a tracker of kind $KIND$ to the edited todo and opens
+# its settings.
+vic3_todo_tracker_add = {
+	if = {
+		limit = { vic3_todo_has_edit = yes }
+		var:vic3_todo_edit = { save_scope_as = vic3_todo_tr_parent }
+		save_scope_as = vic3_todo_owner_country
+		if = {
+			limit = { scope:vic3_todo_tr_parent = { vic3_todo_can_add_tracker = yes } }
+			create_container = {
+				tags = { vic3_todo_tracker }
+				parent = scope:vic3_todo_owner_country
+				save_scope_as = vic3_todo_new_tr
+			}
+			if = {
+				limit = { exists = scope:vic3_todo_new_tr }
+				scope:vic3_todo_new_tr = {
+					set_variable = { name = vic3_todo_owner value = scope:vic3_todo_owner_country }
+					set_variable = { name = vic3_todo_parent value = scope:vic3_todo_tr_parent }
+					set_variable = { name = vic3_todo_kind value = $KIND$ }
+					set_variable = { name = vic3_todo_mode value = vic3_todo_tr_default_mode }
+					set_variable = { name = vic3_todo_captures value = 0 }
+					set_variable = { name = vic3_todo_goal value = 1 }
+					set_variable = { name = vic3_todo_baseline value = 0 }
+					vic3_todo_tr_capture = yes
+					vic3_todo_tr_reset_goal = yes
+				}
+				scope:vic3_todo_tr_parent = {
+					add_to_variable_list = { name = vic3_todo_trackers target = scope:vic3_todo_new_tr }
+				}
+				vic3_todo_tr_edit_close = yes
+				scope:vic3_todo_new_tr = { add_tag = vic3_todo_tr_editing }
+				set_variable = { name = vic3_todo_edit_tr value = scope:vic3_todo_new_tr }
+			}
+		}
+	}
+}
+
+# tracker scope: take the creation-time baseline. Called when the tracker
+# is created and whenever its kind, target or mode changes; never on
+# reopening the window, loading or a goal change.
+vic3_todo_tr_capture = {
+	set_variable = { name = vic3_todo_baseline value = vic3_todo_tr_raw }
+	change_variable = { name = vic3_todo_captures add = 1 }
+}
+
+# tracker scope: a default goal for the current kind, mode and baseline.
+vic3_todo_tr_reset_goal = {
+	if = {
+		limit = { var:vic3_todo_kind = 10 }
+		set_variable = {
+			name = vic3_todo_goal
+			value = {
+				value = 7
+				if = {
+					limit = { has_variable = vic3_todo_target_idx }
+					value = var:vic3_todo_target_idx
+				}
+			}
+		}
+	}
+	else_if = {
+		limit = { vic3_todo_tr_discrete = yes }
+		set_variable = { name = vic3_todo_goal value = 1 }
+	}
+	else_if = {
+		limit = {
+			OR = {
+				var:vic3_todo_mode = 1
+				var:vic3_todo_mode = 3
+			}
+		}
+		set_variable = { name = vic3_todo_goal value = vic3_todo_tr_step_m }
+	}
+	else_if = {
+		limit = { var:vic3_todo_mode = 2 }
+		set_variable = {
+			name = vic3_todo_goal
+			value = {
+				value = var:vic3_todo_baseline
+				add = vic3_todo_tr_step_m
+				divide = vic3_todo_tr_step_s
+				round = yes
+				multiply = vic3_todo_tr_step_s
+			}
+		}
+	}
+	else = {
+		set_variable = {
+			name = vic3_todo_goal
+			value = {
+				value = var:vic3_todo_baseline
+				subtract = vic3_todo_tr_step_m
+				divide = vic3_todo_tr_step_s
+				round = yes
+				multiply = vic3_todo_tr_step_s
+			}
+		}
+	}
+	vic3_todo_tr_clamp_goal = yes
+}
+
+# tracker scope: keep the goal in range.
+vic3_todo_tr_clamp_goal = {
+	if = {
+		limit = {
+			OR = {
+				var:vic3_todo_mode = 1
+				var:vic3_todo_mode = 3
+			}
+		}
+		set_variable = {
+			name = vic3_todo_goal
+			value = {
+				value = var:vic3_todo_goal
+				min = vic3_todo_tr_step_s
+			}
+		}
+	}
+	if = {
+		limit = {
+			vic3_todo_tr_fraction_kind = yes
+			OR = {
+				var:vic3_todo_mode = 2
+				var:vic3_todo_mode = 4
+			}
+		}
+		set_variable = {
+			name = vic3_todo_goal
+			value = {
+				value = var:vic3_todo_goal
+				min = 0
+				max = 1
+			}
+		}
+	}
+	if = {
+		limit = {
+			vic3_todo_tr_nonnegative_kind = yes
+			OR = {
+				var:vic3_todo_mode = 2
+				var:vic3_todo_mode = 4
+			}
+		}
+		set_variable = {
+			name = vic3_todo_goal
+			value = {
+				value = var:vic3_todo_goal
+				min = 0
+			}
+		}
+	}
+}
+
+# tracker scope: change the goal by $STEP$ (a script value name) times $SIGN$.
+vic3_todo_tr_step_goal = {
+	if = {
+		limit = { vic3_todo_tr_discrete = no }
+		set_variable = {
+			name = vic3_todo_goal
+			value = {
+				value = $STEP$
+				multiply = $SIGN$
+				add = var:vic3_todo_goal
+			}
+		}
+		vic3_todo_tr_clamp_goal = yes
+	}
+}
+
+# tracker scope: change the mode, recapturing the baseline once.
+vic3_todo_tr_set_mode = {
+	if = {
+		limit = {
+			vic3_todo_tr_discrete = no
+			NOT = { var:vic3_todo_mode = $MODE$ }
+			vic3_todo_tr_modes_all = yes
+		}
+		set_variable = { name = vic3_todo_mode value = $MODE$ }
+		vic3_todo_tr_capture = yes
+		vic3_todo_tr_reset_goal = yes
+	}
+}
+
+# tracker scope: a target was chosen (vic3_todo_target_idx and, for some
+# kinds, vic3_todo_target are set). Recapture and reset the goal.
+vic3_todo_tr_target_changed = {
+	set_variable = vic3_todo_has_target
+	vic3_todo_tr_capture = yes
+	vic3_todo_tr_reset_goal = yes
+}
+
+# country scope, scope:vic3_todo_item = a tracker: remove it.
+vic3_todo_tracker_remove = {
+	scope:vic3_todo_item = {
+		if = {
+			limit = { has_tag = vic3_todo_tr_editing }
+			root = { vic3_todo_tr_edit_close = yes }
+		}
+		var:vic3_todo_parent ?= {
+			remove_list_variable = { name = vic3_todo_trackers target = scope:vic3_todo_item }
+		}
+	}
+	scope:vic3_todo_item = { destroy_container = yes }
+}
+
+# country scope, scope:vic3_todo_item = a tracker: open or close its
+# settings.
+vic3_todo_tracker_toggle_edit = {
+	if = {
+		limit = { scope:vic3_todo_item = { has_tag = vic3_todo_tr_editing } }
+		vic3_todo_tr_edit_close = yes
+	}
+	else = {
+		vic3_todo_tr_edit_close = yes
+		scope:vic3_todo_item = { add_tag = vic3_todo_tr_editing }
+		set_variable = { name = vic3_todo_edit_tr value = scope:vic3_todo_item }
+	}
+}

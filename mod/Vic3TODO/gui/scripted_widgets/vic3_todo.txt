@@ -1,0 +1,3 @@
+﻿# Vic3 TODO: the launcher and the window (vanilla game/gui/scripted_widgets/scripted_widgets.md).
+gui/vic3_todo_window_generated.gui = vic3_todo_launcher
+gui/vic3_todo_window_generated.gui = vic3_todo_window
