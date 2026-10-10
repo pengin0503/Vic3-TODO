@@ -5,6 +5,8 @@ Target: Victoria 3 1.14.x, baseline verification on 1.14.5
 Repository: `pengin0503/Vic3-TODO`  
 Status: Approved
 
+> **2026-10-10 update:** the free-text gate was resolved with evidence from an in-game 1.14.5 test by another mod: a mod editbox cannot reach script, but the base game's company-rename popup can. The production mod is implemented in `mod/Vic3TODO` and goes beyond this v1 scope (a real Journal Entry per journal, failure conditions, 40 tracker kinds). Current design and its evidence: [docs/design/custom-journals.md](../../design/custom-journals.md). In-game verification is still pending: [docs/runtime-checklist.md](../../runtime-checklist.md).
+
 ## 1. Purpose
 
 Vic3-TODO adds a player-authored TODO system that behaves like Victoria 3's Journal rather than like an external notepad.
